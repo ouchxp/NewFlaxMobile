@@ -9,6 +9,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
+import flax.collocation.CollocationDatabaseManager;
+import flax.collocation.CollocationItem;
+import flax.collocation.CollocationNetworkDownload;
 import flax.data.exercise.Exercise;
 import flax.data.exercise.Response;
 import flax.database.DatabaseManager;
@@ -29,13 +32,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	// Convert url to correct format.
 	private IURLConverter urlConverter;
 	private DatabaseManager dbManager;
+	// Declare progress bar
+	private ProgressDialog progress;
+	
+	
 	public BackgroundDowloadExercises(Context context, IURLConverter urlConverter) {
 		this.context = context;
 		this.urlConverter = urlConverter;
 	}
-
-	// Declare progress bar
-	private ProgressDialog progress;
 
 	/**
 	 * onPreExecute method Before the async task starts, prepare the progress
@@ -86,10 +90,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 		saveNewExercises(newExecs);
 
 		// call async download new exercises content
-		BackgroundDownloadExercisesContent download = new BackgroundDownloadExercisesContent(context);
-		// TODO:change xmlParser
-		download.execute(newExecs.toArray(new Exercise[] {}));
-		
+		downloadAndSaveContent(newExecs);
 		
 		return exercises;
 	}
@@ -121,6 +122,44 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 		// Stop progress bar
 		progress.dismiss();
 	}
+	
+	private String downloadAndSaveContent(List<Exercise> execs) {
+		try {
+			// Go through each new activity and download corresponding
+			// collocations
+			for (Exercise e : execs) {
+				int i = 0;
+
+				// Download collocations
+				String url = e.getUrl();
+				CollocationNetworkDownload collocationDownload = new CollocationNetworkDownload(context);
+				collocationDownload.downloadCollocations(url);
+				List<CollocationItem> collocations = collocationDownload.getCollocationList();
+
+				// Set database manager
+				CollocationDatabaseManager dbManager = new CollocationDatabaseManager(context);
+				
+				// Add collocations to db - note i = index (collocation
+				// order)
+				for (CollocationItem c : collocations) {
+					dbManager.addCollocation(c.collocationId, i, c.type, c.fre, c.sendId, c.word, "none",
+							"none", "none", c.getBaseWord(), e.getUniqueId());
+					i++;
+				}
+
+				// Save word count
+				dbManager.updateActivityWordCount(collocations.size(), e.getUniqueId());
+
+				// Add initial entry to summary report table in db
+				dbManager.addSummary("", "", 0, 0, e.getUniqueId());
+
+			}
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/*
 	 * formatActivityUrl method
@@ -129,7 +168,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * than the needed xml. This url needs to be altered to return the correctly
 	 * formatted xml
 	 */
-	public List<Exercise> formatExerciseUrl(List<Exercise> downloadedExercises) {
+	private List<Exercise> formatExerciseUrl(List<Exercise> downloadedExercises) {
 
 		// Create algorithm that alters the url to get the correctly formatted
 		// xml.
@@ -167,7 +206,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	/**
 	 * getDownloadStatus method get if download is done
 	 */
-	public boolean getDownloadStatus() {
+	private boolean getDownloadStatus() {
 		return SPHelper.getBoolean(GlobalConstants.DOWNLOAD_STATUS_KEY, false);
 	}
 	
