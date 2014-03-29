@@ -1,0 +1,8 @@
+<!-- Add xml files for ten hard coded activities -->
+<response from="collocations">
+  <player>
+    <word word="hangman">
+      <collo ID="4165627" colloType="non" fre="153" sentID="56557_3018341_172/3936_186568_176/56557_3018401_179/4768_245512_257/48657_2680722_269/54950_2953759_278/56557_3018343_287/44290_2493017_292/20423_1228963_301/4471_225005_428">hangman</collo>
+    </word>
+  </player>
+</response>

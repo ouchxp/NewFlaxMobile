@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- General Android App Strings -->
+    <string name="app_name">FlaxAndroidHangman</string>
+    <string name="app_name_launcher">Hangman</string>
+    
+    <string name="blank_string"> </string>
+    <string name="title_activity_home_screen">Home Screen</string>
+    <string name="title_activity_list_screen">List Screen</string>
+
+    <!-- Home Screen Strings -->
+    <string name="flax_icon">Flax Icon</string>
+    <string name="main_activity_text">HANGMAN</string>
+    <string name="main_play_button">Play</string>
+    <string name="title_activity_collocation_game_view">Game Screen</string>
+    
+    <!-- List Screen strings -->
+    <string name="arrow_icon">Arrow Icon</string>
+    
+    <!-- Home Screen Options Menu Strings -->
+    <string name="network_settings">Network settings</string>
+    <string name="download_exercises">Check for new exercises</string>
+    <string name="change_server">Change server</string>
+   
+    <!-- Game Screen Option Menu Strings -->
+    <string name="help">Help</string>
+    <string name="how_to_play">How to play</string>
+    <string name="check_answer">Check answer</string>
+    <string name="summary_report">Summary report</string>
+    <string name="restart_game">Restart game</string>
+    <string name="enable_sample">Enable sample sentences</string>
+    
+
+    <string name="help_message">Play activity: \nPress the \'Play\' button to begin playing the activity. \n \nNetwork settings: \nYou may choose whether to download new exercises only when connected to Wi-Fi or when connected to another network. To change these settings, select \'Network Settings\' from the options menu. \n \nCheck for new exercises: \nTo connect to the network and download new exercises, select \'Check for New Exercises\' in the options menu. \n \nChange server: \nTo change the path of the server that is being used to download new activities, select \'Change Server\' from the options menu. \n \n</string>
+    
+    
+    
+
+</resources>
