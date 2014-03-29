@@ -1,5 +1,6 @@
 package flax.asynctask;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +10,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.dao.Dao;
+
 import flax.collocation.CollocationDatabaseManager;
 import flax.collocation.CollocationItem;
 import flax.collocation.CollocationNetworkDownload;
+import flax.core.FlaxApplication;
 import flax.data.exercise.Exercise;
 import flax.data.exercise.Response;
+import flax.database.DatabaseHelper;
 import flax.database.DatabaseManager;
+import flax.database.DatabaseDaoHelper;
+import flax.utils.FlaxUtil;
 import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
 import flax.utils.SPHelper;
@@ -82,6 +92,18 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 		
 		// Get "new" exercises, which doesn't exist in db from downloaded exercises.
 		List<Exercise> newExecs = getNewExercises(exercises);
+		
+		//TODO: just test ormlite
+		try {
+			OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
+			Dao<Exercise,String> dao = helper.getDao(Exercise.class);
+			for (Exercise exercise : exercises) {
+				dao.createIfNotExists(exercise);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//If no new exercises, return empty array.
 		if(newExecs.isEmpty()){exercises.clear();return exercises;}

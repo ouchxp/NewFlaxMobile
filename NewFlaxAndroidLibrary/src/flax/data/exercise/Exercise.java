@@ -1,5 +1,7 @@
 package flax.data.exercise;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -8,20 +10,28 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * @author ouchxp
  *
  */
+@DatabaseTable
 public class Exercise {
+	@DatabaseField
 	@XStreamAsAttribute
 	private String category_id;
+	@DatabaseField(id=true)
 	@XStreamAsAttribute
 	private String id;
+	@DatabaseField
 	@XStreamAsAttribute
 	private String name;
+	@DatabaseField
 	@XStreamAsAttribute
 	private String type;
-	
+	@DatabaseField
 	private String url;
+	@DatabaseField
 	private String summary;
+	@DatabaseField(defaultValue="new")
 	@XStreamOmitField
 	private String status;
+	@DatabaseField
 	@XStreamOmitField
 	private int uniqueId;
 
