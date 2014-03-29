@@ -1,15 +1,20 @@
 package flax.asynctask;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
-import flax.collocation.CollocationProcess;
 import flax.data.exercise.Exercise;
 import flax.data.exercise.Response;
+import flax.database.DatabaseManager;
+import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
+import flax.utils.SPHelper;
 import flax.utils.XmlParser;
 
 /**
@@ -23,7 +28,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	private Context context;
 	// Convert url to correct format.
 	private IURLConverter urlConverter;
-
+	private DatabaseManager dbManager;
 	public BackgroundDowloadExercises(Context context, IURLConverter urlConverter) {
 		this.context = context;
 		this.urlConverter = urlConverter;
@@ -60,13 +65,33 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 
 		// Begin parsing the xml from url
 		Response response = XmlParser.fromUrl(urls[0], Response.class);
-
-		if (response != null) {
-			List<Exercise> exercises = response.getCategoryList().getCategory().getExercises();
-			return exercises;
-		} else {
-			return null;
+		// If something wrong then return null.
+		if (response == null) {return null;}
+		
+		// Get exercises and format urls for exercises
+		List<Exercise> exercises = formatExerciseUrl(response.getCategoryList().getCategory().getExercises());
+		
+		//TODO: status should be separate
+		for (Exercise exercise : exercises) {
+			exercise.setStatus("new");
 		}
+		
+		// Get "new" exercises, which doesn't exist in db from downloaded exercises.
+		List<Exercise> newExecs = getNewExercises(exercises);
+		
+		//If no new exercises, return empty array.
+		if(newExecs.isEmpty()){exercises.clear();return exercises;}
+		
+		// otherwise save new exercises
+		saveNewExercises(newExecs);
+
+		// call async download new exercises content
+		BackgroundDownloadExercisesContent download = new BackgroundDownloadExercisesContent(context);
+		// TODO:change xmlParser
+		download.execute(newExecs.toArray(new Exercise[] {}));
+		
+		
+		return exercises;
 	}
 
 	/**
@@ -77,17 +102,22 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 */
 	@Override
 	protected void onPostExecute(List<Exercise> result) {
-
-		if (result != null) {
-			// Process activities
-			formatActivityUrl(result);
-
-			// save, and download the content of new exercises
-			CollocationProcess colloProcess = new CollocationProcess( result, context);
-			colloProcess.processNewExercises();
-		} else {
+		// If there is trouble with the server connection
+		if (getDownloadStatus() == false) {
+			Toast.makeText(context, "There has been an error in your connection, if you have used a custom server path, please check that it is correct.",
+					Toast.LENGTH_LONG).show();
+		}else if (result == null) {
 			Toast.makeText(context, "Please try again to download the new activities.", Toast.LENGTH_SHORT).show();
+		}else if(result.isEmpty()){
+			Toast.makeText(context, "No new exercises. " + "Press 'Play' to see existing exercises", Toast.LENGTH_SHORT)
+			.show();
+		}else {
+			Toast.makeText(context, "New exercises saved. " + "Press 'Play' to see all exercises", Toast.LENGTH_SHORT)
+			.show();
 		}
+		// save, and download the content of new exercises
+		//CollocationProcess colloProcess = new CollocationProcess( result, context);
+		//colloProcess.processNewExercises();
 		// Stop progress bar
 		progress.dismiss();
 	}
@@ -99,7 +129,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * than the needed xml. This url needs to be altered to return the correctly
 	 * formatted xml
 	 */
-	public List<Exercise> formatActivityUrl(List<Exercise> downloadedExercises) {
+	public List<Exercise> formatExerciseUrl(List<Exercise> downloadedExercises) {
 
 		// Create algorithm that alters the url to get the correctly formatted
 		// xml.
@@ -107,6 +137,55 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 			a.setUrl(urlConverter.convert(a.getUrl()));
 		}
 		return downloadedExercises;
+	}
+	
+	/**
+	 * getNewExercises method
+	 * 
+	 * get "new" exercises, which doesn't exist in db from downloaded exercises.
+	 */
+	private List<Exercise> getNewExercises(List<Exercise> execs) {
+		// Declare db for check
+		dbManager = new DatabaseManager(context);
+		// Store new Items in holder with url as key
+		Map<String, Exercise> newItemHolder = new HashMap<String, Exercise>();
+		for (Exercise ne : execs) {
+			newItemHolder.put(ne.getUrl(), ne);
+		}
+
+		// get the new urls which is already existing urls in the db
+		List<String> existingUrls = dbManager.selectExistUrls(newItemHolder.keySet().toArray(new String[] {}));
+
+		// remove the existing items (keep the new items)
+		for (String url : existingUrls) {
+			newItemHolder.remove(url);
+		}
+
+		return new ArrayList<Exercise>(newItemHolder.values());
+	}
+	
+	/**
+	 * getDownloadStatus method get if download is done
+	 */
+	public boolean getDownloadStatus() {
+		return SPHelper.getBoolean(GlobalConstants.DOWNLOAD_STATUS_KEY, false);
+	}
+	
+	/**
+	 * saveNewExercises method
+	 * 
+	 * This method takes the downloaded exercise list and compares it to the
+	 * existing exercises, saving any new exercises in the database.
+	 */
+	private void saveNewExercises(List<Exercise> newExercises) {
+		long rowId = 0;
+		// add new items to db
+		for (Exercise ne : newExercises) {
+			rowId = dbManager.addActivity(ne.getId(), ne.getCategory_id(), ne.getType(), ne.getName(),
+					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
+			ne.setUniqueId((int) rowId);
+		}
+
 	}
 
 } // end of async task

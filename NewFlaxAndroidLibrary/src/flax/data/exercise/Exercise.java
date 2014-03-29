@@ -21,7 +21,7 @@ public class Exercise {
 	private String url;
 	private String summary;
 	@XStreamOmitField
-	private String status = "new";
+	private String status;
 	@XStreamOmitField
 	private int uniqueId;
 
