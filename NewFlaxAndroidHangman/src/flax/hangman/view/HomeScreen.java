@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import flax.activity.ActivityItem;
+import flax.asynctask.BackgroundDowloadExercises;
 import flax.collocation.CollocationDatabaseHelper;
 import flax.collocation.CollocationDatabaseManager;
 import flax.collocation.CollocationItem;

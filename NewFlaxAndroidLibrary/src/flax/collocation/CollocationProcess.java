@@ -23,6 +23,7 @@ import android.content.Context;
 import android.widget.Toast;
 import flax.activity.ActivityItem;
 import flax.activity.ActivityProcess;
+import flax.asynctask.BackgroundDownloadExercisesContent;
 import flax.data.exercise.Exercise;
 import flax.database.DatabaseManager;
 import flax.utils.GlobalConstants;
