@@ -42,7 +42,7 @@ import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelp;
 import flax.dialog.DialogNetworkSettings;
 import flax.hangman.R;
-import flax.hangman.utils.Constants;
+import flax.hangman.utils.LocalConstants;
 import flax.hangman.utils.HangmanURLConverter;
 import flax.utils.FlaxUtil;
 import flax.utils.Mock;
@@ -212,11 +212,11 @@ public class HomeScreen extends Activity {
 		if (FlaxUtil.isFirstTime()) {
 			try {
 				// Add activities to the database
-				dbManager.addActivity("1a", "1", Constants.ACTIVITY_TYPE, "hangman", "none", "new", 0, 0);
+				dbManager.addActivity("1a", "1", LocalConstants.ACTIVITY_TYPE, "hangman", "none", "new", 0, 0);
 
 				// Retrieve the input stream based on the xml files saved in res
 				// / raw / game_name.xml
-				List<ActivityItem> firstActivities = dbManager.selectAllActivities(Constants.ACTIVITY_TYPE);
+				List<ActivityItem> firstActivities = dbManager.selectAllActivities(LocalConstants.ACTIVITY_TYPE);
 				ArrayList<InputStream> isArr = new ArrayList<InputStream>();
 				InputStream is0 = this.getResources().openRawResource(R.raw.activity_template_xml);
 
@@ -301,7 +301,7 @@ public class HomeScreen extends Activity {
 		// if connected
 		if (FlaxUtil.isConnected()) {
 			Log.d(TAG, "connected. Start downloading");
-			String url = FlaxUtil.getServerPath() + Constants.HANGMAN_URL;
+			String url = FlaxUtil.getServerPath() + LocalConstants.HANGMAN_URL;
 			BackgroundDowloadExercises backgoundDownload = new BackgroundDowloadExercises(context,new HangmanURLConverter());
 			//TODO: add bean converter
 			backgoundDownload.execute(url);

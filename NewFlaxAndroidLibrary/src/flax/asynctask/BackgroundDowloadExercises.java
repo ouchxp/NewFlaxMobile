@@ -170,7 +170,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				CollocationNetworkDownload collocationDownload = new CollocationNetworkDownload(context);
 				collocationDownload.downloadCollocations(url);
 				List<CollocationItem> collocations = collocationDownload.getCollocationList();
-
+				//XmlParser.fromUrl(url, resultType);
 				// Set database manager
 				CollocationDatabaseManager dbManager = new CollocationDatabaseManager(context);
 				
