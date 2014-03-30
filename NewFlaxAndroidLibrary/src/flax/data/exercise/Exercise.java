@@ -5,16 +5,18 @@ import com.j256.ormlite.table.DatabaseTable;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+import flax.data.base.BaseData;
+
 /**
  * Represent "exercise" Tag in XML.
  * @author ouchxp
  *
  */
-@DatabaseTable
-public class Exercise {
-	@DatabaseField
-	@XStreamAsAttribute
-	private String category_id;
+@DatabaseTable(tableName="exercise")
+public class Exercise implements BaseData{
+//	@DatabaseField
+//	@XStreamAsAttribute
+//	private String category_id;
 	@DatabaseField(id=true)
 	@XStreamAsAttribute
 	private String id;
@@ -34,13 +36,16 @@ public class Exercise {
 	@DatabaseField
 	@XStreamOmitField
 	private int uniqueId;
+	
+	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="category_id") 
+	private Category category;
 
 	/* Constructors */
 	public Exercise(){}
 	public Exercise(String category_id, String id, String name, String type,
 			String url, String summary, String status) {
 		super();
-		this.category_id = category_id;
+		//this.category_id = category_id;
 		this.id = id;
 		this.name = name;
 		this.type = type;
@@ -50,13 +55,13 @@ public class Exercise {
 	}
 
 	/* Get/Set Methods */
-	public String getCategory_id() {
-		return category_id;
-	}
-
-	public void setCategory_id(String category_id) {
-		this.category_id = category_id;
-	}
+//	public String getCategory_id() {
+//		return category_id;
+//	}
+//
+//	public void setCategory_id(String category_id) {
+//		this.category_id = category_id;
+//	}
 
 	public String getId() {
 		return id;
@@ -113,5 +118,14 @@ public class Exercise {
 	public void setUniqueId(int uniqueId) {
 		this.uniqueId = uniqueId;
 	}
+	
+	public Category getCategory() {
+		return category;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
 	
 }

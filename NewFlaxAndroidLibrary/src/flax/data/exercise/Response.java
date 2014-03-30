@@ -1,28 +1,29 @@
 package flax.data.exercise;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
+import flax.data.base.BaseData;
 
 /**
  * Represent "response" Tag in XML(root tag).
  * @author ouchxp
  *
  */
+@DatabaseTable(tableName="exercises_response")
 @XStreamAlias("response")
-public class Response {
+public class Response implements BaseData{
 
+	@DatabaseField(id=true)
 	@XStreamAsAttribute
 	private String from;
-
+	@DatabaseField(foreign = true,foreignAutoRefresh=true, columnName = "categoryList_id")
 	private CategoryList categoryList;
 
 	/* Constructors */
 	public Response(){}
-	public Response(String from, CategoryList categoryList) {
-		super();
-		this.from = from;
-		this.categoryList = categoryList;
-	}
 
 	/* Get/Set Methods */
 	public String getFrom() {
@@ -41,4 +42,5 @@ public class Response {
 		this.categoryList = categoryList;
 	}
 
+	
 }

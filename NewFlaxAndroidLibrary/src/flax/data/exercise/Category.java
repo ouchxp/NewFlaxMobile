@@ -1,35 +1,38 @@
 package flax.data.exercise;
 
-import java.util.List;
+import java.util.Collection;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import flax.data.base.BaseData;
 
 /**
  * Represent "category" Tag in XML.
  * @author ouchxp
  *
  */
-public class Category {
-
+@DatabaseTable(tableName="exercises_category")
+public class Category implements BaseData{
+	@DatabaseField
 	private String categorysummary;
-	@XStreamImplicit(itemFieldName = "exercise")
-	private List<Exercise> exercises;
+
+	@DatabaseField(id = true)
 	@XStreamAsAttribute
 	private String id;
+	@DatabaseField
 	@XStreamAsAttribute
 	private String name;
+	@ForeignCollectionField(eager = false)
+	@XStreamImplicit(itemFieldName = "exercise")
+	private Collection<Exercise> exercises;
+	
 
 	/* Constructors */
 	public Category(){}
-	
-	public Category(String id, String name, String categorysummary,
-			List<Exercise> exercises) {
-		this.id = id;
-		this.name = name;
-		this.categorysummary = categorysummary;
-		this.exercises = exercises;
-	}
 
 	/* Get/Set Methods */
 	public String getCategorysummary() {
@@ -40,11 +43,11 @@ public class Category {
 		this.categorysummary = categorysummary;
 	}
 
-	public List<Exercise> getExercises() {
+	public Collection<Exercise> getExercises() {
 		return exercises;
 	}
 
-	public void setExercises(List<Exercise> exercises) {
+	public void setExercises(Collection<Exercise> exercises) {
 		this.exercises = exercises;
 	}
 
@@ -64,6 +67,8 @@ public class Category {
 		this.name = name;
 	}
 
+
+	
 }
 
 

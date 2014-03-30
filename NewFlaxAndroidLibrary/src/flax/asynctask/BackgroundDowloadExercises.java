@@ -1,14 +1,16 @@
 package flax.asynctask;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.R.integer;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -18,13 +20,12 @@ import com.j256.ormlite.dao.Dao;
 import flax.collocation.CollocationDatabaseManager;
 import flax.collocation.CollocationItem;
 import flax.collocation.CollocationNetworkDownload;
-import flax.core.FlaxApplication;
+import flax.data.exercise.Category;
+import flax.data.exercise.CategoryList;
 import flax.data.exercise.Exercise;
 import flax.data.exercise.Response;
-import flax.database.DatabaseHelper;
-import flax.database.DatabaseManager;
 import flax.database.DatabaseDaoHelper;
-import flax.utils.FlaxUtil;
+import flax.database.DatabaseManager;
 import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
 import flax.utils.SPHelper;
@@ -36,7 +37,7 @@ import flax.utils.XmlParser;
  * Download and retrieve exercises from specific activity. Done in background to
  * take the load off of the HomeScreen Activity
  */
-public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exercise>> {
+public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<Exercise>> {
 
 	private Context context;
 	// Convert url to correct format.
@@ -68,7 +69,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * Retrieves the required xml file using the NetworkHttpRequest class
 	 */
 	@Override
-	protected List<Exercise> doInBackground(String... urls) {
+	protected Collection<Exercise> doInBackground(String... urls) {
 
 		// Sleep app for one second to show progress
 		try {
@@ -83,7 +84,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 		if (response == null) {return null;}
 		
 		// Get exercises and format urls for exercises
-		List<Exercise> exercises = formatExerciseUrl(response.getCategoryList().getCategory().getExercises());
+		Collection<Exercise> exercises = formatExerciseUrl(response.getCategoryList().getCategory().getExercises());
 		
 		//TODO: status should be separate
 		for (Exercise exercise : exercises) {
@@ -91,15 +92,27 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 		}
 		
 		// Get "new" exercises, which doesn't exist in db from downloaded exercises.
-		List<Exercise> newExecs = getNewExercises(exercises);
+		Collection<Exercise> newExecs = getNewExercises(exercises);
 		
 		//TODO: just test ormlite
 		try {
 			OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
-			Dao<Exercise,String> dao = helper.getDao(Exercise.class);
+			
+			CategoryList categoryList = response.getCategoryList();
+			Category category = categoryList.getCategory();
+			
+			Dao<Response,String> dao1 = helper.getDao(Response.class);
+			Dao<CategoryList,String> dao2 = helper.getDao(CategoryList.class);
+			Dao<Category,String> dao3 = helper.getDao(Category.class);
+			Dao<Exercise,String> dao4 = helper.getDao(Exercise.class);
+
 			for (Exercise exercise : exercises) {
-				dao.createIfNotExists(exercise);
+				dao4.createIfNotExists(exercise);
 			}
+			dao3.createIfNotExists(category);
+			dao2.createOrUpdate(categoryList);
+			dao1.createOrUpdate(response);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,7 +137,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * which saves new exercises in db and downloads their content.
 	 */
 	@Override
-	protected void onPostExecute(List<Exercise> result) {
+	protected void onPostExecute(Collection<Exercise> result) {
 		// If there is trouble with the server connection
 		if (getDownloadStatus() == false) {
 			Toast.makeText(context, "There has been an error in your connection, if you have used a custom server path, please check that it is correct.",
@@ -145,7 +158,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 		progress.dismiss();
 	}
 	
-	private String downloadAndSaveContent(List<Exercise> execs) {
+	private String downloadAndSaveContent(Collection<Exercise> execs) {
 		try {
 			// Go through each new activity and download corresponding
 			// collocations
@@ -190,7 +203,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * than the needed xml. This url needs to be altered to return the correctly
 	 * formatted xml
 	 */
-	private List<Exercise> formatExerciseUrl(List<Exercise> downloadedExercises) {
+	private Collection<Exercise> formatExerciseUrl(Collection<Exercise> downloadedExercises) {
 
 		// Create algorithm that alters the url to get the correctly formatted
 		// xml.
@@ -205,7 +218,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * 
 	 * get "new" exercises, which doesn't exist in db from downloaded exercises.
 	 */
-	private List<Exercise> getNewExercises(List<Exercise> execs) {
+	private Collection<Exercise> getNewExercises(Collection<Exercise> execs) {
 		// Declare db for check
 		dbManager = new DatabaseManager(context);
 		// Store new Items in holder with url as key
@@ -238,11 +251,13 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, List<Exe
 	 * This method takes the downloaded exercise list and compares it to the
 	 * existing exercises, saving any new exercises in the database.
 	 */
-	private void saveNewExercises(List<Exercise> newExercises) {
+	private void saveNewExercises(Collection<Exercise> newExercises) {
 		long rowId = 0;
 		// add new items to db
 		for (Exercise ne : newExercises) {
-			rowId = dbManager.addActivity(ne.getId(), ne.getCategory_id(), ne.getType(), ne.getName(),
+//			rowId = dbManager.addActivity(ne.getId(), ne.getCategory().getId(), ne.getType(), ne.getName(),
+//					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
+			rowId = dbManager.addActivity(ne.getId(), "1", ne.getType(), ne.getName(),
 					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
 			ne.setUniqueId((int) rowId);
 		}

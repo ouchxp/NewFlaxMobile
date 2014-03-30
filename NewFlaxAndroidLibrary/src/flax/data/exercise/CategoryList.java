@@ -1,31 +1,34 @@
 package flax.data.exercise;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
+import flax.data.base.BaseData;
 
 /**
  * Represent "categoryList" Tag in XML.
+ * 
  * @author ouchxp
- *
+ * 
  */
-public class CategoryList {
-	
+@DatabaseTable(tableName = "exercises_category_list")
+public class CategoryList implements BaseData{
+	@DatabaseField(id=true)
 	@XStreamAsAttribute
-	String c;
+	private String c;
+	@DatabaseField
 	@XStreamAsAttribute
-	String flax_server_domain;
+	private String flax_server_domain;
+	@DatabaseField
 	@XStreamAsAttribute
-	String type;
-	Category category;
+	private String type;
+	@DatabaseField(foreign = true, foreignAutoRefresh=true,columnName = "category_id")
+	private Category category;
 
 	/* Constructors */
 
-	public CategoryList(){}
-	public CategoryList(String c, String flax_server_domain, String type,
-			Category category) {
-		this.c = c;
-		this.flax_server_domain = flax_server_domain;
-		this.type = type;
-		this.category = category;
+	public CategoryList() {
 	}
 
 	/* Get/Set Methods */
