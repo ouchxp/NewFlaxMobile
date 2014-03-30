@@ -255,9 +255,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		long rowId = 0;
 		// add new items to db
 		for (Exercise ne : newExercises) {
-//			rowId = dbManager.addActivity(ne.getId(), ne.getCategory().getId(), ne.getType(), ne.getName(),
-//					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
-			rowId = dbManager.addActivity(ne.getId(), "1", ne.getType(), ne.getName(),
+			rowId = dbManager.addActivity(ne.getId(), ne.getCategory().getId(), ne.getType(), ne.getName(),
 					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
 			ne.setUniqueId((int) rowId);
 		}
