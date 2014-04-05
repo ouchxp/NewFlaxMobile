@@ -18,11 +18,11 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.KXml2Driver;
-import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 
 import flax.data.base.BaseData;
 import flax.network.Downloader;
@@ -36,7 +36,7 @@ import flax.network.Downloader;
  * @author Nan Wu
  */
 public class XmlParser {
-
+	private static final String UNIQUE_URL_FIELD = "uniqueUrl";
 	/* NetworkXmlParser class constructor */
 	public XmlParser() {
 
@@ -49,16 +49,22 @@ public class XmlParser {
 	 * @param resultType
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T fromUrl(String url, Class<T> resultType) {
 		InputStream is = null;
 		try {
+			// Downloading
 			is = Downloader.downloadUrl(url);
-			XStream stream = new XStream(new KXml2Driver(new XmlFriendlyNameCoder("_-", "_")));
-			stream.processAnnotations(resultType);
-			T result = (T) stream.fromXML(is);
-			// Automatically set foreign id for foreign tables.
+			
+			// Parsing
+			Serializer serializer = new Persister();
+			T result = serializer.read(resultType, is);
+			
+			// Setting unique url
+			setUniqueUrl(result,url);
+			
+			// Set up foreign relation
 			prepareForOrm(result);
+			
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,24 +81,58 @@ public class XmlParser {
 	}
 
 	/**
+	 * Automatically set download url as unique id for response.
+	 * 
+	 * @param response
+	 * @param url
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 */
+	private static final <T> void setUniqueUrl(T response, String url) throws IllegalAccessException, IllegalArgumentException {
+		if (response == null || !(response instanceof BaseData))
+			return;
+
+		Class<?> clazz = response.getClass();
+		for (Field f : clazz.getDeclaredFields()) {
+			if (UNIQUE_URL_FIELD.equals(f.getName())) {
+				f.setAccessible(true);
+				f.set(response, url);
+				break;
+			}
+		}
+	}
+
+	/**
 	 * Automatically set foreign id for foreign tables.
+	 * 
+	 * @param <T>
 	 * 
 	 * @param primaryRow
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	private static void prepareForOrm(Object primaryRow) throws IllegalArgumentException, IllegalAccessException {
+	private static <T> void prepareForOrm(T primaryRow) throws IllegalArgumentException, IllegalAccessException {
 
 		if (primaryRow == null || !(primaryRow instanceof BaseData))
 			return;
-		Class primaryClass = primaryRow.getClass();
+		Class<?> primaryClass = primaryRow.getClass();
 		for (Field f : primaryClass.getDeclaredFields()) {
 			f.setAccessible(true);
 			if (isForeignField(f)) {// Foreign field
 				Object foreignRow = f.get(primaryRow);// Foreign Table Row
-				prepareForOrm(foreignRow);
+				for (Field subf : foreignRow.getClass().getDeclaredFields()) {
+					if (isForeignKey(subf, primaryClass)) {// Foreign Key
+						subf.setAccessible(true);
+						if (subf.get(foreignRow) == null) {
+							subf.set(foreignRow, primaryRow);
+							// Process Foreign Rows
+							prepareForOrm(foreignRow);
+						}
+					}
+				}
+
 			} else if (isForeignCollection(f)) {// ForeignCollection
-				Collection foreignTable = (Collection) f.get(primaryRow);
+				Collection<?> foreignTable = (Collection<?>) f.get(primaryRow);
 				for (Object foreignRow : foreignTable) {// Foreign Table Row
 					for (Field subf : foreignRow.getClass().getDeclaredFields()) {
 						if (isForeignKey(subf, primaryClass)) {// Foreign Key
@@ -108,6 +148,7 @@ public class XmlParser {
 			}
 		}
 	}
+
 
 	/**
 	 * Is the class an implement of BaseData interface.
@@ -158,7 +199,7 @@ public class XmlParser {
 	 * @param f
 	 * @return
 	 */
-	private static boolean isForeignKey(final Field f, final Class primaryClass) {
+	private static boolean isForeignKey(final Field f, final Class<?> primaryClass) {
 		return isForeignField(f) && f.getType().equals(primaryClass);
 	}
 

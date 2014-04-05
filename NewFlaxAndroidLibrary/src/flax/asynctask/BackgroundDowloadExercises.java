@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.R.integer;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -21,7 +19,6 @@ import flax.collocation.CollocationDatabaseManager;
 import flax.collocation.CollocationItem;
 import flax.collocation.CollocationNetworkDownload;
 import flax.data.exercise.Category;
-import flax.data.exercise.CategoryList;
 import flax.data.exercise.Exercise;
 import flax.data.exercise.Response;
 import flax.database.DatabaseDaoHelper;
@@ -84,7 +81,11 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		if (response == null) {return null;}
 		
 		// Get exercises and format urls for exercises
-		Collection<Exercise> exercises = formatExerciseUrl(response.getCategoryList().getCategory().getExercises());
+		Collection<Exercise> exercises = new ArrayList<Exercise>();
+		for (Category category : response.getCategoryList()) {
+			formatExerciseUrl(category.getExercises());
+			exercises.addAll(category.getExercises());
+		}
 		
 		//TODO: status should be separate
 		for (Exercise exercise : exercises) {
@@ -98,21 +99,26 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		try {
 			OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
 			
-			CategoryList categoryList = response.getCategoryList();
-			Category category = categoryList.getCategory();
+			Collection<Category> categoryList = response.getCategoryList();
+			//Category category = categoryList.getCategory();
 			
 			Dao<Response,String> dao1 = helper.getDao(Response.class);
-			Dao<CategoryList,String> dao2 = helper.getDao(CategoryList.class);
 			Dao<Category,String> dao3 = helper.getDao(Category.class);
 			Dao<Exercise,String> dao4 = helper.getDao(Exercise.class);
-
-			for (Exercise exercise : exercises) {
-				dao4.createIfNotExists(exercise);
-			}
-			dao3.createIfNotExists(category);
-			dao2.createOrUpdate(categoryList);
 			dao1.createOrUpdate(response);
+			for (Category category : categoryList) {
+				dao3.createIfNotExists(category);
+				Collection<Exercise> exercises1 = category.getExercises();
+				formatExerciseUrl(exercises1);
+				for (Exercise exercise : exercises1) {
+					dao4.createIfNotExists(exercise);
+				}
+				
+			}
+
 			
+			//have to release helper after user
+			OpenHelperManager.releaseHelper();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -255,7 +261,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		long rowId = 0;
 		// add new items to db
 		for (Exercise ne : newExercises) {
-			rowId = dbManager.addActivity(ne.getId(), ne.getCategory().getId(), ne.getType(), ne.getName(),
+			rowId = dbManager.addActivity(ne.getId(), ne.getCategoryId(), ne.getType(), ne.getName(),
 					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
 			ne.setUniqueId((int) rowId);
 		}
