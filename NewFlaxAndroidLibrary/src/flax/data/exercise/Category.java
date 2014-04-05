@@ -2,11 +2,13 @@ package flax.data.exercise;
 
 import java.util.Collection;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import flax.data.base.BaseData;
 
@@ -17,24 +19,28 @@ import flax.data.base.BaseData;
  */
 @DatabaseTable(tableName="exercises_category")
 public class Category implements BaseData{
+	@Element
 	@DatabaseField
 	private String categorysummary;
 
 	@DatabaseField(id = true)
-	@XStreamAsAttribute
+	@Attribute
 	private String id;
 	@DatabaseField
-	@XStreamAsAttribute
+	@Attribute
 	private String name;
+	
 	@ForeignCollectionField(eager = false)
-	@XStreamImplicit(itemFieldName = "exercise")
+	@ElementList(inline=true,entry="exercise")
 	private Collection<Exercise> exercises;
 	
-
+	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
+	private Response response;
+	
 	/* Constructors */
 	public Category(){}
 
-	/* Get/Set Methods */
+	/** Get/Set Methods */
 	public String getCategorysummary() {
 		return categorysummary;
 	}

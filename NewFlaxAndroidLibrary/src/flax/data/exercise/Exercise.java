@@ -1,9 +1,10 @@
 package flax.data.exercise;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import flax.data.base.BaseData;
 
@@ -14,59 +15,57 @@ import flax.data.base.BaseData;
  */
 @DatabaseTable(tableName="exercise")
 public class Exercise implements BaseData{
-//	@DatabaseField
-//	@XStreamAsAttribute
-//	private String category_id;
-	@DatabaseField(id=true)
-	@XStreamAsAttribute
+	@DatabaseField
+	@Attribute(name="category_id")
+	private String categoryId;
+	@DatabaseField
+	@Attribute
 	private String id;
 	@DatabaseField
-	@XStreamAsAttribute
+	@Attribute
 	private String name;
 	@DatabaseField
-	@XStreamAsAttribute
+	@Attribute
 	private String type;
-	@DatabaseField
+	
+	// Use url as unique id
+	@DatabaseField(id=true)
+	@Element
 	private String url;
 	@DatabaseField
+	@Element
 	private String summary;
+	
 	@DatabaseField(defaultValue="new")
-	@XStreamOmitField
 	private String status;
 	@DatabaseField
-	@XStreamOmitField
 	private int uniqueId;
 	
-	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="category_id") 
+	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="category_foreign_id") 
 	private Category category;
 
 	/* Constructors */
 	public Exercise(){}
-	public Exercise(String category_id, String id, String name, String type,
-			String url, String summary, String status) {
-		super();
-		//this.category_id = category_id;
-		this.id = id;
-		this.name = name;
-		this.type = type;
-		this.url = url;
-		this.summary = summary;
-		this.status = status;
-	}
 
-	/* Get/Set Methods */
-//	public String getCategory_id() {
-//		return category_id;
-//	}
-//
-//	public void setCategory_id(String category_id) {
-//		this.category_id = category_id;
-//	}
+	/** Get/Set Methods */
+
 
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @return the categoryId
+	 */
+	public String getCategoryId() {
+		return categoryId;
+	}
+	/**
+	 * @param categoryId the categoryId to set
+	 */
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
 	public void setId(String id) {
 		this.id = id;
 	}

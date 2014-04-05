@@ -10,7 +10,6 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import flax.data.exercise.Category;
-import flax.data.exercise.CategoryList;
 import flax.data.exercise.Exercise;
 import flax.data.exercise.Response;
 import flax.utils.GlobalConstants;
@@ -28,7 +27,6 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Exercise.class);
             TableUtils.createTable(connectionSource, Response.class);
             TableUtils.createTable(connectionSource, Category.class);
-            TableUtils.createTable(connectionSource, CategoryList.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,7 +40,6 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Exercise.class, true);
             TableUtils.dropTable(connectionSource, Response.class, true);
             TableUtils.dropTable(connectionSource, Category.class, true);
-            TableUtils.dropTable(connectionSource, CategoryList.class, true);
             onCreate(db, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();
