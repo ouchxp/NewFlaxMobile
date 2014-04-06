@@ -36,10 +36,10 @@ import flax.network.Downloader;
  * 
  * @author Nan Wu
  */
-public class XmlParser {
+public class XMLParser {
 	private static final String UNIQUE_URL_FIELD = "uniqueUrl";
 	/* XmlParser class constructor */
-	public XmlParser() {
+	public XMLParser() {
 
 	}
 

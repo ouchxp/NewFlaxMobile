@@ -26,7 +26,7 @@ import flax.entity.exercise.Response;
 import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
 import flax.utils.SPHelper;
-import flax.utils.XmlParser;
+import flax.utils.XMLParser;
 
 /**
  * BackgroundDowloadExercises Class
@@ -76,7 +76,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		}
 
 		// Begin parsing the xml from url
-		Response response = XmlParser.fromUrl(urls[0], Response.class);
+		Response response = XMLParser.fromUrl(urls[0], Response.class);
 		// If something wrong then return null.
 		if (response == null) {return null;}
 		
