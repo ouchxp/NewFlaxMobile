@@ -1,4 +1,4 @@
-package flax.data.hangman;
+package flax.entity.hangman;
 
 import java.util.Collection;
 

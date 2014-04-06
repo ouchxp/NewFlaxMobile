@@ -24,7 +24,7 @@ import org.simpleframework.xml.core.Persister;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
-import flax.data.base.BaseEntity;
+import flax.entity.base.BaseEntity;
 import flax.network.Downloader;
 
 /**
@@ -32,6 +32,7 @@ import flax.network.Downloader;
  * 
  * This class is used to parse a given input stream (containing xml data) and
  * extract activity information.
+ * @see http://simple.sourceforge.net/
  * 
  * @author Nan Wu
  */
@@ -44,6 +45,7 @@ public class XmlParser {
 
 	/**
 	 * Parse XML from URL
+	 * @see http://simple.sourceforge.net/download/stream/doc/tutorial/tutorial.php#deserialize
 	 * 
 	 * @param url
 	 * @param resultType

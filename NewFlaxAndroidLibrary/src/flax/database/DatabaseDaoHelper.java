@@ -9,9 +9,9 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import flax.data.exercise.Category;
-import flax.data.exercise.Exercise;
-import flax.data.exercise.Response;
+import flax.entity.exercise.Category;
+import flax.entity.exercise.Exercise;
+import flax.entity.exercise.Response;
 import flax.utils.GlobalConstants;
 
 public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {

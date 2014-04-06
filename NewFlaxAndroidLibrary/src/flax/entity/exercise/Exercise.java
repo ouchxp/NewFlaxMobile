@@ -1,4 +1,4 @@
-package flax.data.exercise;
+package flax.entity.exercise;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import flax.data.base.BaseEntity;
+import flax.entity.base.BaseEntity;
 
 /**
  * Represent "exercise" Tag in XML.

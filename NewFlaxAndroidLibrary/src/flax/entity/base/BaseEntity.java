@@ -1,4 +1,4 @@
-package flax.data.base;
+package flax.entity.base;
 
 public interface BaseEntity {
 

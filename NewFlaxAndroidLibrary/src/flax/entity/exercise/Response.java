@@ -1,4 +1,4 @@
-package flax.data.exercise;
+package flax.entity.exercise;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ import org.simpleframework.xml.core.Commit;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
-import flax.data.base.BaseEntity;
+import flax.entity.base.BaseEntity;
 
 /**
  * Represent "response" Tag in XML(root tag).
