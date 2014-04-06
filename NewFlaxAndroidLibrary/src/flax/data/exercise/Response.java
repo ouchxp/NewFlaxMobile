@@ -6,11 +6,12 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.core.Commit;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
-import flax.data.base.BaseData;
+import flax.data.base.BaseEntity;
 
 /**
  * Represent "response" Tag in XML(root tag).
@@ -18,7 +19,7 @@ import flax.data.base.BaseData;
  *
  */
 @Root(name = "response")
-public class Response implements BaseData{
+public class Response implements BaseEntity{
 	@DatabaseField(id=true)
 	private String uniqueUrl;
 	
@@ -48,6 +49,16 @@ public class Response implements BaseData{
 	
 	/** Constructor */
 	public Response(){}
+	
+	/**
+	 * Build one-to-many relation, prepare for orm.
+	 */
+	@Commit
+	private void buildRelation(){
+		for (Category category : categoryList) {
+			category.setResponse(this);
+		}
+	}
 
 	/** Get/Set Methods */
 	public String getFrom() {

@@ -5,12 +5,13 @@ import java.util.Collection;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.core.Commit;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import flax.data.base.BaseData;
+import flax.data.base.BaseEntity;
 
 /**
  * Represent "category" Tag in XML.
@@ -18,7 +19,7 @@ import flax.data.base.BaseData;
  *
  */
 @DatabaseTable(tableName="exercises_category")
-public class Category implements BaseData{
+public class Category implements BaseEntity{
 	
 	
 	/** Composite Id Start */
@@ -65,8 +66,18 @@ public class Category implements BaseData{
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
 	private Response response;
 	
-	/* Constructors */
+	/** Constructors */
 	public Category(){}
+	
+	/**
+	 * Build one-to-many relation, prepare for orm.
+	 */
+	@Commit
+	private void buildRelation(){
+		for (Exercise exercise : exercises) {
+			exercise.setCategory(this);
+		}
+	}
 
 	/** Get/Set Methods */
 	public String getCategorysummary() {

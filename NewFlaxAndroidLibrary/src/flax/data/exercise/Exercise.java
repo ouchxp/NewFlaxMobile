@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import flax.data.base.BaseData;
+import flax.data.base.BaseEntity;
 
 /**
  * Represent "exercise" Tag in XML.
@@ -14,7 +14,7 @@ import flax.data.base.BaseData;
  *
  */
 @DatabaseTable(tableName="exercise")
-public class Exercise implements BaseData{
+public class Exercise implements BaseEntity{
 	@DatabaseField
 	@Attribute(name="category_id")
 	private String categoryId;
@@ -44,7 +44,7 @@ public class Exercise implements BaseData{
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="category_foreign_id") 
 	private Category category;
 
-	/* Constructors */
+	/** Constructors */
 	public Exercise(){}
 
 	/** Get/Set Methods */

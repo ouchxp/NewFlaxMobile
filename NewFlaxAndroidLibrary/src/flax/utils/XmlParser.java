@@ -24,7 +24,7 @@ import org.simpleframework.xml.core.Persister;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
-import flax.data.base.BaseData;
+import flax.data.base.BaseEntity;
 import flax.network.Downloader;
 
 /**
@@ -37,7 +37,7 @@ import flax.network.Downloader;
  */
 public class XmlParser {
 	private static final String UNIQUE_URL_FIELD = "uniqueUrl";
-	/* NetworkXmlParser class constructor */
+	/* XmlParser class constructor */
 	public XmlParser() {
 
 	}
@@ -62,8 +62,8 @@ public class XmlParser {
 			// Setting unique url
 			setUniqueUrl(result,url);
 			
-			// Set up foreign relation
-			prepareForOrm(result);
+			// Set up foreign relation @Deprecated
+			// prepareForOrm(result);
 			
 			return result;
 		} catch (Exception e) {
@@ -89,7 +89,7 @@ public class XmlParser {
 	 * @throws IllegalArgumentException
 	 */
 	private static final <T> void setUniqueUrl(T response, String url) throws IllegalAccessException, IllegalArgumentException {
-		if (response == null || !(response instanceof BaseData))
+		if (response == null || !(response instanceof BaseEntity))
 			return;
 
 		Class<?> clazz = response.getClass();
@@ -104,6 +104,8 @@ public class XmlParser {
 
 	/**
 	 * Automatically set foreign id for foreign tables.
+	 * Currently not used, because user can manipulate object relation
+	 * using @Commit annotation in entity classes.
 	 * 
 	 * @param <T>
 	 * 
@@ -111,9 +113,11 @@ public class XmlParser {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
+	@SuppressWarnings("unused")
+	@Deprecated
 	private static <T> void prepareForOrm(T primaryRow) throws IllegalArgumentException, IllegalAccessException {
 
-		if (primaryRow == null || !(primaryRow instanceof BaseData))
+		if (primaryRow == null || !(primaryRow instanceof BaseEntity))
 			return;
 		Class<?> primaryClass = primaryRow.getClass();
 		for (Field f : primaryClass.getDeclaredFields()) {
@@ -158,7 +162,7 @@ public class XmlParser {
 	 */
 	private static boolean isBaseData(final Class<?> c) {
 		for (Class<?> i : c.getInterfaces()) {
-			if (i.equals(BaseData.class)) {
+			if (i.equals(BaseEntity.class)) {
 				return true;
 			}
 		}
