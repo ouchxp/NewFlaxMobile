@@ -19,11 +19,39 @@ import flax.data.base.BaseData;
  */
 @DatabaseTable(tableName="exercises_category")
 public class Category implements BaseData{
+	
+	
+	/** Composite Id Start */
+	
+	/**
+	 * Currently ormlite doesn't support Composite Id(Multiple primary keys), 
+	 * but we can simulate that, use an extra field which returns a combination 
+	 * of all primary keys as unique id. In order to do this, useGetSet=true is
+	 * necessary.
+	 */
+	@DatabaseField(id=true,useGetSet=true)
+	private String uniqueId;
+	
+	public String getUniqueId() {
+		return id + "@" + response.getUniqueUrl();
+	}
+
+	/**
+	 * Strongly <B>NOT</B> recommend to use this method.
+	 * This method should <B>ONLY</B> be called by ORM framwork.
+	 * @param uniqueId
+	 */
+	@Deprecated
+	public void setUniqueId(String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
+	/** Composite Id End */
+
 	@Element
 	@DatabaseField
 	private String categorysummary;
 
-	@DatabaseField(id = true)
+	@DatabaseField
 	@Attribute
 	private String id;
 	@DatabaseField
@@ -73,7 +101,13 @@ public class Category implements BaseData{
 		this.name = name;
 	}
 
+	public Response getResponse() {
+		return response;
+	}
 
+	public void setResponse(Response response) {
+		this.response = response;
+	}
 	
 }
 

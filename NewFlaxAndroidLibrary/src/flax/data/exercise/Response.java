@@ -41,7 +41,7 @@ public class Response implements BaseData{
 	@Path("categoryList")
 	private String type;
 	
-	@ForeignCollectionField(eager = false)
+	@ForeignCollectionField(eager = false,foreignFieldName="response")
 	@ElementList(inline=true,entry="category")
 	@Path("categoryList")
 	private Collection<Category> categoryList;
@@ -90,4 +90,11 @@ public class Response implements BaseData{
 		this.categoryList = categoryList;
 	}
 
+	public String getUniqueUrl() {
+		return uniqueUrl;
+	}
+
+	public void setUniqueUrl(String uniqueUrl) {
+		this.uniqueUrl = uniqueUrl;
+	}
 }

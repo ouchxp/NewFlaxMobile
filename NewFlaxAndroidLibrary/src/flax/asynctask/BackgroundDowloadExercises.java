@@ -105,7 +105,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			Dao<Response,String> dao1 = helper.getDao(Response.class);
 			Dao<Category,String> dao3 = helper.getDao(Category.class);
 			Dao<Exercise,String> dao4 = helper.getDao(Exercise.class);
-			dao1.createOrUpdate(response);
+			dao1.createIfNotExists(response);
 			for (Category category : categoryList) {
 				dao3.createIfNotExists(category);
 				Collection<Exercise> exercises1 = category.getExercises();
@@ -115,7 +115,6 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				}
 				
 			}
-
 			
 			//have to release helper after user
 			OpenHelperManager.releaseHelper();
