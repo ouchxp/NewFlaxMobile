@@ -13,8 +13,8 @@ import flax.entity.base.BaseEntity;
  * @author ouchxp
  *
  */
-@DatabaseTable(tableName="exercise")
-public class Exercise implements BaseEntity{
+@DatabaseTable(tableName="exercises_exercise")
+public class Exercise extends BaseEntity{
 	@DatabaseField
 	@Attribute(name="category_id")
 	private String categoryId;

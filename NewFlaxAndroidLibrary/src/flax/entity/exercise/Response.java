@@ -10,6 +10,7 @@ import org.simpleframework.xml.core.Commit;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import flax.entity.base.BaseEntity;
 
@@ -19,7 +20,8 @@ import flax.entity.base.BaseEntity;
  *
  */
 @Root(name = "response")
-public class Response implements BaseEntity{
+@DatabaseTable(tableName="exercises_response")
+public class Response extends BaseEntity{
 	@DatabaseField(id=true)
 	private String uniqueUrl;
 	

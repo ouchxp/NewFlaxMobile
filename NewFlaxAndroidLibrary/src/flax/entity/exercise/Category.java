@@ -19,7 +19,7 @@ import flax.entity.base.BaseEntity;
  *
  */
 @DatabaseTable(tableName="exercises_category")
-public class Category implements BaseEntity{
+public class Category extends BaseEntity{
 	
 	
 	/** Composite Id Start */
