@@ -207,7 +207,7 @@ public class HomeScreen extends Activity {
 	public void insertStartingActivities() {
 
 		CollocationNetworkXmlParser colloParser = new CollocationNetworkXmlParser();
-
+		//TODO: To be refactored
 		// Check is first time execution, and set first time flag automatically.
 		if (FlaxUtil.isFirstTime()) {
 			try {

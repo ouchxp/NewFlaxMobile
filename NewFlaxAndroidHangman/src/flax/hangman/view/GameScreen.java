@@ -42,7 +42,7 @@ import flax.hangman.game.GameItem;
 public class GameScreen extends Activity {
 	
 	// Declare variables for game screen
-	int uid;
+	String uid;
 	protected GameScreen game;
 	protected GameEngine gameEngine;
 	protected final Context context 					= this;
@@ -88,7 +88,7 @@ public class GameScreen extends Activity {
 		game = this;
 		
 		// Load game data based on the unique activity id
-		uid = this.getIntent().getIntExtra("uniqueId", -1);	
+		uid = this.getIntent().getStringExtra("uniqueId");	
     	gameEngine = new GameEngine(context, game);
     	gameEngine.loadGameData(uid);
     	
