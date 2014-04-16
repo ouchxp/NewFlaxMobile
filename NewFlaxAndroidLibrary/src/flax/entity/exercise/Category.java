@@ -18,7 +18,7 @@ import flax.entity.base.BaseEntity;
  * @author ouchxp
  *
  */
-@DatabaseTable(tableName="exercises_category")
+@DatabaseTable(tableName="exerciselist_category")
 public class Category extends BaseEntity{
 	
 	
@@ -64,7 +64,7 @@ public class Category extends BaseEntity{
 	private Collection<Exercise> exercises;
 	
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
-	private Response response;
+	private ExerciseListResponse response;
 	
 	/** Constructors */
 	public Category(){}
@@ -112,11 +112,11 @@ public class Category extends BaseEntity{
 		this.name = name;
 	}
 
-	public Response getResponse() {
+	public ExerciseListResponse getResponse() {
 		return response;
 	}
 
-	public void setResponse(Response response) {
+	public void setResponse(ExerciseListResponse response) {
 		this.response = response;
 	}
 	

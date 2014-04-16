@@ -20,8 +20,8 @@ import flax.entity.base.BaseEntity;
  *
  */
 @Root(name = "response")
-@DatabaseTable(tableName="exercises_response")
-public class Response extends BaseEntity{
+@DatabaseTable(tableName="exerciselist_response")
+public class ExerciseListResponse extends BaseEntity{
 	@DatabaseField(id=true)
 	private String uniqueUrl;
 	
@@ -50,7 +50,7 @@ public class Response extends BaseEntity{
 	private Collection<Category> categoryList;
 	
 	/** Constructor */
-	public Response(){}
+	public ExerciseListResponse(){}
 	
 	/**
 	 * Build one-to-many relation, prepare for orm.

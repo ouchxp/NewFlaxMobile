@@ -11,7 +11,9 @@ import com.j256.ormlite.table.TableUtils;
 
 import flax.entity.exercise.Category;
 import flax.entity.exercise.Exercise;
-import flax.entity.exercise.Response;
+import flax.entity.exercise.ExerciseListResponse;
+import flax.entity.hangman.HangmanResponse;
+import flax.entity.hangman.Word;
 import flax.utils.GlobalConstants;
 
 public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
@@ -25,8 +27,11 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			//Create tables
             TableUtils.createTable(connectionSource, Exercise.class);
-            TableUtils.createTable(connectionSource, Response.class);
+            TableUtils.createTable(connectionSource, ExerciseListResponse.class);
             TableUtils.createTable(connectionSource, Category.class);
+            
+            TableUtils.createTable(connectionSource, HangmanResponse.class);
+            TableUtils.createTable(connectionSource, Word.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,8 +43,11 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
         	//Upgrade table version
             
             TableUtils.dropTable(connectionSource, Exercise.class, true);
-            TableUtils.dropTable(connectionSource, Response.class, true);
+            TableUtils.dropTable(connectionSource, ExerciseListResponse.class, true);
             TableUtils.dropTable(connectionSource, Category.class, true);
+            
+            TableUtils.dropTable(connectionSource, HangmanResponse.class, true);
+            TableUtils.dropTable(connectionSource, Word.class, true);
             onCreate(db, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();
