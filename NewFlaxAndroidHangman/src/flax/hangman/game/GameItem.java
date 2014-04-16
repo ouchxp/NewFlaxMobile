@@ -32,7 +32,7 @@ public class GameItem {
 	// Declare variables for the GameItem
 	protected static int score;
 	protected static int attempts; 
-	protected static int activityId;
+	protected static String activityId;
 	protected static int possibleScore;
 	protected static int pageNumber;
 	
@@ -55,7 +55,7 @@ public class GameItem {
 	 * getActivityId Method
 	 * @return activity id
 	 */
-	public static int getActivityId(){
+	public static String getActivityId(){
 		return activityId;
 	}
 	
@@ -63,7 +63,7 @@ public class GameItem {
 	 * setActivityId method
 	 * @param activity id
 	 */
-	public static void setActivityId(int aid){
+	public static void setActivityId(String aid){
 		activityId = aid;
 	}
 	

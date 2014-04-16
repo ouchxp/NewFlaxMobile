@@ -14,7 +14,9 @@
  */
 package flax.hangman.view;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -25,12 +27,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
 import flax.activity.ActivityCustomAdapter;
 import flax.activity.ActivityItem;
 import flax.activity.Item;
 import flax.collocation.CollocationDatabaseHelper;
 import flax.collocation.CollocationDatabaseManager;
+import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelp;
+import flax.entity.exercise.Exercise;
+import flax.entity.hangman.HangmanResponse;
 import flax.hangman.R;
 import flax.hangman.game.GameItem;
 
@@ -47,6 +56,9 @@ import flax.hangman.game.GameItem;
  */
 public class ListScreen extends ListActivity {
 	
+	/** Ormlite database helper, use getDBHelper method to get a instance */
+	private DatabaseDaoHelper databaseHelper = null;
+	
 	// Declare class instances for list screen
 	protected ListView listview;
 	protected ActivityItem currentExercise;
@@ -54,10 +66,11 @@ public class ListScreen extends ListActivity {
 	protected CollocationDatabaseHelper hangmanDb;
 	
 	// Declare variables for list screen
-	protected int uid;
+	protected String uid;
 	protected Context context 							= this;
 	protected ArrayList<Item> items;
 	protected ArrayList<ActivityItem> exerciseList 		= new ArrayList<ActivityItem>();
+	private List<Exercise> exercises;
 
 	// Declare constants for list screen
 	protected static final String TAG 					= "logging process";
@@ -83,15 +96,20 @@ public class ListScreen extends ListActivity {
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         
         // Get a list of all activities in the internal database
 		dbManager = new CollocationDatabaseManager(context);
 		exerciseList = dbManager.selectAllActivities(ACTIVITY_TYPE);
-        
+		try {
+			Dao<Exercise,String> dao3 = getDBHelper().getDao(Exercise.class);
+			exercises = dao3.queryForAll(); // TODO: Should Change to category list 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		// Set the list adapter 
-        setListAdapter(new ActivityCustomAdapter(this, generateData()));
+        setListAdapter(new ActivityCustomAdapter(this, exercises));
         
         // TODO Set the list screen title to be the activity type i.e. "Collocation Hangman"
     	setTitle("Activity Type");																										
@@ -111,16 +129,16 @@ public class ListScreen extends ListActivity {
 		
 		// Call super onResume method
 		super.onResume();
-		
-        // Get a list of all activities in the internal database
-		dbManager = new CollocationDatabaseManager(context);
-		exerciseList = dbManager.selectAllActivities(ACTIVITY_TYPE);
-        
-		// Set the list adapter 
-        setListAdapter(new ActivityCustomAdapter(this, generateData()));
-        
-        // TODO Set the list screen title to be the activity type i.e. "Collocation Dominoes"
-    	setTitle("Activity Type");																										
+//		
+//        // Get a list of all activities in the internal database
+//		dbManager = new CollocationDatabaseManager(context);
+//		exerciseList = dbManager.selectAllActivities(ACTIVITY_TYPE);
+//        
+//		// Set the list adapter 
+//        setListAdapter(new ActivityCustomAdapter(this, generateData()));
+//        
+//        // TODO Set the list screen title to be the activity type i.e. "Collocation Dominoes"
+//    	setTitle("Activity Type");																										
 	}
 	
 	/*
@@ -135,14 +153,8 @@ public class ListScreen extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		GameItem.setPageNumber(0);
 		// Get selected item
-        for(ActivityItem i : exerciseList){
-        	if(i.index == position){
-        		Log.d(TAG, "e index: " + i.index + " position: " + position);
-        		uid = i.uniqueId;
-        		break;
-        	}
-        }
-        
+		uid = String.valueOf(exerciseList.get(position).uniqueId);
+		// TODO: Change to exercise.get(position).getUrl();
         // Create intent and pass 'uniqueId' through to the GameScreen
 		Intent i = new Intent(ListScreen.this, GameScreen.class);
 		i.putExtra("uniqueId", uid);
@@ -202,5 +214,22 @@ public class ListScreen extends ListActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (databaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
+    }
+
+    private DatabaseDaoHelper getDBHelper() {
+        if (databaseHelper == null) {
+            databaseHelper =
+                OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
+        }
+        return databaseHelper;
     }
 }

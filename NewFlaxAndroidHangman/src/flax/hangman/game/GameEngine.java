@@ -185,7 +185,7 @@ public class GameEngine {
 	 * 
 	 * @param uid, the unique id of the game.
 	 */
-	public void loadGameData(int uid){
+	public void loadGameData(String uid){
 		
 		// get activity and corresponding collocations from internal database
 		CollocationDatabaseManager dbManagerCollo 
@@ -194,7 +194,7 @@ public class GameEngine {
 		collocations 	= dbManagerCollo.selectGivenCollocations(uid);
 		
 		// Save activity details
-		GameItem.setActivityId(activity.uniqueId);
+		GameItem.setActivityId(String.valueOf(activity.uniqueId));
 		GameItem.setGameTitle(activity.activityName);
 		GameItem.setActivityStatus(activity.activityStatus);
 		if(GameItem.getActivityStatus().equals(ACT_STATUS_NEW)){
@@ -510,7 +510,7 @@ public class GameEngine {
 					int uid = completeActivities.get(i).getUniqueId();
 					
 					// Change activity status to 'removed' in db
-					dbManagerCollo.updateActivity(ACT_STATUS_REMOVED, uid);
+					dbManagerCollo.updateActivity(ACT_STATUS_REMOVED, String.valueOf(uid));
 
 					// Remove collocations from db
 					dbManagerCollo.deleteCollocation(uid);

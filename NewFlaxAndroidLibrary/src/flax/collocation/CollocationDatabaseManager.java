@@ -163,7 +163,7 @@ public class CollocationDatabaseManager extends DatabaseManager{
 	 * @param uid, the unique id of the activity the collocations match
 	 * @return ArrayList of collocations 
 	 */
-	public ArrayList<CollocationItem> selectGivenCollocations(int uid){
+	public ArrayList<CollocationItem> selectGivenCollocations(String uid){
 
 		// Declare arrayList to hold collocations
 		ArrayList<CollocationItem> arrayList = new ArrayList<CollocationItem>();

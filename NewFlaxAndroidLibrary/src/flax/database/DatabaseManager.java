@@ -84,7 +84,7 @@ public class DatabaseManager {
 	 * updates a row in the activity table
 	 * @param status and activity id
 	 */
-	public void updateActivity(String status, int aid){
+	public void updateActivity(String status, String aid){
 		
 		// Reference database
 		CollocationDatabaseHelper flaxDb = new CollocationDatabaseHelper(context);
@@ -279,7 +279,7 @@ public class DatabaseManager {
 	 * @param uid, Activity unique id. 
 	 * @return ActivityExercise
 	 */
-	public ActivityItem selectActivity(int uid){
+	public ActivityItem selectActivity(String uid){
 		
 		// Reference database
 		DatabaseHelper flaxDb = new DatabaseHelper(context);
@@ -364,7 +364,7 @@ public class DatabaseManager {
 	 * @param uid, Activity unique id. 
 	 * @return ArrayList of summary report columns
 	 */
-	public ArrayList<String> selectSummary(int uid){
+	public ArrayList<String> selectSummary(String uid){
 		
 		// Reference database
 		DatabaseHelper flaxDb = new DatabaseHelper(context);
@@ -420,7 +420,7 @@ public class DatabaseManager {
 	 * updates a row in the summary table
 	 * @param start time, end time, attempts, score and activity id
 	 */
-	public void updateSummary(String st, String et, int a, int s, int aid){
+	public void updateSummary(String st, String et, int a, int s, String aid){
 		
 		// Reference database
 		CollocationDatabaseHelper flaxDb = new CollocationDatabaseHelper(context);
