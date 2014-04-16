@@ -17,12 +17,13 @@ import com.j256.ormlite.dao.Dao;
 
 import flax.collocation.CollocationDatabaseManager;
 import flax.collocation.CollocationItem;
-import flax.collocation.CollocationNetworkDownload;
 import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseManager;
 import flax.entity.exercise.Category;
 import flax.entity.exercise.Exercise;
-import flax.entity.exercise.Response;
+import flax.entity.exercise.ExerciseListResponse;
+import flax.entity.hangman.HangmanResponse;
+import flax.entity.hangman.Word;
 import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
 import flax.utils.SPHelper;
@@ -76,7 +77,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		}
 
 		// Begin parsing the xml from url
-		Response response = XMLParser.fromUrl(urls[0], Response.class);
+		ExerciseListResponse response = XMLParser.fromUrl(urls[0], ExerciseListResponse.class);
 		// If something wrong then return null.
 		if (response == null) {return null;}
 		
@@ -95,14 +96,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		// Get "new" exercises, which doesn't exist in db from downloaded exercises.
 		Collection<Exercise> newExecs = getNewExercises(exercises);
 		
-		//TODO: just test ormlite
+		//TODO: Change to Ormlite version after ListScreen Done
 		try {
 			OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
 			
 			Collection<Category> categoryList = response.getCategoryList();
 			//Category category = categoryList.getCategory();
 			
-			Dao<Response,String> dao1 = helper.getDao(Response.class);
+			Dao<ExerciseListResponse,String> dao1 = helper.getDao(ExerciseListResponse.class);
 			Dao<Category,String> dao3 = helper.getDao(Category.class);
 			Dao<Exercise,String> dao4 = helper.getDao(Exercise.class);
 			dao1.createIfNotExists(response);
@@ -119,7 +120,6 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			//have to release helper after user
 			OpenHelperManager.releaseHelper();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -165,17 +165,40 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	
 	private String downloadAndSaveContent(Collection<Exercise> execs) {
 		try {
-			// Go through each new activity and download corresponding
-			// collocations
+			// Go through each new exercise and download corresponding exercise content
 			for (Exercise e : execs) {
 				int i = 0;
 
-				// Download collocations
-				String url = e.getUrl();
-				CollocationNetworkDownload collocationDownload = new CollocationNetworkDownload(context);
-				collocationDownload.downloadCollocations(url);
-				List<CollocationItem> collocations = collocationDownload.getCollocationList();
-				//XmlParser.fromUrl(url, resultType);
+				// TODO: Change Data Type
+				// Download exercise content
+		        HangmanResponse hangmanResponse = XMLParser.fromUrl(e.getUrl(), HangmanResponse.class);
+		        
+				try {
+					OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
+					
+					Dao<HangmanResponse,String> dao1 = helper.getDao(HangmanResponse.class);
+					Dao<Word,String> dao3 = helper.getDao(Word.class);
+					dao1.create(hangmanResponse);
+					for (Word word : hangmanResponse.getWords()) {
+						dao3.create(word);
+					}
+					
+					//have to release helper after user
+					OpenHelperManager.releaseHelper();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+		        
+		        
+		        // TODO: Change to ormlite version after GameScreen Done.
+		        // Set collocations list to be null
+		        List<CollocationItem> collocations= new ArrayList<CollocationItem>();
+		        
+		        for (Word word : hangmanResponse.getWords()) {
+		        	collocations.add(new CollocationItem(0, word.getWord(), word.getWord(), 0, 
+		        			word.getWord(), word.getWord(), "none", "Hangman", "none", "none", word.getWord(), 0));
+				}
+				
 				// Set database manager
 				CollocationDatabaseManager dbManager = new CollocationDatabaseManager(context);
 				
@@ -192,7 +215,6 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 				// Add initial entry to summary report table in db
 				dbManager.addSummary("", "", 0, 0, e.getUniqueId());
-
 			}
 			return null;
 		} catch (Exception e) {
