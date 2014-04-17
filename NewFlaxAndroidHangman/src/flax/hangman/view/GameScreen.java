@@ -13,6 +13,11 @@
  */
 package flax.hangman.view;
 
+import java.sql.SQLException;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,10 +26,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogEnableSamples;
 import flax.dialog.DialogHelp;
 import flax.dialog.DialogHowToPlay;
 import flax.dialog.DialogSummaryReport;
+import flax.entity.exercise.Exercise;
+import flax.entity.hangman.HangmanResponse;
 import flax.hangman.R;
 import flax.hangman.game.GameEngine;
 import flax.hangman.game.GameItem;
@@ -40,6 +48,10 @@ import flax.hangman.game.GameItem;
  * @author Jemma Konig
  */
 public class GameScreen extends Activity {
+	/** Ormlite database helper, use getDBHelper method to get a instance */
+	private DatabaseDaoHelper databaseHelper = null;
+	private Exercise exercise;
+	private HangmanResponse exercise_content;
 	
 	// Declare variables for game screen
 	String uid;
@@ -87,8 +99,24 @@ public class GameScreen extends Activity {
 		setContentView(R.layout.game_screen);
 		game = this;
 		
-		// Load game data based on the unique activity id
+		//TODO: Load game data using ormlite
 		uid = this.getIntent().getStringExtra("uniqueId");	
+		String exerciseId = this.getIntent().getStringExtra("exerciseId");
+		try {
+			Dao<Exercise,String> execDao = getDBHelper().getDao(Exercise.class);
+			exercise = execDao.queryForId(exerciseId);
+			exercise.getName();
+			exercise.getStatus();
+			Dao<HangmanResponse,String> dao = getDBHelper().getDao(HangmanResponse.class);
+			exercise_content = dao.queryForId(exerciseId);
+			exercise_content.getHints();
+			exercise_content.getWords();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		// Load game data based on the unique activity id
     	gameEngine = new GameEngine(context, game);
     	gameEngine.loadGameData(uid);
     	
@@ -254,4 +282,27 @@ public class GameScreen extends Activity {
 		AlertDialog alertDialog 								= alertDialogBuilder.create();
 		alertDialog.show();
 	}
+	
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        // Release DatabaseDaoHelper
+        if (databaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
+    }
+
+    /**
+     * Generate DatabaseDaoHelper for database operation.
+     * @return
+     */
+    private DatabaseDaoHelper getDBHelper() {
+        if (databaseHelper == null) {
+            databaseHelper =
+                OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
+        }
+        return databaseHelper;
+    }
 } // end of class

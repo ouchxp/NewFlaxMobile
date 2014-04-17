@@ -155,34 +155,15 @@ public class ListScreen extends ListActivity {
 		// Get selected item
 		uid = String.valueOf(exerciseList.get(position).uniqueId);
 		// TODO: Change to exercise.get(position).getUrl();
+		String exerciseId = exercises.get(position).getUrl();
+		
         // Create intent and pass 'uniqueId' through to the GameScreen
 		Intent i = new Intent(ListScreen.this, GameScreen.class);
 		i.putExtra("uniqueId", uid);
+		i.putExtra("exerciseId", exerciseId);
 		startActivity(i);
     }
  
-	/*
-	 * generateData method
-	 * 
-	 * Go through the existing activities, saving all
-	 * new, incomplete and complete activities in an Item list.
-	 * If the activity status is 'removed' (i.e. no longer a valid activity) 
-	 * it will not be saved into the Item list.
-	 */
-	public ArrayList<Item> generateData(){
-		
-		// Need activities to be saved as Item objects to display in list view
-        items = new ArrayList<Item>();
-		int i = 0;
-		for(ActivityItem e : exerciseList){
-			if(!e.getActivityStatus().equals(ACT_STATUS_REMOVED)){
-				e.setActivityIndex(i);
-		        items.add(new Item(e.activityName.toString(), e.activityStatus.toString()));
-				i++;
-			}
-		}
-		return items;
-	}
 	
 	/*
 	 * onCreateOptionsMenu method 
@@ -219,12 +200,18 @@ public class ListScreen extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        
+        // Release DatabaseDaoHelper
         if (databaseHelper != null) {
             OpenHelperManager.releaseHelper();
             databaseHelper = null;
         }
     }
 
+    /**
+     * Generate DatabaseDaoHelper for database operation.
+     * @return
+     */
     private DatabaseDaoHelper getDBHelper() {
         if (databaseHelper == null) {
             databaseHelper =

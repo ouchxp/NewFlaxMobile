@@ -1,4 +1,4 @@
-package flax.hangman.utils;
+package flax.converters;
 
 import flax.utils.FlaxUtil;
 import flax.utils.IURLConverter;

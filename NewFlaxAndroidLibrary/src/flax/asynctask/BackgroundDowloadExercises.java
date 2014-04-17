@@ -15,10 +15,13 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 
+import flax.activity.ExerciseTypeEnum;
 import flax.collocation.CollocationDatabaseManager;
 import flax.collocation.CollocationItem;
 import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseManager;
+import flax.database.DatabaseObjectHelper;
+import flax.entity.base.BaseEntity;
 import flax.entity.exercise.Category;
 import flax.entity.exercise.Exercise;
 import flax.entity.exercise.ExerciseListResponse;
@@ -39,15 +42,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 	private Context context;
 	// Convert url to correct format.
-	private IURLConverter urlConverter;
+	private ExerciseTypeEnum EXERCISE_TYPE;
 	private DatabaseManager dbManager;
 	// Declare progress bar
 	private ProgressDialog progress;
-	
-	
-	public BackgroundDowloadExercises(Context context, IURLConverter urlConverter) {
+
+	public BackgroundDowloadExercises(Context context, ExerciseTypeEnum type) {
 		this.context = context;
-		this.urlConverter = urlConverter;
+		this.EXERCISE_TYPE = type;
 	}
 
 	/**
@@ -79,33 +81,36 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		// Begin parsing the xml from url
 		ExerciseListResponse response = XMLParser.fromUrl(urls[0], ExerciseListResponse.class);
 		// If something wrong then return null.
-		if (response == null) {return null;}
-		
+		if (response == null) {
+			return null;
+		}
+
 		// Get exercises and format urls for exercises
 		Collection<Exercise> exercises = new ArrayList<Exercise>();
 		for (Category category : response.getCategoryList()) {
 			formatExerciseUrl(category.getExercises());
 			exercises.addAll(category.getExercises());
 		}
-		
-		//TODO: status should be separate
+
+		// TODO: status should be separate
 		for (Exercise exercise : exercises) {
 			exercise.setStatus("new");
 		}
-		
-		// Get "new" exercises, which doesn't exist in db from downloaded exercises.
+
+		// Get "new" exercises, which doesn't exist in db from downloaded
+		// exercises.
 		Collection<Exercise> newExecs = getNewExercises(exercises);
-		
-		//TODO: Change to Ormlite version after ListScreen Done
+
+		// TODO: Change to Ormlite version after ListScreen Done
+		OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
 		try {
-			OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
-			
+
 			Collection<Category> categoryList = response.getCategoryList();
-			//Category category = categoryList.getCategory();
-			
-			Dao<ExerciseListResponse,String> dao1 = helper.getDao(ExerciseListResponse.class);
-			Dao<Category,String> dao3 = helper.getDao(Category.class);
-			Dao<Exercise,String> dao4 = helper.getDao(Exercise.class);
+			// Category category = categoryList.getCategory();
+
+			Dao<ExerciseListResponse, String> dao1 = helper.getDao(ExerciseListResponse.class);
+			Dao<Category, String> dao3 = helper.getDao(Category.class);
+			Dao<Exercise, String> dao4 = helper.getDao(Exercise.class);
 			dao1.createIfNotExists(response);
 			for (Category category : categoryList) {
 				dao3.createIfNotExists(category);
@@ -114,23 +119,27 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				for (Exercise exercise : exercises1) {
 					dao4.createIfNotExists(exercise);
 				}
-				
+
 			}
-			
-			//have to release helper after user
-			OpenHelperManager.releaseHelper();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		//If no new exercises, return empty array.
-		if(newExecs.isEmpty()){exercises.clear();return exercises;}
-		
+
+		// If no new exercises, return empty array.
+		if (newExecs.isEmpty()) {
+			exercises.clear();
+			return exercises;
+		}
+
 		// otherwise save new exercises
 		saveNewExercises(newExecs);
 
 		// call async download new exercises content
-		downloadAndSaveContent(newExecs);
+		downloadAndSaveContent(newExecs,helper);
+
+		// have to release helper after use
+		OpenHelperManager.releaseHelper();
 		
 		return exercises;
 	}
@@ -145,68 +154,56 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	protected void onPostExecute(Collection<Exercise> result) {
 		// If there is trouble with the server connection
 		if (getDownloadStatus() == false) {
-			Toast.makeText(context, "There has been an error in your connection, if you have used a custom server path, please check that it is correct.",
+			Toast.makeText(
+					context,
+					"There has been an error in your connection, if you have used a custom server path, please check that it is correct.",
 					Toast.LENGTH_LONG).show();
-		}else if (result == null) {
+		} else if (result == null) {
 			Toast.makeText(context, "Please try again to download the new activities.", Toast.LENGTH_SHORT).show();
-		}else if(result.isEmpty()){
+		} else if (result.isEmpty()) {
 			Toast.makeText(context, "No new exercises. " + "Press 'Play' to see existing exercises", Toast.LENGTH_SHORT)
-			.show();
-		}else {
+					.show();
+		} else {
 			Toast.makeText(context, "New exercises saved. " + "Press 'Play' to see all exercises", Toast.LENGTH_SHORT)
-			.show();
+					.show();
 		}
 		// save, and download the content of new exercises
-		//CollocationProcess colloProcess = new CollocationProcess( result, context);
-		//colloProcess.processNewExercises();
+		// CollocationProcess colloProcess = new CollocationProcess( result,
+		// context);
+		// colloProcess.processNewExercises();
 		// Stop progress bar
 		progress.dismiss();
 	}
-	
-	private String downloadAndSaveContent(Collection<Exercise> execs) {
+
+	private String downloadAndSaveContent(Collection<Exercise> execs, OrmLiteSqliteOpenHelper helper) {
 		try {
-			// Go through each new exercise and download corresponding exercise content
+			// Go through each new exercise and download corresponding exercise
+			// content
 			for (Exercise e : execs) {
 				int i = 0;
 
 				// TODO: Change Data Type
 				// Download exercise content
-		        HangmanResponse hangmanResponse = XMLParser.fromUrl(e.getUrl(), HangmanResponse.class);
-		        
-				try {
-					OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
-					
-					Dao<HangmanResponse,String> dao1 = helper.getDao(HangmanResponse.class);
-					Dao<Word,String> dao3 = helper.getDao(Word.class);
-					dao1.create(hangmanResponse);
-					for (Word word : hangmanResponse.getWords()) {
-						dao3.create(word);
-					}
-					
-					//have to release helper after user
-					OpenHelperManager.releaseHelper();
-				} catch (Exception ex) {
-					ex.printStackTrace();
+				BaseEntity exerciseContent = XMLParser.fromUrl(e.getUrl(), HangmanResponse.class);
+				DatabaseObjectHelper.save(exerciseContent, helper, EXERCISE_TYPE.getEntityClasses());
+
+				// TODO: Change to ormlite version after GameScreen Done.
+				// Set collocations list to be null
+				List<CollocationItem> collocations = new ArrayList<CollocationItem>();
+
+				for (Word word : ((HangmanResponse)exerciseContent).getWords()) {
+					collocations.add(new CollocationItem(0, word.getWord(), word.getWord(), 0, word.getWord(), word
+							.getWord(), "none", "Hangman", "none", "none", word.getWord(), 0));
 				}
-		        
-		        
-		        // TODO: Change to ormlite version after GameScreen Done.
-		        // Set collocations list to be null
-		        List<CollocationItem> collocations= new ArrayList<CollocationItem>();
-		        
-		        for (Word word : hangmanResponse.getWords()) {
-		        	collocations.add(new CollocationItem(0, word.getWord(), word.getWord(), 0, 
-		        			word.getWord(), word.getWord(), "none", "Hangman", "none", "none", word.getWord(), 0));
-				}
-				
+
 				// Set database manager
 				CollocationDatabaseManager dbManager = new CollocationDatabaseManager(context);
-				
+
 				// Add collocations to db - note i = index (collocation
 				// order)
 				for (CollocationItem c : collocations) {
-					dbManager.addCollocation(c.collocationId, i, c.type, c.fre, c.sendId, c.word, "none",
-							"none", "none", c.getBaseWord(), e.getUniqueId());
+					dbManager.addCollocation(c.collocationId, i, c.type, c.fre, c.sendId, c.word, "none", "none",
+							"none", c.getBaseWord(), e.getUniqueId());
 					i++;
 				}
 
@@ -234,12 +231,18 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 		// Create algorithm that alters the url to get the correctly formatted
 		// xml.
-		for (Exercise a : downloadedExercises) {
-			a.setUrl(urlConverter.convert(a.getUrl()));
+		IURLConverter urlConverter = null;
+		try {
+			urlConverter = EXERCISE_TYPE.getUrlConvertClass().newInstance();
+			for (Exercise a : downloadedExercises) {
+				a.setUrl(urlConverter.convert(a.getUrl()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return downloadedExercises;
 	}
-	
+
 	/**
 	 * getNewExercises method
 	 * 
@@ -264,14 +267,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 		return new ArrayList<Exercise>(newItemHolder.values());
 	}
-	
+
 	/**
 	 * getDownloadStatus method get if download is done
 	 */
 	private boolean getDownloadStatus() {
 		return SPHelper.getBoolean(GlobalConstants.DOWNLOAD_STATUS_KEY, false);
 	}
-	
+
 	/**
 	 * saveNewExercises method
 	 * 
@@ -282,8 +285,8 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		long rowId = 0;
 		// add new items to db
 		for (Exercise ne : newExercises) {
-			rowId = dbManager.addActivity(ne.getId(), ne.getCategoryId(), ne.getType(), ne.getName(),
-					ne.getUrl(), ne.getStatus(), (int) rowId, 0);
+			rowId = dbManager.addActivity(ne.getId(), ne.getCategoryId(), ne.getType(), ne.getName(), ne.getUrl(),
+					ne.getStatus(), (int) rowId, 0);
 			ne.setUniqueId((int) rowId);
 		}
 

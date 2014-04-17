@@ -38,6 +38,8 @@ public class Exercise extends BaseEntity{
 	
 	@DatabaseField(defaultValue="new")
 	private String status;
+	
+	//TODO: to be removed after refactor
 	@DatabaseField
 	private int uniqueId;
 	
