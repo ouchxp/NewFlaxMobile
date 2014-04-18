@@ -184,7 +184,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 				// TODO: Change Data Type
 				// Download exercise content
-				BaseEntity exerciseContent = XMLParser.fromUrl(e.getUrl(), HangmanResponse.class);
+				BaseEntity exerciseContent = XMLParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getRootEntityClass());
 				DatabaseObjectHelper.save(exerciseContent, helper, EXERCISE_TYPE.getEntityClasses());
 
 				// TODO: Change to ormlite version after GameScreen Done.

@@ -5,6 +5,11 @@ import flax.hangman.R;
 import flax.hangman.utils.LocalConstants;
 import flax.utils.FlaxUtil;
 
+/**
+ * HomeScreen
+ * @author ouchxp
+ *
+ */
 public class HomeScreen extends BaseHomeScreen{
 
 	@Override
@@ -14,7 +19,7 @@ public class HomeScreen extends BaseHomeScreen{
 
 	@Override
 	protected String getHelpMessage() {
-		return context.getString(R.string.help_message);
+		return context.getString(R.string.home_screen_help_message);
 	}
 
 	@Override
