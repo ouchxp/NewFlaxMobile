@@ -10,7 +10,7 @@ import flax.utils.FlaxUtil;
  * @author ouchxp
  *
  */
-public class HomeScreen extends BaseHomeScreen{
+public class HomeScreen extends BaseHomeScreenActivity{
 
 	@Override
 	protected ExerciseTypeEnum getExerciseType() {

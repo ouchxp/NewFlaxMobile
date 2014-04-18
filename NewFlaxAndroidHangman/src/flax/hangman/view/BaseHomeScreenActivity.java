@@ -61,11 +61,11 @@ import flax.utils.Mock;
  * 
  * @author Jemma Konig
  */
-public abstract class BaseHomeScreen extends Activity {
+public abstract class BaseHomeScreenActivity extends Activity {
 
 	// Declare constants and static variables for home screen
 	protected final Context context = this;
-protected CollocationDatabaseManager dbManager;
+	protected CollocationDatabaseManager dbManager;
 	protected static final String TAG = "HomeScreen";
 
 	/**
@@ -184,7 +184,7 @@ protected CollocationDatabaseManager dbManager;
 	 * Home Screen is pressed.
 	 */
 	public void play(View view) {
-		Intent i = new Intent(BaseHomeScreen.this, ListScreen.class);
+		Intent i = new Intent(BaseHomeScreenActivity.this, ListScreen.class);
 		startActivity(i);
 	}
 
@@ -192,12 +192,11 @@ protected CollocationDatabaseManager dbManager;
 	 * initialiseDatabase method The first time the app is opened, create the
 	 * internal database
 	 */
-	 public void initialiseDatabase() {
-	 CollocationDatabaseHelper dbHelper = new
-	 CollocationDatabaseHelper(context);
-	 dbManager = new CollocationDatabaseManager(context);
-	 dbHelper.closeDatabase();
-	 }
+	public void initialiseDatabase() {
+		CollocationDatabaseHelper dbHelper = new CollocationDatabaseHelper(context);
+		dbManager = new CollocationDatabaseManager(context);
+		dbHelper.closeDatabase();
+	}
 
 	/*
 	 * insertStartingActivities method

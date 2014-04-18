@@ -23,7 +23,7 @@ import flax.hangman.R;
  * @author ouchxp
  *
  */
-public class ListScreen extends BaseListScreen {
+public class ListScreen extends BaseListScreenActivity {
 
 	@Override
 	protected ExerciseTypeEnum getExerciseType() {

@@ -52,7 +52,7 @@ import flax.hangman.game.GameItem;
  * 
  * @author Jemma Konig
  */
-public abstract class BaseListScreen extends ListActivity {
+public abstract class BaseListScreenActivity extends ListActivity {
 
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper databaseHelper = null;
@@ -142,7 +142,7 @@ public abstract class BaseListScreen extends ListActivity {
 		GameItem.setPageNumber(0);
 
 		// Create intent and pass 'uniqueId' through to the GameScreen
-		Intent i = new Intent(BaseListScreen.this, GameScreen.class);
+		Intent i = new Intent(BaseListScreenActivity.this, GameScreen.class);
 
 		// Get selected item (old)
 		String uid = String.valueOf(exerciseList.get(position).uniqueId);
