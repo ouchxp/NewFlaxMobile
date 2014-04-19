@@ -193,7 +193,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 				for (Word word : ((HangmanResponse)exerciseContent).getWords()) {
 					collocations.add(new CollocationItem(0, word.getWord(), word.getWord(), 0, word.getWord(), word
-							.getWord(), "none", "Hangman", "none", "none", word.getWord(), 0));
+							.getWord(), "none", EXERCISE_TYPE.getName(), "none", "none", word.getWord(), 0));
 				}
 
 				// Set database manager
