@@ -15,7 +15,6 @@
 package flax.hangman.view;
 
 import flax.activity.ExerciseTypeEnum;
-import flax.hangman.R;
 
 
 /**
@@ -30,8 +29,4 @@ public class ListScreen extends BaseListScreenActivity {
 		return ExerciseTypeEnum.HANGMAN;
 	}
 
-	@Override
-	protected String getHelpMessage() {
-		return context.getString(R.string.home_screen_help_message);
-	}
 }

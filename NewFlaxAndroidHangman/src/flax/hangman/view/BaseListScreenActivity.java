@@ -73,7 +73,8 @@ public abstract class BaseListScreenActivity extends ListActivity {
 
 	protected abstract ExerciseTypeEnum getExerciseType();
 
-	protected abstract String getHelpMessage();
+
+
 
 	/**
 	 * Display the list of activities when the user moves to this screen.
@@ -185,7 +186,15 @@ public abstract class BaseListScreenActivity extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
+	/**
+	 * Get help message
+	 * @return
+	 */
+	protected String getHelpMessage() {
+		return getString(R.string.home_screen_help_message);
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

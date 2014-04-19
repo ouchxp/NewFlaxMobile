@@ -171,15 +171,17 @@ public abstract class BaseHomeScreenActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
 
 	/**
 	 * Get help message
-	 * 
 	 * @return
 	 */
-	protected abstract String getHelpMessage();
+	protected String getHelpMessage() {
+		return getString(R.string.home_screen_help_message);
+	}
 
-	/*
+	/**
 	 * play method Opens the ListScreen Activity when the play button on the
 	 * Home Screen is pressed.
 	 */
@@ -303,5 +305,6 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	}
 
 	protected abstract String[] getUrls();
+
 
 } // end of HomeScreen class
