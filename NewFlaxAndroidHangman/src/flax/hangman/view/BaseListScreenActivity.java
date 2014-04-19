@@ -143,7 +143,10 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		GameItem.setPageNumber(0);
 
 		// Create intent and pass 'uniqueId' through to the GameScreen
-		Intent i = new Intent(BaseListScreenActivity.this, GameScreen.class);
+		
+		//TODO: Change to pager when done refactoring
+		//Intent i = new Intent(BaseListScreenActivity.this, GameScreen.class);
+		Intent i = new Intent(BaseListScreenActivity.this, PagerGameScreenActivity.class);
 
 		// Get selected item (old)
 		String uid = String.valueOf(exerciseList.get(position).uniqueId);

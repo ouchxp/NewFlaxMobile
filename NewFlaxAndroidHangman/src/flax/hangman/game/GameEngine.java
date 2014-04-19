@@ -58,7 +58,6 @@ import flax.hangman.view.GameScreen;
 public class GameEngine {
 	
 	// Declare variables for the game engine
-	protected int uid;
 	protected int index;
 	protected double rowCount;
 	protected int steps;

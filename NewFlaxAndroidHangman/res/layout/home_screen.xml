@@ -6,27 +6,27 @@
     tools:context=".HomeScreen" >
 
     <Button
-    	android:id="@+id/main_button_play"
+        android:id="@+id/main_button_play"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_height="60dp"
-        android:layout_width="fill_parent"
-    	android:textSize="32dp"
-    	android:textColor="@color/white"
-    	android:textColorHighlight="#b1e7ed"
-    	android:text="@string/main_play_button"
-    	android:background="@drawable/home_style_button_selector"
-    	android:contentDescription="@string/main_play_button"
-    	android:onClick="play" />
+        android:background="@drawable/home_style_button_selector"
+        android:contentDescription="@string/main_play_button"
+        android:onClick="play"
+        android:text="@string/main_play_button"
+        android:textColor="@color/white"
+        android:textColorHighlight="#b1e7ed"
+        android:textSize="32dp" />
 
     <TextView
         android:id="@+id/text_view_home_game_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="96dp"
         android:text="@string/main_activity_text"
         android:textColor="@color/white"
@@ -36,12 +36,12 @@
         android:id="@+id/flax_icon"
         android:layout_width="fill_parent"
         android:layout_height="100dp"
+        android:layout_alignTop="@+id/text_view_home_game_title"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-  		android:scaleType="fitXY" 
-  		android:adjustViewBounds="true" 
-  		android:contentDescription="@string/flax_icon" 
-        android:layout_alignTop="@+id/text_view_home_game_title"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/flax_icon"
+        android:scaleType="fitXY"
         android:src="@drawable/img_home_flax_title" />
 
 </RelativeLayout>
