@@ -17,7 +17,7 @@ public class Word extends BaseEntity{
 	private String word;
 	
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
-	private HangmanResponse response;
+	private HangmanExercise exercise;
 	
 	/** Constructor */
 	public Word() {}
@@ -39,11 +39,11 @@ public class Word extends BaseEntity{
 		this.word = word;
 	}
 
-	public HangmanResponse getResponse() {
-		return response;
+	public HangmanExercise getExercise() {
+		return exercise;
 	}
 
-	public void setResponse(HangmanResponse response) {
-		this.response = response;
+	public void setExercise(HangmanExercise exercise) {
+		this.exercise = exercise;
 	}
 }

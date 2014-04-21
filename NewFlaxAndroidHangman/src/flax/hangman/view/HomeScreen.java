@@ -6,7 +6,7 @@ import flax.utils.FlaxUtil;
 
 /**
  * HomeScreen
- * @author ouchxp
+ * @author Nan Wu
  *
  */
 public class HomeScreen extends BaseHomeScreenActivity{

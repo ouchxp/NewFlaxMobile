@@ -25,7 +25,7 @@ import flax.entity.base.BaseEntity;
 import flax.entity.exercise.Category;
 import flax.entity.exercise.Exercise;
 import flax.entity.exercise.ExerciseListResponse;
-import flax.entity.hangman.HangmanResponse;
+import flax.entity.hangman.HangmanExercise;
 import flax.entity.hangman.Word;
 import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
@@ -191,7 +191,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				// Set collocations list to be null
 				List<CollocationItem> collocations = new ArrayList<CollocationItem>();
 
-				for (Word word : ((HangmanResponse)exerciseContent).getWords()) {
+				for (Word word : ((HangmanExercise)exerciseContent).getWords()) {
 					collocations.add(new CollocationItem(0, word.getWord(), word.getWord(), 0, word.getWord(), word
 							.getWord(), "none", EXERCISE_TYPE.getName(), "none", "none", word.getWord(), 0));
 				}

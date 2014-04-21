@@ -7,13 +7,12 @@
     <ImageView android:id="@+id/hangman"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:contentDescription="hangman"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
         android:layout_above="@+id/answer_table"/>
     <TextView
-        android:id="@+id/activity_template_text"
+        android:id="@+id/guessing_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/answer_table"
@@ -25,25 +24,27 @@
         android:id="@+id/answer_table"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/atoi"
+        android:layout_above="@+id/btns_a2i"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:stretchColumns="0,1" >
+        
     </TableLayout>
 
     <LinearLayout
-        android:id="@+id/atoi"
+        android:id="@+id/btns_a2i"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/jtor"
+        android:layout_above="@+id/btns_j2r"
         android:orientation="horizontal" >
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
+            
+            
             android:text="A" />
 
         <Button
@@ -104,10 +105,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/jtor"
+        android:id="@+id/btns_j2r"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/stoz"
+        android:layout_above="@+id/btns_s2z"
         android:orientation="horizontal" >
 
         <Button
@@ -175,7 +176,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/stoz"
+        android:id="@+id/btns_s2z"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

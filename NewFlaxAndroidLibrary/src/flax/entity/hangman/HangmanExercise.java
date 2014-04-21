@@ -14,9 +14,9 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import flax.entity.base.BaseEntity;
 
-@DatabaseTable(tableName="hangman_response")
+@DatabaseTable(tableName="hangman_exercise")
 @Root(name = "response")
-public class HangmanResponse extends BaseEntity{
+public class HangmanExercise extends BaseEntity{
 	@DatabaseField(id=true)
 	private String uniqueUrl;
 	
@@ -29,13 +29,13 @@ public class HangmanResponse extends BaseEntity{
 	@Attribute(name = "from")
 	private String from;
 	
-	@ForeignCollectionField(eager = false,foreignFieldName="response")
+	@ForeignCollectionField(eager = false,foreignFieldName="exercise")
 	@Path("player")
 	@ElementList(inline=true,entry="word")
     private Collection<Word> words;
 
 	/** Constructor */
-	public HangmanResponse(){}
+	public HangmanExercise(){}
 
 	/**
 	 * Build one-to-many relation, prepare for orm.
@@ -43,7 +43,7 @@ public class HangmanResponse extends BaseEntity{
 	@Commit
 	private void buildRelation(){
 		for (Word word : words) {
-			word.setResponse(this);
+			word.setExercise(this);
 		}
 	}
 	

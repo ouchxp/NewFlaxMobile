@@ -2,7 +2,7 @@ package flax.entity.exercise;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-
+import static flax.utils.GlobalConstants.*;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -10,13 +10,14 @@ import flax.entity.base.BaseEntity;
 
 /**
  * Represent "exercise" Tag in XML.
+ * 
  * @author ouchxp
- *
+ * 
  */
-@DatabaseTable(tableName="exerciselist_exercise")
-public class Exercise extends BaseEntity{
+@DatabaseTable(tableName = "exerciselist_exercise")
+public class Exercise extends BaseEntity {
 	@DatabaseField
-	@Attribute(name="category_id")
+	@Attribute(name = "category_id")
 	private String categoryId;
 	@DatabaseField
 	@Attribute
@@ -27,30 +28,30 @@ public class Exercise extends BaseEntity{
 	@DatabaseField
 	@Attribute
 	private String type;
-	
+
 	// Use url as unique id
-	@DatabaseField(id=true)
+	@DatabaseField(id = true)
 	@Element
 	private String url;
 	@DatabaseField
 	@Element
 	private String summary;
-	
-	@DatabaseField(defaultValue="new")
+
+	@DatabaseField(defaultValue = EXERCISE_NEW)
 	private String status;
-	
-	//TODO: to be removed after refactor
+
+	// TODO: to be removed after refactor
 	@DatabaseField
 	private int uniqueId;
-	
-	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="category_foreign_id") 
+
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_foreign_id")
 	private Category category;
 
 	/** Constructors */
-	public Exercise(){}
+	public Exercise() {
+	}
 
 	/** Get/Set Methods */
-
 
 	public String getId() {
 		return id;
@@ -62,12 +63,15 @@ public class Exercise extends BaseEntity{
 	public String getCategoryId() {
 		return categoryId;
 	}
+
 	/**
-	 * @param categoryId the categoryId to set
+	 * @param categoryId
+	 *            the categoryId to set
 	 */
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -103,30 +107,29 @@ public class Exercise extends BaseEntity{
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
-	
+
 	public String getStatus() {
 		return status;
 	}
-	
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	public int getUniqueId() {
 		return uniqueId;
 	}
-	
+
 	public void setUniqueId(int uniqueId) {
 		this.uniqueId = uniqueId;
 	}
-	
+
 	public Category getCategory() {
 		return category;
 	}
-	
+
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
-	
+
 }

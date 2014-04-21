@@ -19,7 +19,7 @@ import flax.activity.ExerciseTypeEnum;
 
 /**
  * ListScreen
- * @author ouchxp
+ * @author Nan Wu
  *
  */
 public class ListScreen extends BaseListScreenActivity {
