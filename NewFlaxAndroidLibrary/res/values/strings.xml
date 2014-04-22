@@ -24,9 +24,10 @@
     <string name="check_answer">Check Answer</string>
     <string name="summary_report">Summary Report</string>
     <string name="restart_game">Restart Game</string>
-    
-     <!-- Common Messages -->
+
+    <!-- Common Messages -->
     <string name="home_screen_help_message">Play activity: \nPress the \'Play\' button to begin playing the activity. \n \nNetwork settings: \nYou may choose whether to download new exercises only when connected to Wi-Fi or when connected to another network. To change these settings, select \'Network Settings\' from the options menu. \n \nCheck for new exercises: \nTo connect to the network and download new exercises, select \'Check for New Exercises\' in the options menu. \n \nChange server: \nTo change the path of the server that is being used to download new activities, select \'Change Server\' from the options menu. \n \n</string>
     <string name="list_screen_help_message">Click on one of the games in the list to begin playing the activity\n \nIf no games appear in the list, return to the home screen and in the options menu, select \'Check for New Exercises\'\n \nGood Luck! \n</string>
+    <string name="summary_message">Start time:&#160;&#160;&#160;{0}\nEnd time:&#160;&#160;&#160;&#160;&#160;{1}\n \nAttempts:&#160;&#160;&#160;&#160;&#160;{2}\nTotal Score:&#160;&#160;{3} out of {4} ({5}%)</string>
 
 </resources>

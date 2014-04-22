@@ -15,9 +15,6 @@ package flax.hangman.view;
 
 import java.sql.SQLException;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,12 +23,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogEnableSamples;
-import flax.dialog.DialogHelp;
-import flax.dialog.DialogHowToPlay;
-import flax.dialog.DialogSummaryReport;
+import flax.dialog.DialogHelper;
 import flax.entity.base.BaseEntity;
 import flax.entity.exerciselist.ExerciseListItem;
 import flax.entity.hangman.HangmanExercise;
@@ -192,7 +191,7 @@ public abstract class BaseGameScreenActivity extends Activity {
 		case R.id.help:
 
 			// Display Help Dialog
-			DialogHelp help = new DialogHelp(context);
+			DialogHelper help = new DialogHelper(context);
 			help.displayHelpDialog(getHelpMessage());
 			return true;
 
@@ -200,7 +199,7 @@ public abstract class BaseGameScreenActivity extends Activity {
 		case R.id.how_to_play:
 
 			// Display How to Play Dialog
-			DialogHowToPlay d = new DialogHowToPlay(context);
+			DialogHelper d = new DialogHelper(context);
 			d.displayHowToPlayDialog(getHowToPlayMessage());
 			return true;
 
@@ -228,7 +227,7 @@ public abstract class BaseGameScreenActivity extends Activity {
 		case R.id.summary_report:
 
 			// Display Summary Report Dialog
-			DialogSummaryReport s = new DialogSummaryReport(context);
+			DialogHelper s = new DialogHelper(context);
 			s.displaySummaryReportDialog(GameItem.getScore(), GameItem.getPossibleScore(), GameItem.getStartTime(),
 					GameItem.getEndTime(), GameItem.getAttempts());
 			return true;

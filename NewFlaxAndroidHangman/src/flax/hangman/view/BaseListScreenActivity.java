@@ -36,7 +36,7 @@ import flax.activity.ExerciseTypeEnum;
 import flax.collocation.CollocationDatabaseHelper;
 import flax.collocation.CollocationDatabaseManager;
 import flax.database.DatabaseDaoHelper;
-import flax.dialog.DialogHelp;
+import flax.dialog.DialogHelper;
 import flax.entity.exerciselist.ExerciseListItem;
 import flax.hangman.R;
 import flax.hangman.game.GameItem;
@@ -182,7 +182,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.help:
 			// Display Help Dialog
-			DialogHelp help = new DialogHelp(context);
+			DialogHelper help = new DialogHelper(context);
 			help.displayHelpDialog(getHelpMessage());
 			return true;
 		default:

@@ -30,7 +30,7 @@ import flax.asynctask.BackgroundDowloadExercises;
 import flax.collocation.CollocationDatabaseHelper;
 import flax.collocation.CollocationDatabaseManager;
 import flax.dialog.DialogChangeServer;
-import flax.dialog.DialogHelp;
+import flax.dialog.DialogHelper;
 import flax.dialog.DialogNetworkSettings;
 import flax.hangman.R;
 import flax.utils.FlaxUtil;
@@ -138,7 +138,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 
 		// Help button is presses
 		case R.id.help_home:
-			DialogHelp help = new DialogHelp(context);
+			DialogHelper help = new DialogHelper(context);
 			// Change words to more specifically for each activity in
 			// strings.xml.
 			help.displayHelpDialog(getHelpMessage());
