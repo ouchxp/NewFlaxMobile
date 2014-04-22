@@ -37,7 +37,7 @@ import flax.collocation.CollocationDatabaseHelper;
 import flax.collocation.CollocationDatabaseManager;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelp;
-import flax.entity.exercise.Exercise;
+import flax.entity.exerciselist.ExerciseListItem;
 import flax.hangman.R;
 import flax.hangman.game.GameItem;
 
@@ -63,7 +63,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 
 	// Declare variables for list screen
 	protected ArrayList<ActivityItem> exerciseList = new ArrayList<ActivityItem>();
-	protected List<Exercise> exercises;
+	protected List<ExerciseListItem> exercises;
 
 	// Declare constants for list screen
 	protected static final String TAG = "ListScreen";
@@ -91,7 +91,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		dbManager = new CollocationDatabaseManager(context);
 		exerciseList = dbManager.selectAllActivities(EXERCISE_TYPE.getName());
 		try {
-			Dao<Exercise, String> dao3 = getDBHelper().getDao(Exercise.class);
+			Dao<ExerciseListItem, String> dao3 = getDBHelper().getDao(ExerciseListItem.class);
 			exercises = dao3.queryForAll(); // TODO: Should Change to category
 											// list
 		} catch (SQLException e) {

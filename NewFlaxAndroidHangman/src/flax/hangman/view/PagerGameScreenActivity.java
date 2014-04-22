@@ -3,14 +3,15 @@ package flax.hangman.view;
 import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,9 +20,12 @@ import com.j256.ormlite.dao.Dao;
 
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
-import flax.database.DatabaseObjectHelper;
+import flax.dialog.DialogHelp;
+import flax.dialog.DialogHowToPlay;
+import flax.dialog.DialogSummaryReport;
 import flax.entity.base.BaseEntity;
-import flax.entity.exercise.Exercise;
+import flax.entity.base.BaseExercise;
+import flax.entity.exerciselist.ExerciseListItem;
 import flax.entity.hangman.HangmanExercise;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
@@ -30,11 +34,13 @@ import flax.hangman.view.GamePageFragment.OnPageEventListener;
 public class PagerGameScreenActivity extends FragmentActivity implements OnPageChangeListener, OnPageEventListener {
 
 	private static final String TAG = "GameScreen";
-	private static final String SCORE = "Score";
+	
+	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
+	
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper databaseHelper = null;
-	private Dao<Exercise, String> exerciseDao = null;
-	private Dao<BaseEntity, String> exerciseContentDao = null;
+	private Dao<ExerciseListItem, String> exerciseListItemDao = null;
+	private Dao<BaseEntity, String> exerciseDao = null;
 	private Dao<Word, String> wordDao = null;
 
 	/**
@@ -52,8 +58,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	protected ViewPager mViewPager;
 
 	protected ExerciseTypeEnum EXERCISE_TYPE;
-	protected Exercise mExercise;
-	protected HangmanExercise mExerciseContent;
+	protected ExerciseListItem mExerciseListItem;
+	protected HangmanExercise mExercise;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +69,17 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		/** Get exercise data */
 		EXERCISE_TYPE = getExerciseType();
 
-		// Load exercise data from database
-		mExercise = loadExercise();
-		mExerciseContent = (HangmanExercise) loadExerciseContent();
+		/** Load exercise data from database */
+		mExerciseListItem = loadExerciseListItem();
+		mExercise = (HangmanExercise) loadExercise();
+		
+		/** Setup exercise */
+		mExercise.setPossibleScore(calculatePossibleScore(mExercise));
 
 		/** Set title */
-		setTitle("Score:" + mExerciseContent.getIntExtra(SCORE) + "/" + mExerciseContent.getWords().size());
+		updateTitle();
 
 		/** Setup pager */
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the activity.
 		mPagerAdapter = new ListPagerAdapter<Word,String>(getSupportFragmentManager(), getPageItemList(), getWordDao());
 
 		// Set up the ViewPager with the sections adapter.
@@ -80,9 +87,17 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOnPageChangeListener(this);
 	}
+	
+	private int calculatePossibleScore(BaseExercise exercise){
+		return ((HangmanExercise)exercise).getWords().size();
+	}
+
+	private void updateTitle() {
+		setTitle("Score:" + mExercise.getScore() + "/" + mExercise.getPossibleScore());
+	}
 
 	private Collection<Word> getPageItemList() {
-		return mExerciseContent.getWords();
+		return mExercise.getWords();
 	}
 
 	/**
@@ -90,11 +105,11 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 * 
 	 * @return
 	 */
-	private Exercise loadExercise() {
+	private ExerciseListItem loadExerciseListItem() {
 
 		String exerciseId = this.getIntent().getStringExtra("exerciseId");
 		try {
-			return getExerciseDao().queryForId(exerciseId);
+			return getExerciseListItemDao().queryForId(exerciseId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -106,10 +121,10 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 * 
 	 * @return
 	 */
-	private BaseEntity loadExerciseContent() {
+	private BaseEntity loadExercise() {
 		String exerciseId = this.getIntent().getStringExtra("exerciseId");
 		try {
-			return getExerciseContentDao().queryForId(exerciseId);
+			return getExerciseDao().queryForId(exerciseId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -129,11 +144,63 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		// if (id == R.id.action_settings) {
-		// return true;
-		// }
-		return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		// Help icon pressed ...
+		case R.id.help:
+
+			// Display Help Dialog
+			DialogHelp help = new DialogHelp(this);
+			help.displayHelpDialog(getHelpMessage());
+			return true;
+
+			// Menu Item -- how to play pressed ...
+		case R.id.how_to_play:
+
+			// Display How to Play Dialog
+			DialogHowToPlay d = new DialogHowToPlay(this);
+			d.displayHowToPlayDialog(getHowToPlayMessage());
+			return true;
+
+			// Menu Item -- check answer pressed ...
+			// case R.id.check_answer:
+			//
+			// // Display Check Answer Dialog
+			// GameItem.setEndTime();
+			// gameEngine.checkAnswer();
+			//
+			// // Re-display score
+			// TextView tvScore = (TextView)findViewById(SCORE_ID);
+			// tvScore.setText("Score: " + GameItem.getScore() + " / " +
+			// GameItem.getPossibleScore());
+			// return true;
+
+			// Menu Item -- restart game pressed ...
+		case R.id.restart_game:
+
+			// Restart Collocation Dominoes Game
+			//displayRestartGameDialog();
+			return true;
+
+			// Menu Item -- summary report pressed ...
+		case R.id.summary_report:
+
+			// Display Summary Report Dialog
+			DialogSummaryReport s = new DialogSummaryReport(this);
+			s.displaySummaryReportDialog(mExercise.getScore(), mExercise.getPossibleScore(), mExercise.getStartTime(), mExercise.getEndTime(), mExercise.getAttempts());
+			return true;
+
+			// Menu Item -- summary report pressed ...
+			// case R.id.enable_sample:
+			//
+			// // Display Sample Dialog
+			// sampleDialog = new DialogEnableSamples(context);
+			// sampleDialog.loadSampleSettings();
+			// sampleDialog.displaySampleDialog();
+			// return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	protected String getHowToPlayMessage() {
@@ -171,18 +238,18 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		return databaseHelper;
 	}
 
-	protected Dao<Exercise, String> getExerciseDao() throws SQLException {
-		if (exerciseDao == null) {
-			exerciseDao = getDBHelper().getDao(Exercise.class);
+	protected Dao<ExerciseListItem, String> getExerciseListItemDao() throws SQLException {
+		if (exerciseListItemDao == null) {
+			exerciseListItemDao = getDBHelper().getDao(ExerciseListItem.class);
 		}
-		return exerciseDao;
+		return exerciseListItemDao;
 	}
 	
-	protected Dao<BaseEntity, String> getExerciseContentDao() throws SQLException {
-		if (exerciseContentDao == null) {
-			exerciseContentDao = getDBHelper().getDao(EXERCISE_TYPE.getRootEntityClass());
+	protected Dao<BaseEntity, String> getExerciseDao() throws SQLException {
+		if (exerciseDao == null) {
+			exerciseDao = getDBHelper().getDao(EXERCISE_TYPE.getRootEntityClass());
 		}
-		return exerciseContentDao;
+		return exerciseDao;
 	}
 	
 	protected Dao<Word, String> getWordDao() {
@@ -201,23 +268,33 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 */
 	@Override
 	public void onPageFinished(Word itme, boolean isWin) {
-		int score = mExerciseContent.getIntExtra(SCORE) + 1;
 		if (isWin) {
-			mExerciseContent.putIntExtra(SCORE, score);
-			setTitle("Score:" + score + "/" + mExerciseContent.getWords().size());
+			mExercise.setScore(mExercise.getScore()+1);
+			updateTitle();
 		}
 
 	}
 	
 
 	/**
+	 * This method will be invoke when any page have interaction,
+	 * In this case, button pressed.
+	 * 
 	 * Update Incomplete status for first interaction
 	 */
 	@Override
 	public void onPageInteracted(Word itme) {
-		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
-			mExercise.setStatus(EXERCISE_INCOMPLETE);
+		// Update end time for summary
+		String date = dateFormatter.format(new Date());
+		mExercise.setEndTime(date);
+		
+		// Update start time for summary
+		if (EXERCISE_NEW.equals(mExerciseListItem.getStatus())) {
+			mExerciseListItem.setStatus(EXERCISE_INCOMPLETE);
+			// Add Summary start time
+			mExercise.setStartTime(date);
 		}
+		
 	}
 	
 	@Override
@@ -225,18 +302,17 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		super.onStop();
 		
 		// Do not save anything when no interaction (Still New)
-		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
+		if (EXERCISE_NEW.equals(mExerciseListItem.getStatus())) {
 			return;
 		}
 		
 		// Save information
 		try {
-			int score = mExerciseContent.getIntExtra(SCORE);
-			if (score == mExerciseContent.getWords().size()) {
-				mExercise.setStatus(EXERCISE_DONE);
+			if (mExercise.isComplete()) {
+				mExerciseListItem.setStatus(EXERCISE_COMPLETE);
 			}
+			getExerciseListItemDao().update(mExerciseListItem);
 			getExerciseDao().update(mExercise);
-			getExerciseContentDao().update(mExerciseContent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

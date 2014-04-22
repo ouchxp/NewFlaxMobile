@@ -33,7 +33,7 @@ import flax.dialog.DialogHelp;
 import flax.dialog.DialogHowToPlay;
 import flax.dialog.DialogSummaryReport;
 import flax.entity.base.BaseEntity;
-import flax.entity.exercise.Exercise;
+import flax.entity.exerciselist.ExerciseListItem;
 import flax.entity.hangman.HangmanExercise;
 import flax.hangman.R;
 import flax.hangman.game.GameEngine;
@@ -52,7 +52,7 @@ import flax.hangman.game.GameItem;
 public abstract class BaseGameScreenActivity extends Activity {
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper databaseHelper = null;
-	protected Exercise exercise;
+	protected ExerciseListItem exercise;
 	protected HangmanExercise exercise_content;
 	protected final Context context = this;
 	
@@ -100,7 +100,7 @@ public abstract class BaseGameScreenActivity extends Activity {
 		String uid = this.getIntent().getStringExtra("uniqueId");
 		String exerciseId = this.getIntent().getStringExtra("exerciseId");
 		try {
-			Dao<Exercise, String> execDao = getDBHelper().getDao(Exercise.class);
+			Dao<ExerciseListItem, String> execDao = getDBHelper().getDao(ExerciseListItem.class);
 			exercise = execDao.queryForId(exerciseId);
 			exercise.getName();
 			exercise.getStatus();

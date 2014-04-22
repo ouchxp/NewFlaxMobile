@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.j256.ormlite.dao.Dao;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.j256.ormlite.dao.Dao;
+
 import flax.entity.hangman.Word;
 import flax.hangman.R;
 
@@ -29,11 +30,8 @@ import flax.hangman.R;
 public class GamePageFragment extends Fragment implements OnClickListener {
 	private static final String TAG = "GamePageFragment";
 	private static final String PRESSED_KEYS = "pressedKeys";
-	private static final String PAGE_STATUS = "pageStatus";
-	private static final String PAGE_WIN = "pageWin";
-	private static final String PAGE_FAIL = "pageFail";
-
 	private static final String MOVES = "moves";
+	
 	private static final int[] BUTTON_GROUPS = { R.id.btns_a2i, R.id.btns_j2r, R.id.btns_s2z };
 	private static final int[] HANGMAN_PICS = { R.drawable.hang0, R.drawable.hang1, R.drawable.hang2, R.drawable.hang3,
 			R.drawable.hang4, R.drawable.hang5, R.drawable.hang6, R.drawable.hang7, R.drawable.hang8, R.drawable.hang9,
@@ -52,11 +50,11 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	 * Returns a new instance of this fragment for the given section number.
 	 */
 	@SuppressWarnings("unchecked")
-	public static GamePageFragment newInstance(Object item, Dao<?, ?> dao) {
+	public static GamePageFragment newInstance(Object item, Dao<?, ?> itemDao) {
 		Log.i(TAG, "newInstance");
 		GamePageFragment fragment = new GamePageFragment();
 		fragment.mItem = (Word) item;
-		fragment.wordDao = (Dao<Word, String>) dao;
+		fragment.wordDao = (Dao<Word, String>) itemDao;
 		return fragment;
 	}
 
@@ -97,14 +95,18 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	}
 
 	private void setupImageView() {
-		String pageStatus = mItem.getExtra(PAGE_STATUS);
-		if(PAGE_WIN.equals(pageStatus)){
+		int pageStatus = mItem.getPageStatus();
+		switch (pageStatus) {
+		case PAGE_WIN:
 			mHangmanImage.setImageResource(R.drawable.face_smile);
-		}else if(PAGE_FAIL.equals(pageStatus)) {
+			break;
+		case PAGE_FAIL:
 			mHangmanImage.setImageResource(R.drawable.face_worried);
-		}else{
+			break;
+		default:
 			int moves = mItem.getIntExtra(MOVES);
 			mHangmanImage.setImageResource(HANGMAN_PICS[moves]);
+			break;
 		}
 	}
 	
@@ -112,7 +114,7 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	 * Setup buttons' listener, enable etc.
 	 */
 	private void setupAllButtons() {
-		boolean isPageDone = mItem.getExtra(PAGE_STATUS) != null;
+		boolean isPageDone = (mItem.getPageStatus() == PAGE_FAIL || mItem.getPageStatus() == PAGE_WIN);
 		String pressedKeys = mItem.getExtra(PRESSED_KEYS, "");
 		for (Button btn : mBtnList) {
 			String key = btn.getText().toString().toLowerCase(ENGLISH);
@@ -176,9 +178,10 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	}
 
 	public void checkAnswer() {
+		String currMaskWord = mWordTextView.getText().toString();
 		String rightMaskWord = mItem.getWord().replaceAll(".", "$0 ").trim();
 		int moves = mItem.getIntExtra(MOVES);
-		final boolean isWin = rightMaskWord.equals(mWordTextView.getText().toString());
+		final boolean isWin = rightMaskWord.equals(currMaskWord);
 		boolean isOutOfMove = moves == HANGMAN_PICS.length - 1;
 
 		// Game Over, Win or out of move
@@ -194,7 +197,7 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 
 			listener.onPageFinished(mItem, isWin);
 			
-			mItem.putExtra(PAGE_STATUS, isWin ? PAGE_WIN : PAGE_FAIL);
+			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
 			
 			// Disable all buttons
 			setupAllButtons();

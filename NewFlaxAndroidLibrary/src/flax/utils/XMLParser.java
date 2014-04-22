@@ -16,6 +16,8 @@ package flax.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.simpleframework.xml.Serializer;
@@ -37,7 +39,7 @@ import flax.network.Downloader;
  * @author Nan Wu
  */
 public class XMLParser {
-	private static final String UNIQUE_URL_FIELD = "uniqueUrl";
+	private static final String UNIQUE_URL_SETTING_METHOD = "setUniqueUrl";
 	/* XmlParser class constructor */
 	public XMLParser() {
 
@@ -89,16 +91,16 @@ public class XMLParser {
 	 * @param url
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException 
 	 */
-	private static final <T> void setUniqueUrl(T response, String url) throws IllegalAccessException, IllegalArgumentException {
+	private static final <T> void setUniqueUrl(T response, String url) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (response == null || !(response instanceof BaseEntity))
 			return;
 
 		Class<?> clazz = response.getClass();
-		for (Field f : clazz.getDeclaredFields()) {
-			if (UNIQUE_URL_FIELD.equals(f.getName())) {
-				f.setAccessible(true);
-				f.set(response, url);
+		for (Method m : clazz.getMethods()) {
+			if (UNIQUE_URL_SETTING_METHOD.equals(m.getName())) {
+				m.invoke(response, url);
 				break;
 			}
 		}

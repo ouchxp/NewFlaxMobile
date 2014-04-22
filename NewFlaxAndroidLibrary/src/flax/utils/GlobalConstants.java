@@ -12,9 +12,16 @@ public class GlobalConstants {
 	public static final String DATABASE_NAME = "NewFlax.db";
 	
 	public static final Locale ENGLISH = Locale.ENGLISH;
-	//Exercise
+	public static final String SUMMARY_DATE_FORMAT = "E MMM d HH:mm:ss";
+	
+	//Exercise status
 	public static final String EXERCISE_STATUS  = "exericseStatus";
 	public static final String EXERCISE_NEW  = "New";
 	public static final String EXERCISE_INCOMPLETE  = "Incomplete";
-	public static final String EXERCISE_DONE  = "Done";
+	public static final String EXERCISE_COMPLETE  = "Complete";
+	
+	public static final int PAGE_WIN = 1;
+	public static final int PAGE_INCOMPLETE = 0;
+	public static final int PAGE_FAIL = -1;
+
 }

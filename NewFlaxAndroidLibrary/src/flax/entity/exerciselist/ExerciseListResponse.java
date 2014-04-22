@@ -1,4 +1,4 @@
-package flax.entity.exercise;
+package flax.entity.exerciselist;
 
 import java.util.Collection;
 
@@ -107,6 +107,10 @@ public class ExerciseListResponse extends BaseEntity{
 		return uniqueUrl;
 	}
 
+	/**
+	 * Will be use in XMLParser.setUniqueUrl, do not modify this method rashly.
+	 * @param uniqueUrl
+	 */
 	public void setUniqueUrl(String uniqueUrl) {
 		this.uniqueUrl = uniqueUrl;
 	}

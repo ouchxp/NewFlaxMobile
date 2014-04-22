@@ -1,4 +1,4 @@
-package flax.entity.exercise;
+package flax.entity.exerciselist;
 
 import java.util.Collection;
 
@@ -39,7 +39,7 @@ public class Category extends BaseEntity{
 
 	/**
 	 * Strongly <B>NOT</B> recommend to use this method.
-	 * This method should <B>ONLY</B> be called by ORM framwork.
+	 * This method should <B>ONLY</B> be called by ORM framework.
 	 * @param uniqueId
 	 */
 	@Deprecated
@@ -61,7 +61,7 @@ public class Category extends BaseEntity{
 	
 	@ForeignCollectionField(eager = false)
 	@ElementList(inline=true,entry="exercise")
-	private Collection<Exercise> exercises;
+	private Collection<ExerciseListItem> exercises;
 	
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
 	private ExerciseListResponse response;
@@ -74,7 +74,7 @@ public class Category extends BaseEntity{
 	 */
 	@Commit
 	private void buildRelation(){
-		for (Exercise exercise : exercises) {
+		for (ExerciseListItem exercise : exercises) {
 			exercise.setCategory(this);
 		}
 	}
@@ -88,11 +88,11 @@ public class Category extends BaseEntity{
 		this.categorysummary = categorysummary;
 	}
 
-	public Collection<Exercise> getExercises() {
+	public Collection<ExerciseListItem> getExercises() {
 		return exercises;
 	}
 
-	public void setExercises(Collection<Exercise> exercises) {
+	public void setExercises(Collection<ExerciseListItem> exercises) {
 		this.exercises = exercises;
 	}
 

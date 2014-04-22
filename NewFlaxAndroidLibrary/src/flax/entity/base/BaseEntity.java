@@ -36,4 +36,8 @@ public abstract class BaseEntity {
 	public int getIntExtra(String key, int defValue) {
 		return Integer.valueOf(getExtra(key, String.valueOf(defValue)));
 	}
+	
+	public void clearExtra(){
+		extraMap = null;
+	}
 }

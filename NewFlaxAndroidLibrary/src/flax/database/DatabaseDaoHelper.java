@@ -9,9 +9,9 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import flax.entity.exercise.Category;
-import flax.entity.exercise.Exercise;
-import flax.entity.exercise.ExerciseListResponse;
+import flax.entity.exerciselist.Category;
+import flax.entity.exerciselist.ExerciseListItem;
+import flax.entity.exerciselist.ExerciseListResponse;
 import flax.entity.hangman.HangmanExercise;
 import flax.entity.hangman.Word;
 import flax.utils.GlobalConstants;
@@ -26,7 +26,7 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
 			//Create tables
-            TableUtils.createTable(connectionSource, Exercise.class);
+            TableUtils.createTable(connectionSource, ExerciseListItem.class);
             TableUtils.createTable(connectionSource, ExerciseListResponse.class);
             TableUtils.createTable(connectionSource, Category.class);
             
@@ -42,7 +42,7 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
         try {
         	//Upgrade table version
             
-            TableUtils.dropTable(connectionSource, Exercise.class, true);
+            TableUtils.dropTable(connectionSource, ExerciseListItem.class, true);
             TableUtils.dropTable(connectionSource, ExerciseListResponse.class, true);
             TableUtils.dropTable(connectionSource, Category.class, true);
             

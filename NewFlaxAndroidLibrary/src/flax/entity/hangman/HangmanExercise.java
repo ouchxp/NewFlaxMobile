@@ -12,13 +12,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import flax.entity.base.BaseEntity;
+import flax.entity.base.BaseExercise;
 
-@DatabaseTable(tableName="hangman_exercise")
+@DatabaseTable(tableName = "hangman_exercise")
 @Root(name = "response")
-public class HangmanExercise extends BaseEntity{
-	@DatabaseField(id=true)
-	private String uniqueUrl;
+public class HangmanExercise extends BaseExercise {
 	
 	@DatabaseField
 	@Attribute
@@ -28,25 +26,26 @@ public class HangmanExercise extends BaseEntity{
 	@DatabaseField
 	@Attribute(name = "from")
 	private String from;
-	
-	@ForeignCollectionField(eager = false,foreignFieldName="exercise")
+
+	@ForeignCollectionField(eager = false, foreignFieldName = "exercise")
 	@Path("player")
-	@ElementList(inline=true,entry="word")
-    private Collection<Word> words;
+	@ElementList(inline = true, entry = "word")
+	private Collection<Word> words;
 
 	/** Constructor */
-	public HangmanExercise(){}
+	public HangmanExercise() {
+	}
 
 	/**
 	 * Build one-to-many relation, prepare for orm.
 	 */
 	@Commit
-	private void buildRelation(){
+	private void buildRelation() {
 		for (Word word : words) {
 			word.setExercise(this);
 		}
 	}
-	
+
 	/** Get/Set Methods */
 	public String getHints() {
 		return hints;
@@ -54,14 +53,6 @@ public class HangmanExercise extends BaseEntity{
 
 	public void setHints(String hints) {
 		this.hints = hints;
-	}
-
-	public String getUniqueUrl() {
-		return uniqueUrl;
-	}
-
-	public void setUniqueUrl(String uniqueUrl) {
-		this.uniqueUrl = uniqueUrl;
 	}
 
 	public Collection<Word> getWords() {
@@ -80,4 +71,3 @@ public class HangmanExercise extends BaseEntity{
 		this.from = from;
 	}
 }
-

@@ -1,10 +1,12 @@
 package flax.asynctask;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 
 import flax.activity.ExerciseTypeEnum;
 import flax.collocation.CollocationDatabaseManager;
@@ -22,9 +25,9 @@ import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseManager;
 import flax.database.DatabaseObjectHelper;
 import flax.entity.base.BaseEntity;
-import flax.entity.exercise.Category;
-import flax.entity.exercise.Exercise;
-import flax.entity.exercise.ExerciseListResponse;
+import flax.entity.exerciselist.Category;
+import flax.entity.exerciselist.ExerciseListItem;
+import flax.entity.exerciselist.ExerciseListResponse;
 import flax.entity.hangman.HangmanExercise;
 import flax.entity.hangman.Word;
 import flax.utils.GlobalConstants;
@@ -38,7 +41,7 @@ import flax.utils.XMLParser;
  * Download and retrieve exercises from specific activity. Done in background to
  * take the load off of the HomeScreen Activity
  */
-public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<Exercise>> {
+public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<ExerciseListItem>> {
 
 	private Context context;
 	// Convert url to correct format.
@@ -69,7 +72,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * Retrieves the required xml file using the NetworkHttpRequest class
 	 */
 	@Override
-	protected Collection<Exercise> doInBackground(String... urls) {
+	protected Collection<ExerciseListItem> doInBackground(String... urls) {
 
 		// Sleep app for one second to show progress
 		try {
@@ -86,23 +89,23 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		}
 
 		// Get exercises and format urls for exercises
-		Collection<Exercise> exercises = new ArrayList<Exercise>();
+		Collection<ExerciseListItem> exercises = new ArrayList<ExerciseListItem>();
 		for (Category category : response.getCategoryList()) {
 			formatExerciseUrl(category.getExercises());
 			exercises.addAll(category.getExercises());
 		}
 
 		// TODO: status should be separate
-		for (Exercise exercise : exercises) {
+		for (ExerciseListItem exercise : exercises) {
 			exercise.setStatus("New");
 		}
 
 		// Get "new" exercises, which doesn't exist in db from downloaded
 		// exercises.
-		Collection<Exercise> newExecs = getNewExercises(exercises);
+		final Collection<ExerciseListItem> newExecs = getNewExercises(exercises);
 
 		// TODO: Change to Ormlite version after ListScreen Done
-		OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
+		final OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseDaoHelper.class);
 		try {
 
 			Collection<Category> categoryList = response.getCategoryList();
@@ -110,13 +113,13 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 			Dao<ExerciseListResponse, String> dao1 = helper.getDao(ExerciseListResponse.class);
 			Dao<Category, String> dao3 = helper.getDao(Category.class);
-			Dao<Exercise, String> dao4 = helper.getDao(Exercise.class);
+			Dao<ExerciseListItem, String> dao4 = helper.getDao(ExerciseListItem.class);
 			dao1.createIfNotExists(response);
 			for (Category category : categoryList) {
 				dao3.createIfNotExists(category);
-				Collection<Exercise> exercises1 = category.getExercises();
+				Collection<ExerciseListItem> exercises1 = category.getExercises();
 				formatExerciseUrl(exercises1);
-				for (Exercise exercise : exercises1) {
+				for (ExerciseListItem exercise : exercises1) {
 					dao4.createIfNotExists(exercise);
 				}
 
@@ -135,14 +138,15 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		// otherwise save new exercises
 		saveNewExercises(newExecs);
 
-		// call async download new exercises content
-		downloadAndSaveContent(newExecs,helper);
+		// async download new exercises content
+		downloadAndSaveContentInTrans(newExecs,helper);
 
 		// have to release helper after use
 		OpenHelperManager.releaseHelper();
 		
 		return exercises;
 	}
+
 
 	/**
 	 * onPostExecute method
@@ -151,7 +155,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * which saves new exercises in db and downloads their content.
 	 */
 	@Override
-	protected void onPostExecute(Collection<Exercise> result) {
+	protected void onPostExecute(Collection<ExerciseListItem> result) {
 		// If there is trouble with the server connection
 		if (getDownloadStatus() == false) {
 			Toast.makeText(
@@ -175,11 +179,39 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		progress.dismiss();
 	}
 
-	private String downloadAndSaveContent(Collection<Exercise> execs, OrmLiteSqliteOpenHelper helper) {
+	
+	/**
+	 * Call downloadAndSaveContent in Transaction to gain better performance
+	 * @see http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_5.html#index-database-transactions
+	 * @see http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_5.html#callBatchTasks
+	 * @param execs
+	 * @param helper
+	 */
+	private void downloadAndSaveContentInTrans(final Collection<ExerciseListItem> execs, final OrmLiteSqliteOpenHelper helper) {
+		try {
+			TransactionManager.callInTransaction(helper.getConnectionSource(), new Callable<Void>() {
+				@Override
+				public Void call() throws Exception {
+					downloadAndSaveContent(execs,helper);
+					return null;
+				}
+			});
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Download and save exercise content
+	 * @param execs
+	 * @param helper
+	 * @return
+	 */
+	private String downloadAndSaveContent(Collection<ExerciseListItem> execs, OrmLiteSqliteOpenHelper helper) {
 		try {
 			// Go through each new exercise and download corresponding exercise
 			// content
-			for (Exercise e : execs) {
+			for (ExerciseListItem e : execs) {
 				int i = 0;
 
 				// TODO: Change Data Type
@@ -227,14 +259,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * than the needed xml. This url needs to be altered to return the correctly
 	 * formatted xml
 	 */
-	private Collection<Exercise> formatExerciseUrl(Collection<Exercise> downloadedExercises) {
+	private Collection<ExerciseListItem> formatExerciseUrl(Collection<ExerciseListItem> downloadedExercises) {
 
 		// Create algorithm that alters the url to get the correctly formatted
 		// xml.
 		IURLConverter urlConverter = null;
 		try {
 			urlConverter = EXERCISE_TYPE.getUrlConvertClass().newInstance();
-			for (Exercise a : downloadedExercises) {
+			for (ExerciseListItem a : downloadedExercises) {
 				a.setUrl(urlConverter.convert(a.getUrl()));
 			}
 		} catch (Exception e) {
@@ -248,12 +280,12 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * 
 	 * get "new" exercises, which doesn't exist in db from downloaded exercises.
 	 */
-	private Collection<Exercise> getNewExercises(Collection<Exercise> execs) {
+	private Collection<ExerciseListItem> getNewExercises(Collection<ExerciseListItem> execs) {
 		// Declare db for check
 		dbManager = new DatabaseManager(context);
 		// Store new Items in holder with url as key
-		Map<String, Exercise> newItemHolder = new HashMap<String, Exercise>();
-		for (Exercise ne : execs) {
+		Map<String, ExerciseListItem> newItemHolder = new HashMap<String, ExerciseListItem>();
+		for (ExerciseListItem ne : execs) {
 			newItemHolder.put(ne.getUrl(), ne);
 		}
 
@@ -265,7 +297,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			newItemHolder.remove(url);
 		}
 
-		return new ArrayList<Exercise>(newItemHolder.values());
+		return new ArrayList<ExerciseListItem>(newItemHolder.values());
 	}
 
 	/**
@@ -281,10 +313,10 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * This method takes the downloaded exercise list and compares it to the
 	 * existing exercises, saving any new exercises in the database.
 	 */
-	private void saveNewExercises(Collection<Exercise> newExercises) {
+	private void saveNewExercises(Collection<ExerciseListItem> newExercises) {
 		long rowId = 0;
 		// add new items to db
-		for (Exercise ne : newExercises) {
+		for (ExerciseListItem ne : newExercises) {
 			rowId = dbManager.addActivity(ne.getId(), ne.getCategoryId(), ne.getType(), ne.getName(), ne.getUrl(),
 					ne.getStatus(), (int) rowId, 0);
 			ne.setUniqueId((int) rowId);

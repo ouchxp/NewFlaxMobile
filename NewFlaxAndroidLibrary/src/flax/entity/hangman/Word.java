@@ -5,10 +5,10 @@ import org.simpleframework.xml.Text;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import flax.entity.base.BaseEntity;
+import flax.entity.base.BasePage;
 
 @DatabaseTable(tableName="hangman_word")
-public class Word extends BaseEntity{
+public class Word extends BasePage{
 	@DatabaseField(generatedId=true)
 	private int id;
 	

@@ -1,4 +1,4 @@
-package flax.entity.exercise;
+package flax.entity.exerciselist;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -14,8 +14,8 @@ import flax.entity.base.BaseEntity;
  * @author ouchxp
  * 
  */
-@DatabaseTable(tableName = "exerciselist_exercise")
-public class Exercise extends BaseEntity {
+@DatabaseTable(tableName = "exerciselist_item")
+public class ExerciseListItem extends BaseEntity {
 	@DatabaseField
 	@Attribute(name = "category_id")
 	private String categoryId;
@@ -48,7 +48,7 @@ public class Exercise extends BaseEntity {
 	private Category category;
 
 	/** Constructors */
-	public Exercise() {
+	public ExerciseListItem() {
 	}
 
 	/** Get/Set Methods */
