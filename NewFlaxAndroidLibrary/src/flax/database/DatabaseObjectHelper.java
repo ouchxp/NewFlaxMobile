@@ -52,7 +52,11 @@ public class DatabaseObjectHelper {
 					f.setAccessible(true);
 					Collection<?> entityCollection = (Collection<?>) f.get(currEntity);
 					if (entityCollection == null) continue;
-					for (Object object : entityCollection) {
+					//add this to keep right order
+					List<?> list = new ArrayList(entityCollection);
+					Collections.reverse(list);
+					
+					for (Object object : list) {
 						entityStack.push((BaseEntity) object);
 					}
 				} else if (isForeignField(f)) {

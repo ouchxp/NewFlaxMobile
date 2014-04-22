@@ -25,9 +25,9 @@ import flax.entity.exercise.Exercise;
 import flax.entity.hangman.HangmanExercise;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
-import flax.hangman.view.GamePageFragment.OnPageFinishedListener;
+import flax.hangman.view.GamePageFragment.OnPageEventListener;
 
-public class PagerGameScreenActivity extends FragmentActivity implements OnPageChangeListener, OnPageFinishedListener {
+public class PagerGameScreenActivity extends FragmentActivity implements OnPageChangeListener, OnPageEventListener {
 
 	private static final String TAG = "GameScreen";
 	private static final String SCORE = "Score";
@@ -35,6 +35,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	private DatabaseDaoHelper databaseHelper = null;
 	private Dao<Exercise, String> exerciseDao = null;
 	private Dao<BaseEntity, String> exerciseContentDao = null;
+	private Dao<Word, String> wordDao = null;
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -72,7 +73,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		/** Setup pager */
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
-		mPagerAdapter = new ListPagerAdapter<Word>(getSupportFragmentManager(), getPageItemList());
+		mPagerAdapter = new ListPagerAdapter<Word,String>(getSupportFragmentManager(), getPageItemList(), getWordDao());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -183,10 +184,16 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		}
 		return exerciseContentDao;
 	}
-
-	@Override
-	public void onPageSelected(int position) {
-		Log.i(TAG, "onPageSelected");
+	
+	protected Dao<Word, String> getWordDao() {
+		if (wordDao == null) {
+			try {
+				wordDao = getDBHelper().getDao(Word.class);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return wordDao;
 	}
 
 	/**
@@ -199,9 +206,16 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 			mExerciseContent.putIntExtra(SCORE, score);
 			setTitle("Score:" + score + "/" + mExerciseContent.getWords().size());
 		}
-		if (score == mExerciseContent.getWords().size()) {
-			mExercise.setStatus(EXERCISE_DONE);
-		} else {
+
+	}
+	
+
+	/**
+	 * Update Incomplete status for first interaction
+	 */
+	@Override
+	public void onPageInteracted(Word itme) {
+		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
 		}
 	}
@@ -210,20 +224,26 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	protected void onStop() {
 		super.onStop();
 		
-		// TODO: problem here
-		// TODO: Save data 
+		// Do not save anything when no interaction (Still New)
+		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
+			return;
+		}
+		
+		// Save information
 		try {
+			int score = mExerciseContent.getIntExtra(SCORE);
+			if (score == mExerciseContent.getWords().size()) {
+				mExercise.setStatus(EXERCISE_DONE);
+			}
 			getExerciseDao().update(mExercise);
 			getExerciseContentDao().update(mExerciseContent);
-			Dao<Word, String> wordDao = getDBHelper().getDao(Word.class);
-			for (Word word : mExerciseContent.getWords()) {
-				wordDao.update(word);
-			}
-			//DatabaseObjectHelper.save(mExerciseContent, getDBHelper(), EXERCISE_TYPE.getEntityClasses());
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onPageSelected(int position) {
 	}
 
 	@Override
@@ -233,5 +253,6 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	@Override
 	public void onPageScrollStateChanged(int state) {
 	}
+
 
 }

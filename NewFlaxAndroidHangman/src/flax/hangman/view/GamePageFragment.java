@@ -2,8 +2,11 @@ package flax.hangman.view;
 
 import static flax.utils.GlobalConstants.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.j256.ormlite.dao.Dao;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -37,9 +40,10 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 			R.drawable.hang10 };
 	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-	private OnPageFinishedListener listener;
+	private OnPageEventListener listener;
 	private View mRootView;
 	private Word mItem;
+	private Dao<Word, String> wordDao;
 	private List<Button> mBtnList;
 	private TextView mWordTextView;
 	private ImageView mHangmanImage;
@@ -47,10 +51,12 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
-	public static GamePageFragment newInstance(Object item) {
+	@SuppressWarnings("unchecked")
+	public static GamePageFragment newInstance(Object item, Dao<?, ?> dao) {
 		Log.i(TAG, "newInstance");
 		GamePageFragment fragment = new GamePageFragment();
 		fragment.mItem = (Word) item;
+		fragment.wordDao = (Dao<Word, String>) dao;
 		return fragment;
 	}
 
@@ -67,7 +73,7 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		Log.i(TAG, "onAttach");
-		this.listener = (OnPageFinishedListener) activity;
+		this.listener = (OnPageEventListener) activity;
 	}
 
 	@Override
@@ -145,6 +151,8 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		v.setEnabled(false);
 
 		checkAnswer();
+		
+		listener.onPageInteracted(mItem);
 	}
 
 	private String getMaskWord() {
@@ -209,12 +217,24 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		return btnList;
 	}
 
+	@Override
+	public void onStop() {
+		super.onStop();
+		Log.i(TAG, "onStop");
+		try {
+			wordDao.update(mItem);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Use this interface interactive with activity.
 	 * @author Nan Wu
 	 */
-	public interface OnPageFinishedListener {
+	public interface OnPageEventListener {
 		public void onPageFinished(Word itme, boolean isWin);
+		public void onPageInteracted(Word itme);
 	}
 
 }

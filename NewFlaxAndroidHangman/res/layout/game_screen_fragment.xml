@@ -4,13 +4,16 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    <ImageView android:id="@+id/hangman"
+
+    <ImageView
+        android:id="@+id/hangman"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@+id/answer_table"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
-        android:layout_above="@+id/answer_table"/>
+        android:layout_marginRight="100dp" />
+
     <TextView
         android:id="@+id/guessing_word"
         android:layout_width="wrap_content"
@@ -29,7 +32,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:stretchColumns="0,1" >
-        
     </TableLayout>
 
     <LinearLayout
@@ -43,64 +45,54 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            
-            
             android:text="A" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="B" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="C" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="D" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="E" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="F" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="G" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="H" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="I" />
     </LinearLayout>
 
@@ -115,63 +107,54 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="J" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="K" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="L" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="M" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="N" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="O" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="P" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="Q" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="R" />
     </LinearLayout>
 
@@ -187,75 +170,49 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="S" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="T" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="U" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="V" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="W" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="X" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="Y" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:onClick="onLetterClick"
             android:text="Z" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/arror_right"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/game_style_right_arrow_selector"
-        android:onClick="onClickRightArrow" />
-
-    <Button
-        android:id="@+id/arror_left"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/game_style_left_arrow_selector"
-        android:onClick="onClickLeftArrow" />
 
 </RelativeLayout>

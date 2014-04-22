@@ -94,7 +94,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 		// TODO: status should be separate
 		for (Exercise exercise : exercises) {
-			exercise.setStatus("new");
+			exercise.setStatus("New");
 		}
 
 		// Get "new" exercises, which doesn't exist in db from downloaded
