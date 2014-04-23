@@ -222,17 +222,18 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 			getExerciseDao().update(mExercise);
 
 			getWordDao().callBatchTasks(new Callable<Void>() {
-
 				@Override
 				public Void call() throws Exception {
-					for (Word word : mExercise.getWords()) {
+					Collection<Word> words = mExercise.getWords();
+					for (Word word : words) {
 						word.resetPage();
 						getWordDao().update(word);
 					}
+					mPagerAdapter.updateDataSet(mExercise.getWords());
 					return null;
 				}
 			});
-			mPagerAdapter.updateDataSet(mExercise.getWords());
+			
 			updateTitle();
 		} catch (Exception e) {
 			e.printStackTrace();
