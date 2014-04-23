@@ -16,23 +16,17 @@ import com.j256.ormlite.dao.Dao;
  * one of the sections/tabs/pages.
  */
 public class ListPagerAdapter<E,ID> extends FragmentPagerAdapter {
-	private FragmentManager mFragmentManager;
 	private List<E> mItems;
 	private Dao<E, ID> mItemDao;
 	public ListPagerAdapter(FragmentManager fm, Collection<E> items, Dao<E, ID> itemDao) {
 		super(fm);
-		mFragmentManager = fm;
 		mItems = new ArrayList<E>(items);
 		this.mItemDao = itemDao;
 	}
 
 	@Override
 	public Fragment getItem(int position) {
-		// getItem is called to instantiate the fragment for the given page.
-		// Return a PlaceholderFragment (defined as a static inner class
-		// below).
 		return new GamePageFragment();
-		//return GamePageFragment.newInstance(mItems.get(position), mItemDao);
 	}
 
 	@Override
@@ -56,13 +50,4 @@ public class ListPagerAdapter<E,ID> extends FragmentPagerAdapter {
 		mItems = new ArrayList<E>(items);
 		notifyDataSetChanged();
 	}
-	
-//	public Fragment getActiveFragment(ViewPager container, int position) {
-//	    String name = makeFragmentName(container.getId(), position);
-//		return  mFragmentManager.findFragmentByTag(name);
-//	}
-//
-//	private static String makeFragmentName(int viewId, int index) {
-//	    return "android:switcher:" + viewId + ":" + index;
-//	}
 }
