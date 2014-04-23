@@ -1,5 +1,5 @@
 /*
- * File: flax.network.NetworkXmlParser
+ * File: flax.utils.XMLParser
  *
  * License: Greenstone 3 (GSDL3)
  * Copyright (C) 2003 New Zealand Digital Libraries, University Of Waikato
@@ -30,7 +30,7 @@ import flax.entity.base.BaseEntity;
 import flax.network.Downloader;
 
 /**
- * NetworkXmlParser Class
+ * XMLParser Class
  * 
  * This class is used to parse a given input stream (containing xml data) and
  * extract activity information.
@@ -41,9 +41,7 @@ import flax.network.Downloader;
 public class XMLParser {
 	private static final String UNIQUE_URL_SETTING_METHOD = "setUniqueUrl";
 	/* XmlParser class constructor */
-	public XMLParser() {
-
-	}
+	private XMLParser() {}
 
 	/**
 	 * Parse XML from URL
@@ -111,6 +109,7 @@ public class XMLParser {
 	 * Currently not used, because user can manipulate object relation
 	 * using @Commit annotation in entity classes.
 	 * 
+	 * @deprecated should use @Commit in entity class to build relation.
 	 * @param <T>
 	 * 
 	 * @param primaryRow

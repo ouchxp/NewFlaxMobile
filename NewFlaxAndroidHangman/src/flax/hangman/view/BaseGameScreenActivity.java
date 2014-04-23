@@ -50,7 +50,7 @@ import flax.hangman.game.GameItem;
  */
 public abstract class BaseGameScreenActivity extends Activity {
 	/** Ormlite database helper, use getDBHelper method to get a instance */
-	private DatabaseDaoHelper databaseHelper = null;
+	private DatabaseDaoHelper mDaoHelper = null;
 	protected ExerciseListItem exercise;
 	protected HangmanExercise exercise_content;
 	protected final Context context = this;
@@ -288,9 +288,9 @@ public abstract class BaseGameScreenActivity extends Activity {
 		super.onDestroy();
 
 		// Release DatabaseDaoHelper
-		if (databaseHelper != null) {
+		if (mDaoHelper != null) {
 			OpenHelperManager.releaseHelper();
-			databaseHelper = null;
+			mDaoHelper = null;
 		}
 	}
 
@@ -300,9 +300,9 @@ public abstract class BaseGameScreenActivity extends Activity {
 	 * @return
 	 */
 	protected DatabaseDaoHelper getDBHelper() {
-		if (databaseHelper == null) {
-			databaseHelper = OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
+		if (mDaoHelper == null) {
+			mDaoHelper = OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
 		}
-		return databaseHelper;
+		return mDaoHelper;
 	}
 } // end of class

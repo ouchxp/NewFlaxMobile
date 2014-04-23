@@ -49,8 +49,9 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	protected static final String TAG = "ListScreen";
 	
 	/** Ormlite database helper, use getDBHelper method to get a instance */
-	private DatabaseDaoHelper databaseHelper = null;
-	protected List<ExerciseListItem> exercises;
+	private DatabaseDaoHelper mDaoHelper = null;
+	
+	protected List<ExerciseListItem> mExerciseListItems;
 	protected ExerciseTypeEnum EXERCISE_TYPE;
 
 	/**
@@ -64,10 +65,10 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		
 		// TODO: Should Change to category list, and change ListView to ExpandableListView
 		// Get a list of all activities in the internal database
-		exercises = getExerciseListItems();
+		mExerciseListItems = getExerciseListItems();
 		
 		// Set the list adapter
-		setListAdapter(new ExerciseListAdapter(this, exercises));
+		setListAdapter(new ExerciseListAdapter(this, mExerciseListItems));
 
 		// Set the list screen title to be the activity type
 		setTitle(EXERCISE_TYPE.getTitle());
@@ -79,7 +80,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	private List<ExerciseListItem> getExerciseListItems() {
 		List<ExerciseListItem> items = null;
 		try {
-			Dao<ExerciseListItem, String> exerciseListItemDao = getDBHelper().getDao(ExerciseListItem.class);
+			Dao<ExerciseListItem, String> exerciseListItemDao = getDaoHelper().getDao(ExerciseListItem.class);
 			items = exerciseListItemDao.queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -96,7 +97,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Intent i = new Intent(BaseListScreenActivity.this, getNextActivityClass());
 		// Pass exercise id
-		String exerciseId = exercises.get(position).getUrl();
+		String exerciseId = mExerciseListItems.get(position).getUrl();
 		i.putExtra(EXERCISE_ID, exerciseId);
 		startActivity(i);
 	}
@@ -150,19 +151,19 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		super.onDestroy();
 
 		// Release DatabaseDaoHelper
-		if (databaseHelper != null) {
+		if (mDaoHelper != null) {
 			OpenHelperManager.releaseHelper();
-			databaseHelper = null;
+			mDaoHelper = null;
 		}
 	}
 
 	/**
 	 * Generate DatabaseDaoHelper for database operation.
 	 */
-	protected DatabaseDaoHelper getDBHelper() {
-		if (databaseHelper == null) {
-			databaseHelper = OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
+	protected DatabaseDaoHelper getDaoHelper() {
+		if (mDaoHelper == null) {
+			mDaoHelper = OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
 		}
-		return databaseHelper;
+		return mDaoHelper;
 	}
 }
