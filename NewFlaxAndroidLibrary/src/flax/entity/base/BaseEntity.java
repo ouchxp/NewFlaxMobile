@@ -38,8 +38,6 @@ public abstract class BaseEntity {
 	}
 
 	public void clearExtra() {
-		if (extraMap != null) {
-			extraMap.clear();
-		}
+		extraMap = null;
 	}
 }

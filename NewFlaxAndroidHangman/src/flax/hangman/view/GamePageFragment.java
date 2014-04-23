@@ -46,17 +46,23 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	private TextView mWordTextView;
 	private ImageView mHangmanImage;
 
-	/**
-	 * Returns a new instance of this fragment for the given section number.
-	 */
 	@SuppressWarnings("unchecked")
-	public static GamePageFragment newInstance(Object item, Dao<?, ?> itemDao) {
-		Log.i(TAG, "newInstance");
-		GamePageFragment fragment = new GamePageFragment();
-		fragment.mItem = (Word) item;
-		fragment.wordDao = (Dao<Word, String>) itemDao;
-		return fragment;
+	public void updatePageData(Object item, Dao<?, ?> itemDao) {
+		mItem = (Word) item;
+		wordDao = (Dao<Word, String>) itemDao;
 	}
+	
+//	/**
+//	 * Returns a new instance of this fragment for the given section number.
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public static GamePageFragment newInstance(Object item, Dao<?, ?> itemDao) {
+//		Log.i(TAG, "newInstance");
+//		GamePageFragment fragment = new GamePageFragment();
+//		fragment.mItem = (Word) item;
+//		fragment.wordDao = (Dao<Word, String>) itemDao;
+//		return fragment;
+//	}
 
 	public GamePageFragment() {
 	}

@@ -14,6 +14,8 @@
  */
 package flax.hangman.view;
 
+import static flax.utils.GlobalConstants.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +156,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 
 		// TODO: New
 		String exerciseId = exercises.get(position).getUrl();
-		i.putExtra("exerciseId", exerciseId);
+		i.putExtra(EXERCISE_ID, exerciseId);
 
 		startActivity(i);
 	}

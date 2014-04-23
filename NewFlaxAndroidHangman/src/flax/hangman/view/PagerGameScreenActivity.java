@@ -50,7 +50,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 * becomes too memory intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	protected FragmentPagerAdapter mPagerAdapter;
+	protected ListPagerAdapter<Word, String> mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -107,7 +107,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 */
 	private ExerciseListItem loadExerciseListItem() {
 
-		String exerciseId = this.getIntent().getStringExtra("exerciseId");
+		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
 			return getExerciseListItemDao().queryForId(exerciseId);
 		} catch (SQLException e) {
@@ -122,7 +122,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 * @return
 	 */
 	private BaseEntity loadExercise() {
-		String exerciseId = this.getIntent().getStringExtra("exerciseId");
+		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
 			return getExerciseDao().queryForId(exerciseId);
 		} catch (SQLException e) {
@@ -232,6 +232,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 					return null;
 				}
 			});
+			mPagerAdapter.updateDataSet(mExercise.getWords());
+			updateTitle();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
