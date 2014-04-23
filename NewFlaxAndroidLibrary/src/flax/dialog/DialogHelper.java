@@ -138,6 +138,9 @@ public class DialogHelper {
 		// Determine score percentage
 		double percent = (((double) score / (double) possibleScore) * 100);
 		double percentage = Math.ceil(percent);	
+		
+		if (startTime == null) startTime = "";
+		if (endTime == null) endTime = "";
 		String message = MessageFormat.format(context.getString(R.string.summary_message),  startTime,endTime,attempts,score,possibleScore,percentage);
 		
 		// Instantiate alert dialog builder

@@ -19,6 +19,7 @@ import android.view.MenuItem;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
@@ -85,7 +86,11 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOnPageChangeListener(this);
+		//mViewPager.setOnPageChangeListener(this);
+		
+		CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.indicator);
+		indicator.setViewPager(mViewPager);
+		
 	}
 
 	private int calculatePossibleScore(BaseExercise exercise) {
