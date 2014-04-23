@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="1dip"
         android:paddingBottom="5dip"
-        app:strokeColor="#999999"
+        app:strokeColor="@color/green_dark"
         app:fillColor="@color/green_dark"/>
 
 </LinearLayout>
