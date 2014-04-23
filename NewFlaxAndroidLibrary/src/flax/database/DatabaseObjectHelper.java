@@ -38,7 +38,6 @@ public class DatabaseObjectHelper {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void save(BaseEntity rootEntity, OrmLiteSqliteOpenHelper helper, Class<? extends BaseEntity>... entityClasses)
 			throws IllegalAccessException, IllegalArgumentException, SQLException {
-		long start = System.nanoTime();
 		if (rootEntity == null)
 			return;
 		UniqueStack<BaseEntity> entityStack = new UniqueStack<BaseEntity>();
@@ -70,10 +69,7 @@ public class DatabaseObjectHelper {
 			
 		}
 		
-		System.out.println(System.nanoTime()-start);
-		long start1 = System.nanoTime();
 		/** Store object tree in bottom-up order */
-		
 		// Reverse the records, top-down to bottom-up
 		Collections.reverse(entityStack.records);
 
@@ -87,7 +83,6 @@ public class DatabaseObjectHelper {
 			Dao dao = daoMap.get(entity.getClass().getName());
 			dao.create(entity);
 		}
-		System.out.println(System.nanoTime()-start1);
 	}
 	
 	/**

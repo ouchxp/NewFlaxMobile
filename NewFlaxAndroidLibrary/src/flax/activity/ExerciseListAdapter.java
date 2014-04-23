@@ -32,13 +32,13 @@ import flax.library.R;
  * 
  * @author Nan Wu
  */
-public class ActivityCustomAdapter extends ArrayAdapter<ExerciseListItem> {
+public class ExerciseListAdapter extends ArrayAdapter<ExerciseListItem> {
 
 	// Declare variables for adapter
 	private LayoutInflater layout_inflater;
 
 	/* Class constructor */
-	public ActivityCustomAdapter(Context context, List<ExerciseListItem> exercises) {
+	public ExerciseListAdapter(Context context, List<ExerciseListItem> exercises) {
 		super(context, R.layout.list_row, exercises);
 		layout_inflater = LayoutInflater.from(context);
 	}

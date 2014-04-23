@@ -15,8 +15,6 @@
 package flax.hangman.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,8 +25,6 @@ import android.view.View;
 import android.widget.Toast;
 import flax.activity.ExerciseTypeEnum;
 import flax.asynctask.BackgroundDowloadExercises;
-import flax.collocation.CollocationDatabaseHelper;
-import flax.collocation.CollocationDatabaseManager;
 import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelper;
 import flax.dialog.DialogNetworkSettings;
@@ -59,29 +55,21 @@ import flax.utils.Mock;
  * database tables and select statements. See library project for existing
  * classes to use as a base.
  * 
- * @author Jemma Konig
+ * @author Nan Wu
  */
 public abstract class BaseHomeScreenActivity extends Activity {
 
-	// Declare constants and static variables for home screen
-	protected final Context context = this;
-	protected CollocationDatabaseManager dbManager;
 	protected static final String TAG = "HomeScreen";
 
 	/**
 	 * Exercise type enum, contains exercise name, data module, converters
 	 * information
 	 */
-	// TODO: should consider use type enum or type class
 	protected ExerciseTypeEnum EXERCISE_TYPE;
 
-	/*
-	 * onCreate method
-	 * 
+	/**
 	 * Displays the Home Screen when the app is loaded Overlays the Home Screen
 	 * with the new activities dialog box
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +78,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 
 		EXERCISE_TYPE = getExerciseType();
 
-		// On first time - create db
-		initialiseDatabase();
-
-		// On first time - create activities
+		// TODO: On first time - create activities
 		// insertStartingActivities();
 
 		// Show download Dialog
@@ -108,14 +93,10 @@ public abstract class BaseHomeScreenActivity extends Activity {
 
 	/**
 	 * Get exercise type information for different exercise activity
-	 * 
-	 * @return
 	 */
 	protected abstract ExerciseTypeEnum getExerciseType();
 
-	/*
-	 * onCreateOptionsMenu method
-	 * 
+	/**
 	 * Inflate the menu; this adds items to the action bar if it is present.
 	 */
 	@Override
@@ -124,13 +105,9 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		return true;
 	}
 
-	/*
-	 * onOptionsSelected
-	 * 
+	/**
 	 * Display server, network or download dialog depending on which menu item
 	 * has been selected
-	 * 
-	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -138,7 +115,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 
 		// Help button is presses
 		case R.id.help_home:
-			DialogHelper help = new DialogHelper(context);
+			DialogHelper help = new DialogHelper(this);
 			// Change words to more specifically for each activity in
 			// strings.xml.
 			help.displayHelpDialog(getHelpMessage());
@@ -148,7 +125,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		case R.id.change_server:
 
 			// Set server settings
-			DialogChangeServer serverDialog = new DialogChangeServer(context);
+			DialogChangeServer serverDialog = new DialogChangeServer(this);
 			serverDialog.loadServerPath();
 			serverDialog.displayChangeServerDialog();
 			return true;
@@ -157,7 +134,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		case R.id.network_settings:
 
 			// Set network settings
-			DialogNetworkSettings networkSettings = new DialogNetworkSettings(context);
+			DialogNetworkSettings networkSettings = new DialogNetworkSettings(this);
 			networkSettings.loadNetworkSettings();
 			networkSettings.displayNetworkDialog();
 			return true;
@@ -172,12 +149,26 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * showDownloadDialog method
+	 * 
+	 * Creates the download dialog box. If "Yes" is pressed, calls
+	 * startingDownload()
+	 */
+	protected void showDownloadDialog() {
+		DialogHelper de = new DialogHelper(this);
+		de.displayDownloadDialog(new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				startingDownload();
+			}
+		});
+	}
 
 	/**
-	 * Get help message
-	 * @return
+	 * Get help message, for building help dialog.
 	 */
-	protected String getHelpMessage() {
+	public String getHelpMessage() {
 		return getString(R.string.home_screen_help_message);
 	}
 
@@ -186,33 +177,29 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 * Home Screen is pressed.
 	 */
 	public void play(View view) {
-		Intent i = new Intent(BaseHomeScreenActivity.this, ListScreen.class);
+		Intent i = new Intent(BaseHomeScreenActivity.this, getNextActivityClass());
 		startActivity(i);
 	}
 
-	/*
-	 * initialiseDatabase method The first time the app is opened, create the
-	 * internal database
+	/**
+	 * Return the class of next activity for building Intent.
 	 */
-	public void initialiseDatabase() {
-		CollocationDatabaseHelper dbHelper = new CollocationDatabaseHelper(context);
-		dbManager = new CollocationDatabaseManager(context);
-		dbHelper.closeDatabase();
-	}
+	public abstract Class<?> getNextActivityClass();
 
-	/*
+	//TODO: Sould add insertStartingActivities function
+	/**
 	 * insertStartingActivities method
 	 * 
 	 * This method inserts ten activities into the database when the app is
 	 * opened for the first time. For the collocation xml see res / raw /
 	 * game_name.xml Ten activities will need to be added.
 	 */
-	/**
-	 * TODO: insertStartingActivities function should add back after refactoring
+	/*
+	 *  insertStartingActivities function should add back after refactoring
 	 * public void insertStartingActivities() {
 	 * 
 	 * CollocationNetworkXmlParser colloParser = new
-	 * CollocationNetworkXmlParser(); //TODO: To be refactored // Check is first
+	 * CollocationNetworkXmlParser(); // Check is first
 	 * time execution, and set first time flag automatically. if
 	 * (FlaxUtil.isFirstTime()) { try { // Add activities to the database
 	 * dbManager.addActivity("1a", "1", LocalConstants.ACTIVITY_TYPE, "hangman",
@@ -245,66 +232,26 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 */
 
 	/**
-	 * showDownloadDialog method
-	 * 
-	 * Creates the download dialog box. If "Yes" is pressed, calls
-	 * startingDownload()
+	 * Return URLs should be download by this APP;
 	 */
-	private void showDownloadDialog() {
-		Log.d(TAG, "download dialog being created ...");
-
-		// Create dialog
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-		alertDialogBuilder
-
-		// set title
-				.setTitle("Check for new exercises?")
-
-				// set dialog content
-				.setMessage("Would you like to connect to the server and download new exercises?").setCancelable(false)
-
-				// set "Yes" button
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						// if "yes" is clicked, search new exercises
-						dialog.cancel();
-						startingDownload();
-					}
-				})
-
-				// set "No" button
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						// if "no" is clicked, close dialog
-						dialog.cancel();
-					}
-				});
-
-		Log.d(TAG, "display download dialog");
-		alertDialogBuilder.create().show();
-	}
-
+	public abstract String[] getUrls();
+	
 	/**
-	 * startingDownload method Starting to download all exercises in the
-	 * specific activity.
+	 * Download all exercises in given URLs.
 	 */
 	private void startingDownload() {
 		// if connected
 		if (FlaxUtil.isConnected()) {
 			Log.d(TAG, "connected. Start downloading");
-			BackgroundDowloadExercises backgoundDownload = new BackgroundDowloadExercises(context, EXERCISE_TYPE);
+			BackgroundDowloadExercises backgoundDownload = new BackgroundDowloadExercises(this, EXERCISE_TYPE);
 			backgoundDownload.execute(getUrls());
 		} else {
 			Log.d(TAG, "Internet not Connected");
 			Toast.makeText(
-					context,
+					this,
 					"There was a problem connecting to the server. "
 							+ "Please ensure that you are connected to the internet "
 							+ "and that your Network Settings are set correctly", Toast.LENGTH_LONG).show();
 		}
 	}
-
-	protected abstract String[] getUrls();
-
-
-} // end of HomeScreen class
+}

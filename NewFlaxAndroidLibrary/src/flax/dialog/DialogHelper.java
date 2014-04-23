@@ -102,7 +102,7 @@ public class DialogHelper {
 	 * 
 	 * Displays the restart game dialog
 	 */
-	public void displayRestartGameDialog(final DialogInterface.OnClickListener restartCallback) {
+	public void displayRestartGameDialog(final DialogInterface.OnClickListener yesCallback) {
 
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
@@ -114,7 +114,7 @@ public class DialogHelper {
 				.setMessage("Would you like to restart this game?")
 
 				// set dialog save button
-				.setPositiveButton("Yes", restartCallback)
+				.setPositiveButton("Yes", yesCallback)
 
 				// set dialog Done button
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -165,6 +165,39 @@ public class DialogHelper {
 		}})
 		
 		// create alert dialog and display it
+		.create().show();
+	}
+	
+
+	/**
+	 * showDownloadDialog method
+	 * 
+	 * Creates the download dialog box. If "Yes" is pressed, calls
+	 * startingDownload()
+	 */
+	public void displayDownloadDialog(final DialogInterface.OnClickListener yesCallback) {
+		//Log.d(TAG, "download dialog being created ...");
+
+		// Create dialog
+		new AlertDialog.Builder(context)
+
+		// set title
+				.setTitle("Check for new exercises?")
+
+				// set dialog content
+				.setMessage("Would you like to connect to the server and download new exercises?").setCancelable(false)
+
+				// set "Yes" button
+				.setPositiveButton("Yes", yesCallback)
+
+				// set "No" button
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// if "no" is clicked, close dialog
+						dialog.cancel();
+					}
+				})
+
 		.create().show();
 	}
 } // end of class

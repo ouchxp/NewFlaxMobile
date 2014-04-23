@@ -24,9 +24,14 @@ import flax.activity.ExerciseTypeEnum;
  */
 public class ListScreen extends BaseListScreenActivity {
 
-	@Override
-	protected ExerciseTypeEnum getExerciseType() {
+	public ExerciseTypeEnum getExerciseType() {
 		return ExerciseTypeEnum.HANGMAN;
 	}
 
+	/**
+	 * Return the class of next activity for building Intent.
+	 */
+	public Class<?> getNextActivityClass() {
+		return PagerGameScreenActivity.class;
+	}
 }

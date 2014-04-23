@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -32,7 +31,7 @@ import flax.entity.hangman.Word;
 import flax.hangman.R;
 import flax.hangman.view.GamePageFragment.OnPageEventListener;
 
-public class PagerGameScreenActivity extends FragmentActivity implements OnPageChangeListener, OnPageEventListener {
+public class PagerGameScreenActivity extends FragmentActivity implements OnPageEventListener {
 
 	private static final String TAG = "GameScreen";
 
@@ -51,7 +50,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	 * becomes too memory intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	protected ListPagerAdapter<Word, String> mPagerAdapter;
+	@SuppressWarnings("rawtypes")
+	protected ListPagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -81,16 +81,25 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 		updateTitle();
 
 		/** Setup pager */
-		mPagerAdapter = new ListPagerAdapter<Word, String>(getSupportFragmentManager(), getPageItemList(), getWordDao());
+		setUpListPagerAdapter();
 
-		// Set up the ViewPager with the sections adapter.
+		// Setup the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
 		//mViewPager.setOnPageChangeListener(this);
 		
+		// Setup page indicator
+		setUpPageIndicator();
+		
+	}
+
+	private void setUpPageIndicator() {
 		CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
-		
+	}
+	
+	private void setUpListPagerAdapter(){
+		mPagerAdapter = new ListPagerAdapter<Word, String>(getSupportFragmentManager(), getPageItemList(), getWordDao());
 	}
 
 	private int calculatePossibleScore(BaseExercise exercise) {
@@ -98,7 +107,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	}
 
 	private void updateTitle() {
-		setTitle("Score:" + mExercise.getScore() + "/" + mExercise.getPossibleScore());
+		setTitle("Score: " + mExercise.getScore() + "/" + mExercise.getPossibleScore());
 	}
 
 	private Collection<Word> getPageItemList() {
@@ -167,17 +176,12 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 			return true;
 
 			// Menu Item -- check answer pressed ...
-			// case R.id.check_answer:
-			//
-			// // Display Check Answer Dialog
-			// GameItem.setEndTime();
-			// gameEngine.checkAnswer();
-			//
-			// // Re-display score
-			// TextView tvScore = (TextView)findViewById(SCORE_ID);
-			// tvScore.setText("Score: " + GameItem.getScore() + " / " +
-			// GameItem.getPossibleScore());
-			// return true;
+		case R.id.check_answer:
+			String date = dateFormatter.format(new Date());
+			mExercise.setEndTime(date);
+			GamePageFragment f = (GamePageFragment)mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+			f.checkAnswer();
+			return true;
 
 			// Menu Item -- restart game pressed ...
 		case R.id.restart_game:
@@ -229,12 +233,12 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 			getWordDao().callBatchTasks(new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
-					Collection<Word> words = mExercise.getWords();
+					Collection<Word> words = getPageItemList();
 					for (Word word : words) {
 						word.resetPage();
 						getWordDao().update(word);
 					}
-					mPagerAdapter.updateDataSet(mExercise.getWords());
+					mPagerAdapter.updateDataSet(getPageItemList());
 					return null;
 				}
 			});
@@ -311,10 +315,20 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 	@Override
 	public void onPageFinished(Word itme, boolean isWin) {
 		if (isWin) {
-			mExercise.setScore(mExercise.getScore() + 1);
+			mExercise.setScore(calculateScore());
 			updateTitle();
 		}
 
+	}
+
+	private int calculateScore() {
+		int score = 0;
+		for (Word word : mExercise.getWords()) {
+			if(PAGE_WIN == word.getPageStatus()){
+				score++;
+			}
+		}
+		return score;
 	}
 
 	/**
@@ -358,17 +372,4 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageC
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public void onPageSelected(int position) {
-	}
-
-	@Override
-	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
 }

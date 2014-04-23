@@ -46,40 +46,33 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	private TextView mWordTextView;
 	private ImageView mHangmanImage;
 
-	@SuppressWarnings("unchecked")
-	public void updatePageData(Object item, Dao<?, ?> itemDao) {
-		mItem = (Word) item;
-		wordDao = (Dao<Word, String>) itemDao;
-	}
-	
-//	/**
-//	 * Returns a new instance of this fragment for the given section number.
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public static GamePageFragment newInstance(Object item, Dao<?, ?> itemDao) {
-//		Log.i(TAG, "newInstance");
-//		GamePageFragment fragment = new GamePageFragment();
-//		fragment.mItem = (Word) item;
-//		fragment.wordDao = (Dao<Word, String>) itemDao;
-//		return fragment;
-//	}
 
-	public GamePageFragment() {
-	}
+	/** Default Constructor */
+	public GamePageFragment() {}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Keep the fragment object when activity recreate.
 		setRetainInstance(true);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		Log.i(TAG, "onAttach");
+		// Setup listener in order to dispatch event to activity.
 		this.listener = (OnPageEventListener) activity;
 	}
 
+	@SuppressWarnings("unchecked")
+	public void updatePageData(Object item, Dao<?, ?> itemDao) {
+		mItem = (Word) item;
+		wordDao = (Dao<Word, String>) itemDao;
+	}
+
+	/**
+	 * Initiate View
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.i(TAG, "onCreateView");
@@ -91,16 +84,19 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 
 		// Initialize image view
 		mHangmanImage = (ImageView) mRootView.findViewById(R.id.hangman);
-		setupImageView();
+		setUpImageView();
 		
 		// Get and hold all buttons for future use
 		mBtnList = getAllButtons();
-		setupAllButtons();
+		setUpAllButtons();
 		
 		return mRootView;
 	}
 
-	private void setupImageView() {
+	/**
+	 * Setup image view, decide which image should be shown. 
+	 */
+	private void setUpImageView() {
 		int pageStatus = mItem.getPageStatus();
 		switch (pageStatus) {
 		case PAGE_WIN:
@@ -119,14 +115,15 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	/**
 	 * Setup buttons' listener, enable etc.
 	 */
-	private void setupAllButtons() {
+	private void setUpAllButtons() {
+		// Page status is fail or win means page is done.
 		boolean isPageDone = (mItem.getPageStatus() == PAGE_FAIL || mItem.getPageStatus() == PAGE_WIN);
 		String pressedKeys = mItem.getExtra(PRESSED_KEYS, "");
 		for (Button btn : mBtnList) {
-			String key = btn.getText().toString().toLowerCase(ENGLISH);
+			String letter = btn.getText().toString().toLowerCase(ENGLISH);
 			
-			// Disable pressed keys
-			if(isPageDone || pressedKeys.contains(key)){
+			// Disable pressed buttons, and when page is done, disable all buttons.
+			if(isPageDone || pressedKeys.contains(letter)){
 				btn.setEnabled(false);
 				continue;
 			}
@@ -136,10 +133,27 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		}
 	}
 
+	/**
+	 * Initiate button list
+	 */
+	private List<Button> getAllButtons() {
+		List<Button> btnList = new ArrayList<Button>();
+		for (int groupId : BUTTON_GROUPS) {
+			LinearLayout btnGroup = (LinearLayout) mRootView.findViewById(groupId);
+			for (int i = 0; i < btnGroup.getChildCount(); i++) {
+				btnList.add((Button) btnGroup.getChildAt(i));
+			}
+		}
+		return btnList;
+	}
+
+	/**
+	 * Will be called when user click any letter button.
+	 */
 	@Override
 	public void onClick(View v) {
-
 		String letter = ((Button) v).getText().toString().toLowerCase(ENGLISH);
+		
 		// Update pressed keys
 		String pressedKeys = mItem.getExtra(PRESSED_KEYS, "") + letter;
 		mItem.putExtra(PRESSED_KEYS, pressedKeys);
@@ -160,6 +174,7 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 
 		checkAnswer();
 		
+		// Dispatch event to activity, in order to update summary's start/end time 
 		listener.onPageInteracted(mItem);
 	}
 
@@ -200,41 +215,41 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 					mHangmanImage.setImageResource(isWin ? R.drawable.face_smile : R.drawable.face_worried);
 				}
 			}, 300);
-
-			listener.onPageFinished(mItem, isWin);
 			
 			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
 			
+			// Save the status for score calculation
+			updateItem(mItem);
+			
+			// Call activity to calculate score
+			listener.onPageFinished(mItem, isWin);
+			
 			// Disable all buttons
-			setupAllButtons();
+			setUpAllButtons();
 		}
-	}
-
-	/**
-	 * Initiate button list
-	 * 
-	 * @return
-	 */
-	private List<Button> getAllButtons() {
-		List<Button> btnList = new ArrayList<Button>();
-		for (int groupId : BUTTON_GROUPS) {
-			LinearLayout btnGroup = (LinearLayout) mRootView.findViewById(groupId);
-			for (int i = 0; i < btnGroup.getChildCount(); i++) {
-				btnList.add((Button) btnGroup.getChildAt(i));
-			}
-		}
-		return btnList;
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		Log.i(TAG, "onStop");
+		// Save information when page become not visible.
+		updateItem(mItem);
+	}
+	
+	/**
+	 * Update single item to database.
+	 * @param item
+	 * @return recode numbers updated.
+	 */
+	private int updateItem(Word item){
+		int count = 0;
 		try {
-			wordDao.update(mItem);
+			count = wordDao.update(item);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return count;
 	}
 	
 	/**

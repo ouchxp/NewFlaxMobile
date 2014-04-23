@@ -11,14 +11,19 @@ import flax.utils.FlaxUtil;
  */
 public class HomeScreen extends BaseHomeScreenActivity{
 
-	@Override
-	protected ExerciseTypeEnum getExerciseType() {
+	public ExerciseTypeEnum getExerciseType() {
 		return ExerciseTypeEnum.HANGMAN;
 	}
 
-	@Override
-	protected String[] getUrls() {
+	public String[] getUrls() {
 		String url = FlaxUtil.getServerPath() + LocalConstants.HANGMAN_URL;
 		return new String[]{url};
+	}
+
+	/**
+	 * Return the class of next activity for building Intent.
+	 */
+	public Class<?> getNextActivityClass() {
+		return ListScreen.class;
 	}
 }
