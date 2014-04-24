@@ -9,7 +9,10 @@ public class GlobalConstants {
 	public static final String DOWNLOAD_STATUS_KEY  = "downloadStatus";
 	public static final String SERVER_PATH_KEY  = "server";
 	public static final int DATABASE_VERSION = 1;
+	
+	// Database
 	public static final String DATABASE_NAME = "NewFlax.db";
+	public static final int MAX_EAGER_LEVEL = 10;
 	
 	public static final Locale ENGLISH = Locale.ENGLISH;
 	public static final String SUMMARY_DATE_FORMAT = "E MMM d HH:mm:ss";

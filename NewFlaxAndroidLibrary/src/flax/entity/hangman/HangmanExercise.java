@@ -1,5 +1,7 @@
 package flax.entity.hangman;
 
+import static flax.utils.GlobalConstants.*;
+
 import java.util.Collection;
 
 import org.simpleframework.xml.Attribute;
@@ -17,7 +19,7 @@ import flax.entity.base.BaseExercise;
 @DatabaseTable(tableName = "hangman_exercise")
 @Root(name = "response")
 public class HangmanExercise extends BaseExercise {
-	
+
 	@DatabaseField
 	@Attribute
 	@Path("player")
@@ -27,7 +29,7 @@ public class HangmanExercise extends BaseExercise {
 	@Attribute(name = "from")
 	private String from;
 
-	@ForeignCollectionField(eager = false, foreignFieldName = "exercise")
+	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL, foreignFieldName = "exercise")
 	@Path("player")
 	@ElementList(inline = true, entry = "word")
 	private Collection<Word> words;
