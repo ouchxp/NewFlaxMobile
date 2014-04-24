@@ -2,7 +2,7 @@ package flax.entity.base;
 
 import com.j256.ormlite.field.DatabaseField;
 
-public class BaseExercise extends BaseEntity{
+public class BaseExerciseDetail extends BaseEntity{
 	@DatabaseField(id=true)
 	private String uniqueUrl;
 	
@@ -24,7 +24,7 @@ public class BaseExercise extends BaseEntity{
 	/** Summary fields End */
 	
 	/** Constructor */
-	public BaseExercise(){}
+	public BaseExerciseDetail(){}
 
 	/** Get/Set Methods */
 	public int getScore() {

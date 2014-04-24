@@ -23,7 +23,7 @@ import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
 import flax.entity.base.BaseEntity;
-import flax.entity.base.BaseExercise;
+import flax.entity.base.BaseExerciseDetail;
 import flax.entity.base.BasePage;
 import flax.entity.exerciselist.Exercise;
 import flax.entity.hangman.HangmanExerciseDetail;
@@ -104,7 +104,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 		setTitle("Score: " + mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
 	}
 
-	private int calculatePossibleScore(BaseExercise exercise) {
+	private int calculatePossibleScore(BaseExerciseDetail exercise) {
 		return ((HangmanExerciseDetail) exercise).getWords().size();
 	}
 

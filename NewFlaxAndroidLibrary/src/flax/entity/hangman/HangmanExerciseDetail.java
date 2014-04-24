@@ -14,11 +14,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import flax.entity.base.BaseExercise;
+import flax.entity.base.BaseExerciseDetail;
 
 @DatabaseTable(tableName = "hangman_exercise")
 @Root(name = "response")
-public class HangmanExerciseDetail extends BaseExercise {
+public class HangmanExerciseDetail extends BaseExerciseDetail {
 
 	@DatabaseField
 	@Attribute
