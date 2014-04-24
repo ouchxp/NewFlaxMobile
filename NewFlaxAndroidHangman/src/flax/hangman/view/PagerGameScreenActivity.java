@@ -139,8 +139,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		try {
 			return getExerciseDao().queryForId(exerciseId);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -152,8 +151,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		try {
 			return getExerciseDetailDao().queryForId(exerciseId);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -246,7 +244,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 
 			updateTitle();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -297,8 +295,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 			}
 			getExerciseDao().update(mExercise);
 			getExerciseDetailDao().update(mExerciseDetail);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -322,7 +320,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 			try {
 				mWordDao = getDBHelper().getDao(Word.class);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		return mWordDao;

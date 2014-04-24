@@ -247,7 +247,7 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		try {
 			count = wordDao.update(item);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return count;
 	}

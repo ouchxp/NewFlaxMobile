@@ -109,7 +109,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		// If new exercise exist, download and save exercise detail to database.
@@ -132,7 +132,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			try {
 				Thread.sleep(1000-timeSpent);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -183,7 +183,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				}
 			});
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -203,8 +203,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			}
 			return null;
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -224,7 +223,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				a.setUrl(urlConverter.convert(a.getUrl()));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return downloadedExercises;
 	}

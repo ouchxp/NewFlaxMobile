@@ -33,7 +33,7 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, HangmanExerciseDetail.class);
             TableUtils.createTable(connectionSource, Word.class);
         } catch (SQLException e) {
-            e.printStackTrace();
+        	throw new RuntimeException(e);
         }
 	}
 
@@ -50,7 +50,7 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Word.class, true);
             onCreate(db, connectionSource);
         } catch (SQLException e) {
-            e.printStackTrace();
+        	throw new RuntimeException(e);
         }
 	}
 

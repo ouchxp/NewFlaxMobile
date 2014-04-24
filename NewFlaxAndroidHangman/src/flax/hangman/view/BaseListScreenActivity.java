@@ -45,12 +45,14 @@ import flax.hangman.R;
  * @author Nan Wu
  */
 public abstract class BaseListScreenActivity extends ListActivity {
-
 	protected static final String TAG = "ListScreen";
-	
+	private static final int INVALID_POS = -1;
+	private int mCurrentPos = INVALID_POS;
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
+	private Dao<Exercise, String> mExerciseDao = null;
 	
+	protected ExerciseListAdapter mAdapter;
 	protected List<Exercise> mExercises;
 	protected ExerciseTypeEnum EXERCISE_TYPE;
 
@@ -68,8 +70,8 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		mExercises = getExercises();
 		
 		// Set the list adapter
-		setListAdapter(new ExerciseListAdapter(this, mExercises));
-
+		mAdapter = new ExerciseListAdapter(this, mExercises);
+		setListAdapter(mAdapter);
 		// Set the list screen title to be the activity type
 		setTitle(EXERCISE_TYPE.getTitle());
 	}
@@ -80,10 +82,9 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	private List<Exercise> getExercises() {
 		List<Exercise> items = null;
 		try {
-			Dao<Exercise, String> exerciseDao = getDaoHelper().getDao(Exercise.class);
-			items = exerciseDao.queryForAll();
+			items = getExerciseDao().queryForAll();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return items;
 	}
@@ -95,6 +96,9 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		//Save position
+		mCurrentPos = position;
+		
 		Intent i = new Intent(BaseListScreenActivity.this, getNextActivityClass());
 		// Pass exercise id
 		String exerciseId = mExercises.get(position).getUrl();
@@ -146,6 +150,42 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		}
 	}
 	
+	/**
+	 * Check exercise changes and update list view.
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// Check whether exercise status changed.
+		if(mCurrentPos != INVALID_POS){
+			final Exercise currentExercise = mExercises.get(mCurrentPos);
+			final String oldStatus = currentExercise.getStatus();
+			
+			// Delay for 500ms, cause GameScreen's onStop runs later than ListScreen's onResume
+			getListView().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					
+					// refresh current entity
+					try {
+						getExerciseDao().refresh(currentExercise);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+					
+					// Get new status
+					String newStatus = currentExercise.getStatus();
+					
+					// If status changed then update list
+					if(!oldStatus.equals(newStatus)){
+						mAdapter.notifyDataSetChanged();
+					}
+				}
+			}, 500);
+		}
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -157,6 +197,17 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		}
 	}
 
+	/**
+	 * Generate DatabaseDao
+	 * @throws SQLException 
+	 */
+	protected Dao<Exercise, String> getExerciseDao() throws SQLException {
+		if (mExerciseDao == null) {
+			mExerciseDao = getDaoHelper().getDao(Exercise.class);
+		}
+		return mExerciseDao;
+	}
+	
 	/**
 	 * Generate DatabaseDaoHelper for database operation.
 	 */

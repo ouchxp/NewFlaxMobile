@@ -23,6 +23,8 @@ import java.util.Collection;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import android.util.Log;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
@@ -39,6 +41,7 @@ import flax.network.Downloader;
  * @author Nan Wu
  */
 public class XMLParser {
+	private static final String TAG = "XMLParser";
 	private static final String UNIQUE_URL_SETTING_METHOD = "setUniqueUrl";
 	/* XmlParser class constructor */
 	private XMLParser() {}
@@ -69,6 +72,7 @@ public class XMLParser {
 			
 			return result;
 		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
 			e.printStackTrace();
 			return null;
 		} finally {
@@ -76,6 +80,7 @@ public class XMLParser {
 				try {
 					is.close();
 				} catch (IOException e) {
+					Log.e(TAG, e.getMessage());
 					e.printStackTrace();
 				}
 			}
