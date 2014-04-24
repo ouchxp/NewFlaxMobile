@@ -98,7 +98,6 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 		// Hangman exercise doesn't need checkAnswer menu.
 		MenuItem checkAnswerMenu = menu.findItem(R.id.check_answer);
 		checkAnswerMenu.setVisible(false);
-		//checkAnswerMenu.setEnabled(false);
 
 		return dispalyMenu;
 	}

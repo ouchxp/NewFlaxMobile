@@ -9,7 +9,6 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +27,7 @@ import flax.hangman.R;
  * A placeholder fragment containing a simple view.
  */
 public class GamePageFragment extends Fragment implements OnClickListener {
-	private static final String TAG = "GamePageFragment";
+	public static final String TAG = "GamePageFragment";
 	private static final String PRESSED_KEYS = "pressedKeys";
 	private static final String MOVES = "moves";
 	
@@ -75,7 +74,6 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.i(TAG, "onCreateView");
 		mRootView = inflater.inflate(R.layout.game_screen_fragment, container, false);
 		
 		// Initialize text view
@@ -234,7 +232,6 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onStop() {
 		super.onStop();
-		Log.i(TAG, "onStop");
 		// Save information when page become not visible.
 		updateItem(mItem);
 	}
