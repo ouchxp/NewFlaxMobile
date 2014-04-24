@@ -16,26 +16,27 @@ import com.j256.ormlite.dao.Dao;
 import flax.entity.base.BasePage;
 
 /**
- * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
- * one of the sections/tabs/pages.
+ * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
+ * of the sections/tabs/pages.
  */
-public class ListPagerAdapter<F> extends FragmentPagerAdapter {
+public class ListPagerAdapter<F extends GamePageFragment, P extends BasePage> extends FragmentPagerAdapter {
 	private static final String TAG = "ListPagerAdapter";
 	private SparseArray<GamePageFragment> mFrags = new SparseArray<GamePageFragment>();
-	private List<BasePage> mItems;
-	private Dao<?, ?> mItemDao;
+	private List<P> mItems;
+	private Dao<P, ?> mItemDao;
 	private Class<F> mFragmentClass;
-	public ListPagerAdapter(FragmentManager fm, Collection<BasePage> pageItems, Dao<?, ?> itemDao, Class<F> fragmentClass) {
+
+	public ListPagerAdapter(FragmentManager fm, Collection<P> pageItems, Dao<P, ?> itemDao, Class<F> fragmentClass) {
 		super(fm);
-		mItems = new ArrayList<BasePage>(pageItems);
+		mItems = new ArrayList<P>(pageItems);
 		this.mItemDao = itemDao;
 		this.mFragmentClass = fragmentClass;
 	}
 
 	/**
-	 * getItem should only be used by adapter it self, create simple fragment object
-	 * in order to initiate viewpager.
-	 * Get fragment objects should use getFragment method.
+	 * getItem should only be used by adapter it self, create simple fragment
+	 * object in order to initiate viewpager. Get fragment objects should use
+	 * getFragment method.
 	 */
 	@Override
 	public Fragment getItem(int position) {
@@ -59,17 +60,18 @@ public class ListPagerAdapter<F> extends FragmentPagerAdapter {
 	public int getCount() {
 		return mItems.size();
 	}
-	
+
 	/**
-	 * Ensure that when dataSet changed fragment will be recreate. 
+	 * Ensure that when dataSet changed fragment will be recreate.
 	 */
 	@Override
 	public int getItemPosition(Object object) {
 		return POSITION_NONE;
 	}
-	
+
 	/**
-	 * instantiateItem is the place where should pass object arguments to fragments.
+	 * instantiateItem is the place where should pass object arguments to
+	 * fragments.
 	 */
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
@@ -78,52 +80,58 @@ public class ListPagerAdapter<F> extends FragmentPagerAdapter {
 		mFrags.put(position, f);
 		return f;
 	}
-	
+
 	/**
-	 * Update dataSet of this adapter, and then notifyDataSetChanged will be called
-	 * to recreate fragments.
+	 * Update dataSet of this adapter, and then notifyDataSetChanged will be
+	 * called to recreate fragments.
+	 * 
 	 * @param items
 	 */
-	public void updateDataSet(Collection<BasePage> items) {
-		if(items != null){
-			mItems = new ArrayList<BasePage>(items);
+	public void updateDataSet(Collection<P> items) {
+		if (items != null) {
+			mItems = new ArrayList<P>(items);
 		}
 		super.notifyDataSetChanged();
 	}
-	
+
 	/**
 	 * When distoryItem remove item from fragment list.
 	 */
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        mFrags.remove(position);
-        super.destroyItem(container, position, object);
-    }
+	@Override
+	public void destroyItem(ViewGroup container, int position, Object object) {
+		mFrags.remove(position);
+		super.destroyItem(container, position, object);
+	}
 
-    /**
-     * This allow use to get fragment object in specific position.
-     * @param position
-     * @return
-     */
+	/**
+	 * This allow use to get fragment object in specific position.
+	 * 
+	 * @param position
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public F getFragment(int position) {
-        return (F) mFrags.get(position);
-    }
-    
-    /**
-     * <b>Not recommend</b> to use this method, should use updateDataSet instead.
-     * Cause updateDataSet provide an argument to allow updating dataSet.<br>
-     * This is because of when using <b>lazy collection</b> in OrmLite, retrieve
-     * element from lazy collection multiple times will return different objects
-     * represent database records of retrieving time point. <br>That means the feature
-     * of "pass by reference" is hard to gain on dataSet. Modify different objects
-     * won't affect dataSet's value.<br>
-     * That could be problematic when using <b>lazy collection</b>, so It's better
-     * to reset dataSet using updateDataSet method.
-     * @see http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_2.html#Foreign-Collection
-     */
-    @Override
-    public void notifyDataSetChanged() {
-    	super.notifyDataSetChanged();
-    }
+		return (F) mFrags.get(position);
+	}
+
+	/**
+	 * <b>Not recommend</b> to use this method, should use updateDataSet
+	 * instead. Cause updateDataSet provide an argument to allow updating
+	 * dataSet.<br>
+	 * This is because of when using <b>lazy collection</b> in OrmLite, retrieve
+	 * element from lazy collection multiple times will return different objects
+	 * represent database records of retrieving time point. <br>
+	 * That means the feature of "pass by reference" is hard to gain on dataSet.
+	 * Modify different objects won't affect dataSet's value.<br>
+	 * That could be problematic when using <b>lazy collection</b>, so It's
+	 * better to reset dataSet using updateDataSet method.
+	 * 
+	 * @see http
+	 *      ://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_2.html#Foreign
+	 *      -Collection
+	 */
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+	}
 }

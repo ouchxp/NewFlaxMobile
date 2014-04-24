@@ -27,7 +27,14 @@ import flax.entity.base.BasePage;
 import flax.entity.exerciselist.Exercise;
 import flax.hangman.R;
 
-public abstract class BaseGameScreenActivity extends FragmentActivity{
+/**
+ * 
+ * @author Nan Wu
+ *
+ * @param <E extends BaseExerciseDetail> corresponding to the type 
+ * @param <P>
+ */
+public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P extends BasePage> extends FragmentActivity{
 
 	public static final String TAG = "GameScreen";
 	protected static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
@@ -35,8 +42,8 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
 	private Dao<Exercise, String> mExerciseDao = null;
-	private Dao<BaseExerciseDetail, String> mExerciseDetailDao = null;
-	private Dao<BasePage, String> mPageDao = null;
+	private Dao<E, String> mExerciseDetailDao = null;
+	private Dao<P, String> mPageDao = null;
 
 	@SuppressWarnings("rawtypes")
 	protected ListPagerAdapter mPagerAdapter;
@@ -50,7 +57,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 	/** This is the item which be used to show exercise list, it contains exercise status.*/
 	protected Exercise mExercise;
 	/** This is the actual exercise detail */
-	protected BaseExerciseDetail mExerciseDetail;
+	protected E mExerciseDetail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +72,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 		mExerciseDetail = loadExerciseDetail();
 
 		/** Setup exercise */
-		mExerciseDetail.setPossibleScore(calculatePossibleScore(mExerciseDetail));
+		mExerciseDetail.setPossibleScore(calculatePossibleScore());
 
 		/** Set title */
 		updateTitle();
@@ -86,6 +93,8 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 		CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 	}
+	
+	/** Methods that sub class have to implement */
 
 	public abstract ExerciseTypeEnum getExerciseType();
 	
@@ -93,7 +102,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 
 	public abstract void updateTitle();
 
-	public abstract int calculatePossibleScore(BaseExerciseDetail exercise);
+	public abstract int calculatePossibleScore();
 
 	public abstract int calculateScore();
 
@@ -101,7 +110,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 	
 	public abstract String getHelpMessage();
 
-	public abstract Collection<BasePage> getPageItemList();
+	public abstract Collection<P> getPageItemList();
 
 	/**
 	 * Load game data using ormlite
@@ -119,10 +128,10 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 	/**
 	 * Load game content data using ormlite
 	 */
-	private BaseExerciseDetail loadExerciseDetail() {
+	private E loadExerciseDetail() {
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
-			return getExerciseDetailDao().queryForId(exerciseId);
+			return (E) getExerciseDetailDao().queryForId(exerciseId);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -202,8 +211,8 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 				@SuppressWarnings("unchecked")
 				@Override
 				public Void call() throws Exception {
-					Collection<BasePage> pages = getPageItemList();
-					for (BasePage page : pages) {
+					Collection<P> pages = getPageItemList();
+					for (P page : pages) {
 						page.resetPage();
 						getPageDao().update(page);
 					}
@@ -257,7 +266,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 		return (GamePageFragment) mPagerAdapter.getFragment(mViewPager.getCurrentItem());
 	}
 
-	protected Dao<BasePage, String> getPageDao() throws SQLException{
+	protected Dao<P, String> getPageDao() throws SQLException{
 		if (mPageDao == null) {
 			mPageDao = getDBHelper().getDao(EXERCISE_TYPE.getPageEntityClass());
 		}
@@ -271,7 +280,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity{
 		return mExerciseDao;
 	}
 
-	protected Dao<BaseExerciseDetail, String> getExerciseDetailDao() throws SQLException {
+	protected Dao<E, String> getExerciseDetailDao() throws SQLException {
 		if (mExerciseDetailDao == null) {
 			mExerciseDetailDao = getDBHelper().getDao(EXERCISE_TYPE.getExerciseEntityClass());
 		}

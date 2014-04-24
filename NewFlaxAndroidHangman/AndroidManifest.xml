@@ -34,7 +34,6 @@
         <activity
             android:theme="@style/MyTheme"
             android:name="flax.hangman.view.GameScreen"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_collocation_game_view" >
         </activity>
     </application>

@@ -221,11 +221,13 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 			// Save the status for score calculation
 			updateItem(mItem);
 			
-			// Call activity to calculate score
-			listener.onPageFinished(mItem, isWin);
-			
 			// Disable all buttons
 			setUpAllButtons();
+		}
+		
+		// Call activity to calculate score
+		if(isWin){
+			listener.onPageWin(mItem);
 		}
 	}
 
@@ -257,7 +259,7 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 	 * @author Nan Wu
 	 */
 	public interface OnPageEventListener {
-		public void onPageFinished(Word itme, boolean isWin);
+		public void onPageWin(Word itme);
 		public void onPageInteracted(Word itme);
 	}
 

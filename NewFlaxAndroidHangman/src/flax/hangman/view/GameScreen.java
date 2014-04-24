@@ -19,11 +19,9 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import flax.activity.ExerciseTypeEnum;
-import flax.entity.base.BaseExerciseDetail;
 import flax.entity.base.BasePage;
 import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
@@ -40,12 +38,7 @@ import flax.hangman.view.GamePageFragment.OnPageEventListener;
  * 
  * @author Nan Wu
  */
-public class GameScreen extends BaseGameScreenActivity implements OnPageEventListener {
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
+public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Word> implements OnPageEventListener {
 
 	@Override
 	public String getHowToPlayMessage() {
@@ -65,8 +58,8 @@ public class GameScreen extends BaseGameScreenActivity implements OnPageEventLis
 	@Override
 	public void setUpListPagerAdapter() {
 		try {
-			mPagerAdapter = new ListPagerAdapter<GamePageFragment>(getSupportFragmentManager(), getPageItemList(),
-					getPageDao(), GamePageFragment.class);
+			mPagerAdapter = new ListPagerAdapter<GamePageFragment, Word>(getSupportFragmentManager(),
+					getPageItemList(), getPageDao(), GamePageFragment.class);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -78,8 +71,8 @@ public class GameScreen extends BaseGameScreenActivity implements OnPageEventLis
 	}
 
 	@Override
-	public int calculatePossibleScore(BaseExerciseDetail exercise) {
-		return ((HangmanExerciseDetail) exercise).getWords().size();
+	public int calculatePossibleScore() {
+		return mExerciseDetail.getWords().size();
 	}
 
 	@Override
@@ -93,19 +86,21 @@ public class GameScreen extends BaseGameScreenActivity implements OnPageEventLis
 		return score;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Collection<BasePage> getPageItemList() {
-		return (Collection) ((HangmanExerciseDetail)mExerciseDetail).getWords();
+	public Collection<Word> getPageItemList() {
+		return mExerciseDetail.getWords();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean dispalyMenu = super.onCreateOptionsMenu(menu);
+		
 		// Hangman exercise doesn't need checkAnswer menu.
 		MenuItem checkAnswerMenu = menu.findItem(R.id.check_answer);
-		checkAnswerMenu.setEnabled(false);
-		
-		return super.onCreateOptionsMenu(menu);
+		checkAnswerMenu.setVisible(false);
+		//checkAnswerMenu.setEnabled(false);
+
+		return dispalyMenu;
 	}
 
 	/**
@@ -132,11 +127,9 @@ public class GameScreen extends BaseGameScreenActivity implements OnPageEventLis
 	 * Update score after (one page) game finished.
 	 */
 	@Override
-	public void onPageFinished(Word itme, boolean isWin) {
-		if (isWin) {
-			mExerciseDetail.setScore(calculateScore());
-			updateTitle();
-		}
+	public void onPageWin(Word itme) {
+		mExerciseDetail.setScore(calculateScore());
+		updateTitle();
 	}
 
 } // end of class
