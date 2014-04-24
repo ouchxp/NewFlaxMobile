@@ -32,6 +32,6 @@ public class ListScreen extends BaseListScreenActivity {
 	 * Return the class of next activity for building Intent.
 	 */
 	public Class<?> getNextActivityClass() {
-		return PagerGameScreenActivity.class;
+		return GameScreen.class;
 	}
 }

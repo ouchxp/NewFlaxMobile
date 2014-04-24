@@ -32,17 +32,17 @@ import flax.hangman.R;
 public class GameScreen extends BaseGameScreenActivity {
 
 	@Override
-	protected String getHowToPlayMessage() {
+	public String getHowToPlayMessage() {
 		return getString(R.string.how_to_play_message);
 	}
 
 	@Override
-	protected String getHelpMessage() {
+	public String getHelpMessage() {
 		return getString(R.string.game_screen_help_message);
 	}
 
 	@Override
-	protected ExerciseTypeEnum getExerciseType() {
+	public ExerciseTypeEnum getExerciseType() {
 		return ExerciseTypeEnum.HANGMAN;
 	}
 	
