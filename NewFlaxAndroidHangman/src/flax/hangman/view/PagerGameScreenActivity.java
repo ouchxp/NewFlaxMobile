@@ -25,6 +25,7 @@ import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
 import flax.entity.base.BaseEntity;
 import flax.entity.base.BaseExercise;
+import flax.entity.base.BasePage;
 import flax.entity.exerciselist.ExerciseListItem;
 import flax.entity.hangman.HangmanExercise;
 import flax.entity.hangman.Word;
@@ -78,10 +79,10 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		// Setup the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
-		
+
 		// Setup page indicator
 		setUpPageIndicator();
-		
+
 	}
 
 	public ExerciseTypeEnum getExerciseType() {
@@ -89,12 +90,13 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	}
 
 	private void setUpPageIndicator() {
-		CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.indicator);
+		CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 	}
-	
-	private void setUpListPagerAdapter(){
-		mPagerAdapter = new ListPagerAdapter<Word, String>(getSupportFragmentManager(), getPageItemList(), getWordDao());
+
+	private void setUpListPagerAdapter() {
+		mPagerAdapter = new ListPagerAdapter<Word, String, GamePageFragment>(getSupportFragmentManager(),
+				getPageItemList(), getWordDao(), GamePageFragment.class);
 	}
 
 	private void updateTitle() {
@@ -107,8 +109,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 
 	private int calculateScore() {
 		int score = 0;
-		for (Word word : mExercise.getWords()) {
-			if(PAGE_WIN == word.getPageStatus()){
+		for (BasePage page : getPageItemList()) {
+			if (PAGE_WIN == page.getPageStatus()) {
 				score++;
 			}
 		}
@@ -181,7 +183,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		case R.id.check_answer:
 			String date = DATE_FORMATTER.format(new Date());
 			mExercise.setEndTime(date);
-			GamePageFragment f = (GamePageFragment)mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+			GamePageFragment f = (GamePageFragment) mPagerAdapter.getFragment(mViewPager.getCurrentItem());
 			f.checkAnswer();
 			return true;
 
@@ -233,17 +235,20 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 						word.resetPage();
 						getWordDao().update(word);
 					}
-					mPagerAdapter.updateDataSet(getPageItemList());
+
+					// Update dataSet if necessary, and call
+					// notifyDataSetChanged.
+					mPagerAdapter.updateDataSet(words);
 					return null;
 				}
 			});
-			
+
 			updateTitle();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * This method will be invoke when any page have interaction, In this case,
 	 * button pressed.
@@ -263,7 +268,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 			mExercise.setStartTime(date);
 		}
 	}
-	
+
 	/**
 	 * Update score after (one page) game finished.
 	 */
@@ -317,7 +322,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		}
 		return mWordDao;
 	}
-	
+
 	protected Dao<ExerciseListItem, String> getExerciseListItemDao() throws SQLException {
 		if (mExerciseListItemDao == null) {
 			mExerciseListItemDao = getDBHelper().getDao(ExerciseListItem.class);
@@ -331,7 +336,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		}
 		return mExerciseDao;
 	}
-	
+
 	/**
 	 * Generate DatabaseDaoHelper for database operation.
 	 */
