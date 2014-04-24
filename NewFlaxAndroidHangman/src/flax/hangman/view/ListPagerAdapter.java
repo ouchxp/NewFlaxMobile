@@ -17,17 +17,17 @@ import com.j256.ormlite.dao.Dao;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class ListPagerAdapter<E,ID,T> extends FragmentPagerAdapter {
+public class ListPagerAdapter<I,F> extends FragmentPagerAdapter {
 	private static final String TAG = "ListPagerAdapter";
 	private SparseArray<GamePageFragment> mFrags = new SparseArray<GamePageFragment>();
-	private List<E> mItems;
-	private Dao<E, ID> mItemDao;
-	private Class<T> fragmentClass;
-	public ListPagerAdapter(FragmentManager fm, Collection<E> items, Dao<E, ID> itemDao, Class<T> fragmentClass) {
+	private List<I> mItems;
+	private Dao<?, ?> mItemDao;
+	private Class<F> mFragmentClass;
+	public ListPagerAdapter(FragmentManager fm, Collection<I> pageItems, Dao<?, ?> itemDao, Class<F> fragmentClass) {
 		super(fm);
-		mItems = new ArrayList<E>(items);
+		mItems = new ArrayList<I>(pageItems);
 		this.mItemDao = itemDao;
-		this.fragmentClass = fragmentClass;
+		this.mFragmentClass = fragmentClass;
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class ListPagerAdapter<E,ID,T> extends FragmentPagerAdapter {
 	public Fragment getItem(int position) {
 		Fragment f = null;
 		try {
-			f = (GamePageFragment) fragmentClass.newInstance();
+			f = (GamePageFragment) mFragmentClass.newInstance();
 		} catch (InstantiationException e) {
 			Log.e(TAG, "fragment class must have a public non-argument constructor.");
 			throw new RuntimeException(e);
@@ -82,9 +82,9 @@ public class ListPagerAdapter<E,ID,T> extends FragmentPagerAdapter {
 	 * to recreate fragments.
 	 * @param items
 	 */
-	public void updateDataSet(Collection<E> items) {
-		if(items != null && mItems != items){
-			mItems = new ArrayList<E>(items);
+	public void updateDataSet(Collection<I> items) {
+		if(items != null){
+			mItems = new ArrayList<I>(items);
 		}
 		super.notifyDataSetChanged();
 	}
@@ -104,8 +104,8 @@ public class ListPagerAdapter<E,ID,T> extends FragmentPagerAdapter {
      * @return
      */
 	@SuppressWarnings("unchecked")
-	public T getFragment(int position) {
-        return (T) mFrags.get(position);
+	public F getFragment(int position) {
+        return (F) mFrags.get(position);
     }
     
     /**
@@ -120,7 +120,6 @@ public class ListPagerAdapter<E,ID,T> extends FragmentPagerAdapter {
      * to reset dataSet using updateDataSet method.
      * @see http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_2.html#Foreign-Collection
      */
-    @Deprecated
     @Override
     public void notifyDataSetChanged() {
     	super.notifyDataSetChanged();

@@ -95,7 +95,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	}
 
 	private void setUpListPagerAdapter() {
-		mPagerAdapter = new ListPagerAdapter<Word, String, GamePageFragment>(getSupportFragmentManager(),
+		mPagerAdapter = new ListPagerAdapter<Word, GamePageFragment>(getSupportFragmentManager(),
 				getPageItemList(), getWordDao(), GamePageFragment.class);
 	}
 
