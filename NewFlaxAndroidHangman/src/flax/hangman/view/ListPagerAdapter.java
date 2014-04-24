@@ -13,19 +13,21 @@ import android.view.ViewGroup;
 
 import com.j256.ormlite.dao.Dao;
 
+import flax.entity.base.BasePage;
+
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class ListPagerAdapter<I,F> extends FragmentPagerAdapter {
+public class ListPagerAdapter<F> extends FragmentPagerAdapter {
 	private static final String TAG = "ListPagerAdapter";
 	private SparseArray<GamePageFragment> mFrags = new SparseArray<GamePageFragment>();
-	private List<I> mItems;
+	private List<BasePage> mItems;
 	private Dao<?, ?> mItemDao;
 	private Class<F> mFragmentClass;
-	public ListPagerAdapter(FragmentManager fm, Collection<I> pageItems, Dao<?, ?> itemDao, Class<F> fragmentClass) {
+	public ListPagerAdapter(FragmentManager fm, Collection<BasePage> pageItems, Dao<?, ?> itemDao, Class<F> fragmentClass) {
 		super(fm);
-		mItems = new ArrayList<I>(pageItems);
+		mItems = new ArrayList<BasePage>(pageItems);
 		this.mItemDao = itemDao;
 		this.mFragmentClass = fragmentClass;
 	}
@@ -82,9 +84,9 @@ public class ListPagerAdapter<I,F> extends FragmentPagerAdapter {
 	 * to recreate fragments.
 	 * @param items
 	 */
-	public void updateDataSet(Collection<I> items) {
+	public void updateDataSet(Collection<BasePage> items) {
 		if(items != null){
-			mItems = new ArrayList<I>(items);
+			mItems = new ArrayList<BasePage>(items);
 		}
 		super.notifyDataSetChanged();
 	}

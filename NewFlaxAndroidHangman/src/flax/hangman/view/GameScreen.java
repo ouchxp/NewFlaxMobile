@@ -13,23 +13,39 @@
  */
 package flax.hangman.view;
 
+import static flax.utils.GlobalConstants.*;
+
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Date;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import flax.activity.ExerciseTypeEnum;
+import flax.entity.base.BaseExerciseDetail;
+import flax.entity.base.BasePage;
+import flax.entity.hangman.HangmanExerciseDetail;
+import flax.entity.hangman.Word;
 import flax.hangman.R;
-
-
-
+import flax.hangman.view.GamePageFragment.OnPageEventListener;
 
 /**
  * GameScreen Class
  * 
- * This class is the Game Screen Activity, it handles the game display
- * for the activity.
+ * This class is the Game Screen Activity, it handles the game display for the
+ * activity.
  * 
  * Note: Areas of code that need modifying are highlighted with a todo tag.
  * 
- * @author Jemma Konig
+ * @author Nan Wu
  */
-public class GameScreen extends BaseGameScreenActivity {
+public class GameScreen extends BaseGameScreenActivity implements OnPageEventListener {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
 
 	@Override
 	public String getHowToPlayMessage() {
@@ -45,6 +61,82 @@ public class GameScreen extends BaseGameScreenActivity {
 	public ExerciseTypeEnum getExerciseType() {
 		return ExerciseTypeEnum.HANGMAN;
 	}
+
+	@Override
+	public void setUpListPagerAdapter() {
+		try {
+			mPagerAdapter = new ListPagerAdapter<GamePageFragment>(getSupportFragmentManager(), getPageItemList(),
+					getPageDao(), GamePageFragment.class);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void updateTitle() {
+		setTitle("Score: " + mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
+	}
+
+	@Override
+	public int calculatePossibleScore(BaseExerciseDetail exercise) {
+		return ((HangmanExerciseDetail) exercise).getWords().size();
+	}
+
+	@Override
+	public int calculateScore() {
+		int score = 0;
+		for (BasePage page : getPageItemList()) {
+			if (PAGE_WIN == page.getPageStatus()) {
+				score++;
+			}
+		}
+		return score;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public Collection<BasePage> getPageItemList() {
+		return (Collection) ((HangmanExerciseDetail)mExerciseDetail).getWords();
+	}
 	
-	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Hangman exercise doesn't need checkAnswer menu.
+		MenuItem checkAnswerMenu = menu.findItem(R.id.check_answer);
+		checkAnswerMenu.setEnabled(false);
+		
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	/**
+	 * This method will be invoke when any page have interaction, In this case,
+	 * button pressed.
+	 * 
+	 * Update Incomplete status for first interaction
+	 */
+	@Override
+	public void onPageInteracted(Word itme) {
+		// Update end time for summary
+		String date = DATE_FORMATTER.format(new Date());
+		mExerciseDetail.setEndTime(date);
+
+		// Update start time for summary
+		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
+			mExercise.setStatus(EXERCISE_INCOMPLETE);
+			// Add Summary start time
+			mExerciseDetail.setStartTime(date);
+		}
+	}
+
+	/**
+	 * Update score after (one page) game finished.
+	 */
+	@Override
+	public void onPageFinished(Word itme, boolean isWin) {
+		if (isWin) {
+			mExerciseDetail.setScore(calculateScore());
+			updateTitle();
+		}
+	}
+
 } // end of class

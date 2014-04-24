@@ -22,25 +22,21 @@ import com.viewpagerindicator.CirclePageIndicator;
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
-import flax.entity.base.BaseEntity;
 import flax.entity.base.BaseExerciseDetail;
 import flax.entity.base.BasePage;
 import flax.entity.exerciselist.Exercise;
-import flax.entity.hangman.HangmanExerciseDetail;
-import flax.entity.hangman.Word;
 import flax.hangman.R;
-import flax.hangman.view.GamePageFragment.OnPageEventListener;
 
-public abstract class BaseGameScreenActivity extends FragmentActivity implements OnPageEventListener {
+public abstract class BaseGameScreenActivity extends FragmentActivity{
 
-	private static final String TAG = "GameScreen";
-	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
+	public static final String TAG = "GameScreen";
+	protected static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
 
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
 	private Dao<Exercise, String> mExerciseDao = null;
-	private Dao<BaseEntity, String> mExerciseDetailDao = null;
-	private Dao<Word, String> mWordDao = null;
+	private Dao<BaseExerciseDetail, String> mExerciseDetailDao = null;
+	private Dao<BasePage, String> mPageDao = null;
 
 	@SuppressWarnings("rawtypes")
 	protected ListPagerAdapter mPagerAdapter;
@@ -54,7 +50,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 	/** This is the item which be used to show exercise list, it contains exercise status.*/
 	protected Exercise mExercise;
 	/** This is the actual exercise detail */
-	protected HangmanExerciseDetail mExerciseDetail;
+	protected BaseExerciseDetail mExerciseDetail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +62,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 
 		/** Load exercise data from database */
 		mExercise = loadExercise();
-		mExerciseDetail = (HangmanExerciseDetail) loadExerciseDetail();
+		mExerciseDetail = loadExerciseDetail();
 
 		/** Setup exercise */
 		mExerciseDetail.setPossibleScore(calculatePossibleScore(mExerciseDetail));
@@ -86,45 +82,26 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 
 	}
 
-	public ExerciseTypeEnum getExerciseType() {
-		return ExerciseTypeEnum.HANGMAN;
-	}
-
-	private void setUpPageIndicator() {
+	public void setUpPageIndicator() {
 		CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 	}
 
-	private void setUpListPagerAdapter() {
-		mPagerAdapter = new ListPagerAdapter<Word, GamePageFragment>(getSupportFragmentManager(),
-				getPageItemList(), getWordDao(), GamePageFragment.class);
-	}
+	public abstract ExerciseTypeEnum getExerciseType();
+	
+	public abstract void setUpListPagerAdapter();
 
-	private void updateTitle() {
-		setTitle("Score: " + mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
-	}
+	public abstract void updateTitle();
 
-	private int calculatePossibleScore(BaseExerciseDetail exercise) {
-		return ((HangmanExerciseDetail) exercise).getWords().size();
-	}
+	public abstract int calculatePossibleScore(BaseExerciseDetail exercise);
 
-	private int calculateScore() {
-		int score = 0;
-		for (BasePage page : getPageItemList()) {
-			if (PAGE_WIN == page.getPageStatus()) {
-				score++;
-			}
-		}
-		return score;
-	}
+	public abstract int calculateScore();
 
 	public abstract String getHowToPlayMessage();
 	
 	public abstract String getHelpMessage();
 
-	public Collection<Word> getPageItemList() {
-		return mExerciseDetail.getWords();
-	}
+	public abstract Collection<BasePage> getPageItemList();
 
 	/**
 	 * Load game data using ormlite
@@ -142,7 +119,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 	/**
 	 * Load game content data using ormlite
 	 */
-	private BaseEntity loadExerciseDetail() {
+	private BaseExerciseDetail loadExerciseDetail() {
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
 			return getExerciseDetailDao().queryForId(exerciseId);
@@ -213,7 +190,7 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 		}
 	}
 
-	private void restartGame() {
+	public void restartGame() {
 		try {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
 			getExerciseDao().update(mExercise);
@@ -221,19 +198,19 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 			mExerciseDetail.resetExercise();
 			getExerciseDetailDao().update(mExerciseDetail);
 
-			getWordDao().callBatchTasks(new Callable<Void>() {
+			getPageDao().callBatchTasks(new Callable<Void>() {
 				@SuppressWarnings("unchecked")
 				@Override
 				public Void call() throws Exception {
-					Collection<Word> words = getPageItemList();
-					for (Word word : words) {
-						word.resetPage();
-						getWordDao().update(word);
+					Collection<BasePage> pages = getPageItemList();
+					for (BasePage page : pages) {
+						page.resetPage();
+						getPageDao().update(page);
 					}
 
 					// Update dataSet if necessary, and call
 					// notifyDataSetChanged.
-					mPagerAdapter.updateDataSet(words);
+					mPagerAdapter.updateDataSet(pages);
 					return null;
 				}
 			});
@@ -241,37 +218,6 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 			updateTitle();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * This method will be invoke when any page have interaction, In this case,
-	 * button pressed.
-	 * 
-	 * Update Incomplete status for first interaction
-	 */
-	@Override
-	public void onPageInteracted(Word itme) {
-		// Update end time for summary
-		String date = DATE_FORMATTER.format(new Date());
-		mExerciseDetail.setEndTime(date);
-
-		// Update start time for summary
-		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
-			mExercise.setStatus(EXERCISE_INCOMPLETE);
-			// Add Summary start time
-			mExerciseDetail.setStartTime(date);
-		}
-	}
-
-	/**
-	 * Update score after (one page) game finished.
-	 */
-	@Override
-	public void onPageFinished(Word itme, boolean isWin) {
-		if (isWin) {
-			mExerciseDetail.setScore(calculateScore());
-			updateTitle();
 		}
 	}
 
@@ -311,15 +257,11 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 		return (GamePageFragment) mPagerAdapter.getFragment(mViewPager.getCurrentItem());
 	}
 
-	protected Dao<Word, String> getWordDao() {
-		if (mWordDao == null) {
-			try {
-				mWordDao = getDBHelper().getDao(Word.class);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
+	protected Dao<BasePage, String> getPageDao() throws SQLException{
+		if (mPageDao == null) {
+			mPageDao = getDBHelper().getDao(EXERCISE_TYPE.getPageEntityClass());
 		}
-		return mWordDao;
+		return mPageDao;
 	}
 
 	protected Dao<Exercise, String> getExerciseDao() throws SQLException {
@@ -329,9 +271,9 @@ public abstract class BaseGameScreenActivity extends FragmentActivity implements
 		return mExerciseDao;
 	}
 
-	protected Dao<BaseEntity, String> getExerciseDetailDao() throws SQLException {
+	protected Dao<BaseExerciseDetail, String> getExerciseDetailDao() throws SQLException {
 		if (mExerciseDetailDao == null) {
-			mExerciseDetailDao = getDBHelper().getDao(EXERCISE_TYPE.getRootEntityClass());
+			mExerciseDetailDao = getDBHelper().getDao(EXERCISE_TYPE.getExerciseEntityClass());
 		}
 		return mExerciseDetailDao;
 	}
