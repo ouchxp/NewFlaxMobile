@@ -18,7 +18,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseObjectHelper;
-import flax.entity.base.BaseEntity;
+import flax.entity.base.BaseExerciseDetail;
 import flax.entity.exerciselist.Category;
 import flax.entity.exerciselist.Exercise;
 import flax.entity.exerciselist.ExerciseListResponse;
@@ -197,9 +197,9 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		try {
 			// Go through each new exercise and download corresponding exercise detail
 			for (Exercise e : execs) {
-				BaseEntity exerciseContent = XMLParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
+				BaseExerciseDetail exerciseDetail = XMLParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
 				// Save multiple hierarchical entity, with object tree analyse.
-				DatabaseObjectHelper.save(exerciseContent, helper, EXERCISE_TYPE.getEntityClasses());
+				DatabaseObjectHelper.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
 			}
 			return null;
 		} catch (Exception e) {

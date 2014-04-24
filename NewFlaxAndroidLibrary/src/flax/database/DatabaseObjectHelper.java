@@ -50,9 +50,12 @@ public class DatabaseObjectHelper {
 			for (Field f : root.getDeclaredFields()) {
 				if (isForeignCollection(f)) {
 					f.setAccessible(true);
+					
+					// Get foreign collection
 					Collection<?> entityCollection = (Collection<?>) f.get(currEntity);
 					if (entityCollection == null) continue;
-					//add this to keep right order
+					
+					//Reverse, add this to keep right saving order
 					List<?> list = new ArrayList(entityCollection);
 					Collections.reverse(list);
 					
@@ -110,13 +113,7 @@ public class DatabaseObjectHelper {
 	 * @return
 	 */
 	private static boolean isBaseEntity(final Class<?> c) {
-		Class<?> superClass = c.getSuperclass();
-		if (superClass == null) {
-			return false;
-		} else if (c.getSuperclass().equals(BaseEntity.class)) {
-			return true;
-		}
-		return false;
+		return c.isAssignableFrom(BaseEntity.class);
 	}
 
 	/**
@@ -154,6 +151,7 @@ public class DatabaseObjectHelper {
 
 		@Override
 		public E push(E object) {
+			// Do not add same object
 			if (records.contains(object))
 				return null;
 			records.add(object);
