@@ -20,7 +20,7 @@ import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseObjectHelper;
 import flax.entity.base.BaseEntity;
 import flax.entity.exerciselist.Category;
-import flax.entity.exerciselist.ExerciseListItem;
+import flax.entity.exerciselist.Exercise;
 import flax.entity.exerciselist.ExerciseListResponse;
 import flax.utils.GlobalConstants;
 import flax.utils.IURLConverter;
@@ -33,7 +33,7 @@ import flax.utils.XMLParser;
  * take the load off of the HomeScreen Activity
  * @author Nan Wu
  */
-public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<ExerciseListItem>> {
+public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<Exercise>> {
 	
 	private ExerciseTypeEnum EXERCISE_TYPE;
 	private Context mContext;
@@ -59,7 +59,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * Retrieves the required xml file using the NetworkHttpRequest class
 	 */
 	@Override
-	protected Collection<ExerciseListItem> doInBackground(String... urls) {
+	protected Collection<Exercise> doInBackground(String... urls) {
 		final long startTime = System.currentTimeMillis();
 
 		// Begin parsing the xml from url
@@ -72,7 +72,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		}
 
 		// "new" exercises, which doesn't exist in database.
-		final Collection<ExerciseListItem> newExecs = new ArrayList<ExerciseListItem>();
+		final Collection<Exercise> newExecs = new ArrayList<Exercise>();
 		
 		// Get database helper
 		final OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
@@ -81,7 +81,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			// Get daos
 			Dao<ExerciseListResponse, String> responseDao = helper.getDao(ExerciseListResponse.class);
 			Dao<Category, String> categoryDao = helper.getDao(Category.class);
-			Dao<ExerciseListItem, String> exerciseItemDao = helper.getDao(ExerciseListItem.class);
+			Dao<Exercise, String> exerciseItemDao = helper.getDao(Exercise.class);
 			
 			// Save response
 			responseDao.createIfNotExists(response);
@@ -93,13 +93,13 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				categoryDao.createIfNotExists(category);
 				
 				// Get exercise items.
-				Collection<ExerciseListItem> exerciseItems = category.getExercises();
+				Collection<Exercise> exerciseItems = category.getExercises();
 				
 				// format exercise url
 				formatExerciseUrl(exerciseItems);
 				
 				// Process each exercise item
-				for (ExerciseListItem exercise : exerciseItems) {
+				for (Exercise exercise : exerciseItems) {
 					// Save exercise that not exist
 					if(!exerciseItemDao.idExists(exerciseItemDao.extractId(exercise))){
 						exerciseItemDao.create(exercise);
@@ -145,7 +145,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * which saves new exercises in db and downloads their content.
 	 */
 	@Override
-	protected void onPostExecute(Collection<ExerciseListItem> result) {
+	protected void onPostExecute(Collection<Exercise> result) {
 		// If there is trouble with the server connection
 		if (getDownloadStatus() == false) {
 			Toast.makeText(
@@ -173,7 +173,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * @param execs
 	 * @param helper
 	 */
-	private void downloadAndSaveContentInTrans(final Collection<ExerciseListItem> execs, final OrmLiteSqliteOpenHelper helper) {
+	private void downloadAndSaveContentInTrans(final Collection<Exercise> execs, final OrmLiteSqliteOpenHelper helper) {
 		try {
 			TransactionManager.callInTransaction(helper.getConnectionSource(), new Callable<Void>() {
 				@Override
@@ -193,10 +193,10 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * @param helper
 	 * @return
 	 */
-	private String downloadAndSaveContent(Collection<ExerciseListItem> execs, OrmLiteSqliteOpenHelper helper) {
+	private String downloadAndSaveContent(Collection<Exercise> execs, OrmLiteSqliteOpenHelper helper) {
 		try {
 			// Go through each new exercise and download corresponding exercise detail
-			for (ExerciseListItem e : execs) {
+			for (Exercise e : execs) {
 				BaseEntity exerciseContent = XMLParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getRootEntityClass());
 				// Save multiple hierarchical entity, with object tree analyse.
 				DatabaseObjectHelper.save(exerciseContent, helper, EXERCISE_TYPE.getEntityClasses());
@@ -213,14 +213,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * than the needed xml. This url needs to be altered to return the correctly
 	 * formatted xml
 	 */
-	private Collection<ExerciseListItem> formatExerciseUrl(Collection<ExerciseListItem> downloadedExercises) {
+	private Collection<Exercise> formatExerciseUrl(Collection<Exercise> downloadedExercises) {
 
 		// invoke urlConverter that alters the exercise content URL to get the correctly formatted
 		// xml.
 		IURLConverter urlConverter = null;
 		try {
 			urlConverter = EXERCISE_TYPE.getUrlConvertClass().newInstance();
-			for (ExerciseListItem a : downloadedExercises) {
+			for (Exercise a : downloadedExercises) {
 				a.setUrl(urlConverter.convert(a.getUrl()));
 			}
 		} catch (Exception e) {

@@ -18,7 +18,7 @@ import flax.entity.base.BaseExercise;
 
 @DatabaseTable(tableName = "hangman_exercise")
 @Root(name = "response")
-public class HangmanExercise extends BaseExercise {
+public class HangmanExerciseDetail extends BaseExercise {
 
 	@DatabaseField
 	@Attribute
@@ -35,7 +35,7 @@ public class HangmanExercise extends BaseExercise {
 	private Collection<Word> words;
 
 	/** Constructor */
-	public HangmanExercise() {
+	public HangmanExerciseDetail() {
 	}
 
 	/**

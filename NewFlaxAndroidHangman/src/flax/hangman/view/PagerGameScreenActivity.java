@@ -11,7 +11,6 @@ import java.util.concurrent.Callable;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,8 +25,8 @@ import flax.dialog.DialogHelper;
 import flax.entity.base.BaseEntity;
 import flax.entity.base.BaseExercise;
 import flax.entity.base.BasePage;
-import flax.entity.exerciselist.ExerciseListItem;
-import flax.entity.hangman.HangmanExercise;
+import flax.entity.exerciselist.Exercise;
+import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
 import flax.hangman.view.GamePageFragment.OnPageEventListener;
@@ -39,8 +38,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
-	private Dao<ExerciseListItem, String> mExerciseListItemDao = null;
-	private Dao<BaseEntity, String> mExerciseDao = null;
+	private Dao<Exercise, String> mExerciseDao = null;
+	private Dao<BaseEntity, String> mExerciseDetailDao = null;
 	private Dao<Word, String> mWordDao = null;
 
 	@SuppressWarnings("rawtypes")
@@ -52,8 +51,10 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	protected ViewPager mViewPager;
 
 	protected ExerciseTypeEnum EXERCISE_TYPE;
-	protected ExerciseListItem mExerciseListItem;
-	protected HangmanExercise mExercise;
+	/** This is the item which be used to show exercise list, it contains exercise status.*/
+	protected Exercise mExercise;
+	/** This is the actual exercise detail */
+	protected HangmanExerciseDetail mExerciseDetail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,23 +65,23 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		EXERCISE_TYPE = getExerciseType();
 
 		/** Load exercise data from database */
-		mExerciseListItem = loadExerciseListItem();
-		mExercise = (HangmanExercise) loadExercise();
+		mExercise = loadExercise();
+		mExerciseDetail = (HangmanExerciseDetail) loadExerciseDetail();
 
 		/** Setup exercise */
-		mExercise.setPossibleScore(calculatePossibleScore(mExercise));
+		mExerciseDetail.setPossibleScore(calculatePossibleScore(mExerciseDetail));
 
 		/** Set title */
 		updateTitle();
 
-		/** Setup pager */
+		/** Setup PagerAdapter */
 		setUpListPagerAdapter();
 
-		// Setup the ViewPager with the sections adapter.
+		/** Setup the ViewPager with the PagerAdapter. */
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
 
-		// Setup page indicator
+		/** Setup page indicator */ 
 		setUpPageIndicator();
 
 	}
@@ -100,11 +101,11 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	}
 
 	private void updateTitle() {
-		setTitle("Score: " + mExercise.getScore() + "/" + mExercise.getPossibleScore());
+		setTitle("Score: " + mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
 	}
 
 	private int calculatePossibleScore(BaseExercise exercise) {
-		return ((HangmanExercise) exercise).getWords().size();
+		return ((HangmanExerciseDetail) exercise).getWords().size();
 	}
 
 	private int calculateScore() {
@@ -126,17 +127,17 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	}
 
 	public Collection<Word> getPageItemList() {
-		return mExercise.getWords();
+		return mExerciseDetail.getWords();
 	}
 
 	/**
 	 * Load game data using ormlite
 	 */
-	private ExerciseListItem loadExerciseListItem() {
+	private Exercise loadExercise() {
 
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
-			return getExerciseListItemDao().queryForId(exerciseId);
+			return getExerciseDao().queryForId(exerciseId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -146,10 +147,10 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	/**
 	 * Load game content data using ormlite
 	 */
-	private BaseEntity loadExercise() {
+	private BaseEntity loadExerciseDetail() {
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
-			return getExerciseDao().queryForId(exerciseId);
+			return getExerciseDetailDao().queryForId(exerciseId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -182,8 +183,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 			// Menu Item -- check answer pressed ...
 		case R.id.check_answer:
 			String date = DATE_FORMATTER.format(new Date());
-			mExercise.setEndTime(date);
-			GamePageFragment f = (GamePageFragment) mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+			mExerciseDetail.setEndTime(date);
+			GamePageFragment f = getCurrentFragment();
 			f.checkAnswer();
 			return true;
 
@@ -201,8 +202,8 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		case R.id.summary_report:
 			// Display Summary Report Dialog
 			DialogHelper s = new DialogHelper(this);
-			s.displaySummaryReportDialog(mExercise.getScore(), mExercise.getPossibleScore(), mExercise.getStartTime(),
-					mExercise.getEndTime(), mExercise.getAttempts());
+			s.displaySummaryReportDialog(mExerciseDetail.getScore(), mExerciseDetail.getPossibleScore(), mExerciseDetail.getStartTime(),
+					mExerciseDetail.getEndTime(), mExerciseDetail.getAttempts());
 			return true;
 
 			// case R.id.enable_sample:
@@ -220,11 +221,11 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 
 	private void restartGame() {
 		try {
-			mExerciseListItem.setStatus(EXERCISE_INCOMPLETE);
-			getExerciseListItemDao().update(mExerciseListItem);
-
-			mExercise.resetExercise();
+			mExercise.setStatus(EXERCISE_INCOMPLETE);
 			getExerciseDao().update(mExercise);
+
+			mExerciseDetail.resetExercise();
+			getExerciseDetailDao().update(mExerciseDetail);
 
 			getWordDao().callBatchTasks(new Callable<Void>() {
 				@SuppressWarnings("unchecked")
@@ -259,13 +260,13 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	public void onPageInteracted(Word itme) {
 		// Update end time for summary
 		String date = DATE_FORMATTER.format(new Date());
-		mExercise.setEndTime(date);
+		mExerciseDetail.setEndTime(date);
 
 		// Update start time for summary
-		if (EXERCISE_NEW.equals(mExerciseListItem.getStatus())) {
-			mExerciseListItem.setStatus(EXERCISE_INCOMPLETE);
+		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
+			mExercise.setStatus(EXERCISE_INCOMPLETE);
 			// Add Summary start time
-			mExercise.setStartTime(date);
+			mExerciseDetail.setStartTime(date);
 		}
 	}
 
@@ -275,7 +276,7 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 	@Override
 	public void onPageFinished(Word itme, boolean isWin) {
 		if (isWin) {
-			mExercise.setScore(calculateScore());
+			mExerciseDetail.setScore(calculateScore());
 			updateTitle();
 		}
 	}
@@ -285,17 +286,17 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		super.onStop();
 
 		// Do not save anything when no interaction (Still New)
-		if (EXERCISE_NEW.equals(mExerciseListItem.getStatus())) {
+		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
 			return;
 		}
 
 		// Save information
 		try {
-			if (mExercise.isComplete()) {
-				mExerciseListItem.setStatus(EXERCISE_COMPLETE);
+			if (mExerciseDetail.isComplete()) {
+				mExercise.setStatus(EXERCISE_COMPLETE);
 			}
-			getExerciseListItemDao().update(mExerciseListItem);
 			getExerciseDao().update(mExercise);
+			getExerciseDetailDao().update(mExerciseDetail);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -311,6 +312,10 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 			mDaoHelper = null;
 		}
 	}
+	
+	protected GamePageFragment getCurrentFragment() {
+		return (GamePageFragment) mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+	}
 
 	protected Dao<Word, String> getWordDao() {
 		if (mWordDao == null) {
@@ -323,18 +328,18 @@ public class PagerGameScreenActivity extends FragmentActivity implements OnPageE
 		return mWordDao;
 	}
 
-	protected Dao<ExerciseListItem, String> getExerciseListItemDao() throws SQLException {
-		if (mExerciseListItemDao == null) {
-			mExerciseListItemDao = getDBHelper().getDao(ExerciseListItem.class);
-		}
-		return mExerciseListItemDao;
-	}
-
-	protected Dao<BaseEntity, String> getExerciseDao() throws SQLException {
+	protected Dao<Exercise, String> getExerciseDao() throws SQLException {
 		if (mExerciseDao == null) {
-			mExerciseDao = getDBHelper().getDao(EXERCISE_TYPE.getRootEntityClass());
+			mExerciseDao = getDBHelper().getDao(Exercise.class);
 		}
 		return mExerciseDao;
+	}
+
+	protected Dao<BaseEntity, String> getExerciseDetailDao() throws SQLException {
+		if (mExerciseDetailDao == null) {
+			mExerciseDetailDao = getDBHelper().getDao(EXERCISE_TYPE.getRootEntityClass());
+		}
+		return mExerciseDetailDao;
 	}
 
 	/**

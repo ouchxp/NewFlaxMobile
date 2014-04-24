@@ -32,8 +32,8 @@ import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogEnableSamples;
 import flax.dialog.DialogHelper;
 import flax.entity.base.BaseEntity;
-import flax.entity.exerciselist.ExerciseListItem;
-import flax.entity.hangman.HangmanExercise;
+import flax.entity.exerciselist.Exercise;
+import flax.entity.hangman.HangmanExerciseDetail;
 import flax.hangman.R;
 import flax.hangman.game.GameEngine;
 import flax.hangman.game.GameItem;
@@ -51,8 +51,8 @@ import flax.hangman.game.GameItem;
 public abstract class BaseGameScreenActivity extends Activity {
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
-	protected ExerciseListItem exercise;
-	protected HangmanExercise exercise_content;
+	protected Exercise exercise;
+	protected HangmanExerciseDetail exercise_content;
 	protected final Context context = this;
 	
 	protected static final String TAG = "GAME_SCREEN";
@@ -99,14 +99,14 @@ public abstract class BaseGameScreenActivity extends Activity {
 		String uid = this.getIntent().getStringExtra("uniqueId");
 		String exerciseId = this.getIntent().getStringExtra("exerciseId");
 		try {
-			Dao<ExerciseListItem, String> execDao = getDBHelper().getDao(ExerciseListItem.class);
+			Dao<Exercise, String> execDao = getDBHelper().getDao(Exercise.class);
 			exercise = execDao.queryForId(exerciseId);
 			exercise.getName();
 			exercise.getStatus();
 			
 			Dao<BaseEntity, String> dao = getDBHelper().getDao(EXERCISE_TYPE.getRootEntityClass());
 			BaseEntity result = dao.queryForId(exerciseId);
-			exercise_content = (HangmanExercise)result;
+			exercise_content = (HangmanExerciseDetail)result;
 			exercise_content.getHints();
 			exercise_content.getWords();
 

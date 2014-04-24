@@ -10,9 +10,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import flax.entity.exerciselist.Category;
-import flax.entity.exerciselist.ExerciseListItem;
+import flax.entity.exerciselist.Exercise;
 import flax.entity.exerciselist.ExerciseListResponse;
-import flax.entity.hangman.HangmanExercise;
+import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
 import flax.utils.GlobalConstants;
 
@@ -26,11 +26,11 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
 			//Create tables
-            TableUtils.createTable(connectionSource, ExerciseListItem.class);
+            TableUtils.createTable(connectionSource, Exercise.class);
             TableUtils.createTable(connectionSource, ExerciseListResponse.class);
             TableUtils.createTable(connectionSource, Category.class);
             
-            TableUtils.createTable(connectionSource, HangmanExercise.class);
+            TableUtils.createTable(connectionSource, HangmanExerciseDetail.class);
             TableUtils.createTable(connectionSource, Word.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -42,11 +42,11 @@ public class DatabaseDaoHelper extends OrmLiteSqliteOpenHelper {
         try {
         	//Upgrade table version
             
-            TableUtils.dropTable(connectionSource, ExerciseListItem.class, true);
+            TableUtils.dropTable(connectionSource, Exercise.class, true);
             TableUtils.dropTable(connectionSource, ExerciseListResponse.class, true);
             TableUtils.dropTable(connectionSource, Category.class, true);
             
-            TableUtils.dropTable(connectionSource, HangmanExercise.class, true);
+            TableUtils.dropTable(connectionSource, HangmanExerciseDetail.class, true);
             TableUtils.dropTable(connectionSource, Word.class, true);
             onCreate(db, connectionSource);
         } catch (SQLException e) {

@@ -34,7 +34,7 @@ import flax.activity.ExerciseListAdapter;
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
-import flax.entity.exerciselist.ExerciseListItem;
+import flax.entity.exerciselist.Exercise;
 import flax.hangman.R;
 
 /**
@@ -51,7 +51,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
 	
-	protected List<ExerciseListItem> mExerciseListItems;
+	protected List<Exercise> mExercises;
 	protected ExerciseTypeEnum EXERCISE_TYPE;
 
 	/**
@@ -65,10 +65,10 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		
 		// TODO: Should Change to category list, and change ListView to ExpandableListView
 		// Get a list of all activities in the internal database
-		mExerciseListItems = getExerciseListItems();
+		mExercises = getExercises();
 		
 		// Set the list adapter
-		setListAdapter(new ExerciseListAdapter(this, mExerciseListItems));
+		setListAdapter(new ExerciseListAdapter(this, mExercises));
 
 		// Set the list screen title to be the activity type
 		setTitle(EXERCISE_TYPE.getTitle());
@@ -77,11 +77,11 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	/**
 	 * Get list items for ListView to display.
 	 */
-	private List<ExerciseListItem> getExerciseListItems() {
-		List<ExerciseListItem> items = null;
+	private List<Exercise> getExercises() {
+		List<Exercise> items = null;
 		try {
-			Dao<ExerciseListItem, String> exerciseListItemDao = getDaoHelper().getDao(ExerciseListItem.class);
-			items = exerciseListItemDao.queryForAll();
+			Dao<Exercise, String> exerciseDao = getDaoHelper().getDao(Exercise.class);
+			items = exerciseDao.queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +97,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Intent i = new Intent(BaseListScreenActivity.this, getNextActivityClass());
 		// Pass exercise id
-		String exerciseId = mExerciseListItems.get(position).getUrl();
+		String exerciseId = mExercises.get(position).getUrl();
 		i.putExtra(EXERCISE_ID, exerciseId);
 		startActivity(i);
 	}

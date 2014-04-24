@@ -2,7 +2,7 @@ package flax.activity;
 
 import flax.converters.HangmanURLConverter;
 import flax.entity.base.BaseEntity;
-import flax.entity.hangman.HangmanExercise;
+import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
 import flax.utils.IURLConverter;
 
@@ -15,7 +15,7 @@ import flax.utils.IURLConverter;
  */
 public enum ExerciseTypeEnum {
 	@SuppressWarnings("unchecked")
-	HANGMAN("Hangman", "HANGMAN", HangmanURLConverter.class, HangmanExercise.class, HangmanExercise.class, Word.class);// ,
+	HANGMAN("Hangman", "HANGMAN", HangmanURLConverter.class, HangmanExerciseDetail.class, HangmanExerciseDetail.class, Word.class);// ,
 	// COLLOCATION_MATCHING("collocationMatching");
 
 	private String name;

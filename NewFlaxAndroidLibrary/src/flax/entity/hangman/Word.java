@@ -17,7 +17,7 @@ public class Word extends BasePage{
 	private String word;
 	
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
-	private HangmanExercise exercise;
+	private HangmanExerciseDetail exercise;
 	
 	/** Constructor */
 	public Word() {}
@@ -39,11 +39,11 @@ public class Word extends BasePage{
 		this.word = word;
 	}
 
-	public HangmanExercise getExercise() {
+	public HangmanExerciseDetail getExercise() {
 		return exercise;
 	}
 
-	public void setExercise(HangmanExercise exercise) {
+	public void setExercise(HangmanExerciseDetail exercise) {
 		this.exercise = exercise;
 	}
 }

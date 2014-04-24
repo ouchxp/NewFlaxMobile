@@ -61,7 +61,7 @@ public class Category extends BaseEntity{
 	
 	@ForeignCollectionField(eager = false)
 	@ElementList(inline=true,entry="exercise")
-	private Collection<ExerciseListItem> exercises;
+	private Collection<Exercise> exercises;
 	
 	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
 	private ExerciseListResponse response;
@@ -74,7 +74,7 @@ public class Category extends BaseEntity{
 	 */
 	@Commit
 	private void buildRelation(){
-		for (ExerciseListItem exercise : exercises) {
+		for (Exercise exercise : exercises) {
 			exercise.setCategory(this);
 		}
 	}
@@ -88,11 +88,11 @@ public class Category extends BaseEntity{
 		this.categorysummary = categorysummary;
 	}
 
-	public Collection<ExerciseListItem> getExercises() {
+	public Collection<Exercise> getExercises() {
 		return exercises;
 	}
 
-	public void setExercises(Collection<ExerciseListItem> exercises) {
+	public void setExercises(Collection<Exercise> exercises) {
 		this.exercises = exercises;
 	}
 

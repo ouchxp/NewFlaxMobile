@@ -15,7 +15,7 @@ import flax.entity.base.BaseEntity;
  * 
  */
 @DatabaseTable(tableName = "exerciselist_item")
-public class ExerciseListItem extends BaseEntity {
+public class Exercise extends BaseEntity {
 	@DatabaseField
 	@Attribute(name = "category_id")
 	private String categoryId;
@@ -40,15 +40,11 @@ public class ExerciseListItem extends BaseEntity {
 	@DatabaseField(defaultValue = EXERCISE_NEW)
 	private String status;
 
-	// TODO: to be removed after refactor
-	@DatabaseField
-	private int uniqueId;
-
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_foreign_id")
 	private Category category;
 
 	/** Constructors */
-	public ExerciseListItem() {
+	public Exercise() {
 	}
 
 	/** Get/Set Methods */
@@ -114,14 +110,6 @@ public class ExerciseListItem extends BaseEntity {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public int getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(int uniqueId) {
-		this.uniqueId = uniqueId;
 	}
 
 	public Category getCategory() {

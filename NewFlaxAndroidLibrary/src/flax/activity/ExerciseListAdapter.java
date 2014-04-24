@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import flax.entity.exerciselist.ExerciseListItem;
+import flax.entity.exerciselist.Exercise;
 import flax.library.R;
 
 /**
@@ -32,13 +32,13 @@ import flax.library.R;
  * 
  * @author Nan Wu
  */
-public class ExerciseListAdapter extends ArrayAdapter<ExerciseListItem> {
+public class ExerciseListAdapter extends ArrayAdapter<Exercise> {
 
 	// Declare variables for adapter
 	private LayoutInflater layout_inflater;
 
 	/* Class constructor */
-	public ExerciseListAdapter(Context context, List<ExerciseListItem> exercises) {
+	public ExerciseListAdapter(Context context, List<Exercise> exercises) {
 		super(context, R.layout.list_row, exercises);
 		layout_inflater = LayoutInflater.from(context);
 	}
@@ -72,7 +72,7 @@ public class ExerciseListAdapter extends ArrayAdapter<ExerciseListItem> {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		ExerciseListItem exercise = this.getItem(position);
+		Exercise exercise = this.getItem(position);
 		
 		// Set text for textView
 		holder.labelView.setText(exercise.getName());
