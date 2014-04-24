@@ -3,7 +3,7 @@ package flax.entity.base;
 import com.j256.ormlite.field.DatabaseField;
 
 
-public class BasePage extends BaseEntity{
+public class BasePage extends BaseExtraEntity{
 	
 	@DatabaseField(canBeNull=true)
 	int pageStatus;
