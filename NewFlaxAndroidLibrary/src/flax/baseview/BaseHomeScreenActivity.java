@@ -12,7 +12,7 @@
  * user has the option to change the server path, change network settings, download 
  * new activities or move to the list view of activities to play.
  */
-package flax.hangman.view;
+package flax.baseview;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -29,7 +29,7 @@ import flax.asynctask.BackgroundDowloadExercises;
 import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelper;
 import flax.dialog.DialogNetworkSettings;
-import flax.hangman.R;
+import flax.library.R;
 import flax.utils.FlaxUtil;
 import flax.utils.Mock;
 
@@ -113,43 +113,34 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	/**
 	 * Display server, network or download dialog depending on which menu item
 	 * has been selected
+	 * @see http://tools.android.com/tips/non-constant-fields
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-
-		// Help button is presses
-		case R.id.help_home:
+		int itemId = item.getItemId();
+		if (itemId == R.id.help_home) {
 			DialogHelper help = new DialogHelper(this);
 			// Change words to more specifically for each activity in
 			// strings.xml.
 			help.displayHelpDialog(getHelpMessage());
 			return true;
-
-			// Menu item -- change server is pressed
-		case R.id.change_server:
-
+		} else if (itemId == R.id.change_server) {
 			// Set server settings
 			DialogChangeServer serverDialog = new DialogChangeServer(this);
 			serverDialog.loadServerPath();
 			serverDialog.displayChangeServerDialog();
 			return true;
-
-			// Menu item -- change network settings is pressed
-		case R.id.network_settings:
-
+		} else if (itemId == R.id.network_settings) {
 			// Set network settings
 			DialogNetworkSettings networkSettings = new DialogNetworkSettings(this);
 			networkSettings.loadNetworkSettings();
 			networkSettings.displayNetworkDialog();
 			return true;
-
-			// Menu item -- download exercises is pressed
-		case R.id.download_exercises:
+		} else if (itemId == R.id.download_exercises) {
 			Log.d(TAG, "call showDownloadDialog()");
 			showDownloadDialog();
 			return true;
-		default:
+		} else {
 			return super.onOptionsItemSelected(item);
 		}
 	}

@@ -22,11 +22,14 @@ import java.util.Date;
 import android.view.Menu;
 import android.view.MenuItem;
 import flax.activity.ExerciseTypeEnum;
+import flax.baseview.BaseGameScreenActivity;
+import flax.baseview.ListPagerAdapter;
 import flax.entity.base.BasePage;
 import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
-import flax.hangman.view.GamePageFragment.OnPageEventListener;
+import flax.hangman.fragment.GamePageFragment;
+import flax.hangman.fragment.GamePageFragment.OnPageEventListener;
 
 /**
  * GameScreen Class

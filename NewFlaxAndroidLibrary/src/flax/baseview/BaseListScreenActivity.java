@@ -12,7 +12,7 @@
  * existing activities. It is from this screen that the user can select which game they 
  * would like to play. 
  */
-package flax.hangman.view;
+package flax.baseview;
 
 import static flax.utils.GlobalConstants.*;
 
@@ -35,7 +35,7 @@ import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
 import flax.entity.exerciselist.Exercise;
-import flax.hangman.R;
+import flax.library.R;
 
 /**
  * This class is the List Screen Activity. This screen displays a list of all
@@ -139,13 +139,13 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.help:
+		int itemId = item.getItemId();
+		if (itemId == R.id.help) {
 			// Display Help Dialog
 			DialogHelper help = new DialogHelper(this);
 			help.displayHelpDialog(getHelpMessage());
 			return true;
-		default:
+		} else {
 			return super.onOptionsItemSelected(item);
 		}
 	}

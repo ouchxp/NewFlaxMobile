@@ -1,4 +1,4 @@
-package flax.hangman.view;
+package flax.baseview;
 
 import java.util.ArrayList;
 import java.util.Collection;

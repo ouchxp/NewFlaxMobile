@@ -15,6 +15,7 @@
 package flax.hangman.view;
 
 import flax.activity.ExerciseTypeEnum;
+import flax.baseview.BaseListScreenActivity;
 
 
 /**

@@ -1,6 +1,7 @@
-package flax.hangman.view;
+package flax.baseview;
 
 import static flax.utils.GlobalConstants.*;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -23,7 +24,7 @@ import flax.dialog.DialogHelper;
 import flax.entity.base.BaseExerciseDetail;
 import flax.entity.base.BasePage;
 import flax.entity.exerciselist.Exercise;
-import flax.hangman.R;
+import flax.library.R;
 
 /**
  * 
@@ -142,29 +143,30 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		return true;
 	}
 
+	/**
+	 * Display help, how to play or summary report dialog depending on which menu item
+	 * has been selected
+	 * @see http://tools.android.com/tips/non-constant-fields
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.help:
+		int itemId = item.getItemId();
+		if (itemId == R.id.help) {
 			// Display Help Dialog
 			DialogHelper help = new DialogHelper(this);
 			help.displayHelpDialog(getHelpMessage());
 			return true;
-
-		case R.id.how_to_play:
+		} else if (itemId == R.id.how_to_play) {
 			// Display How to Play Dialog
 			DialogHelper d = new DialogHelper(this);
 			d.displayHowToPlayDialog(getHowToPlayMessage());
 			return true;
-
-			// Menu Item -- check answer pressed ...
-		case R.id.check_answer:
+		} else if (itemId == R.id.check_answer) {
 			String date = DATE_FORMATTER.format(new Date());
 			mExerciseDetail.setEndTime(date);
 			getCurrentFragment().checkAnswer();
 			return true;
-
-		case R.id.restart_game:
+		} else if (itemId == R.id.restart_game) {
 			// Restart Game
 			DialogHelper dh = new DialogHelper(this);
 			dh.displayRestartGameDialog(new DialogInterface.OnClickListener() {
@@ -174,23 +176,13 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 				}
 			});
 			return true;
-
-		case R.id.summary_report:
+		} else if (itemId == R.id.summary_report) {
 			// Display Summary Report Dialog
 			DialogHelper s = new DialogHelper(this);
 			s.displaySummaryReportDialog(mExerciseDetail.getScore(), mExerciseDetail.getPossibleScore(), mExerciseDetail.getStartTime(),
 					mExerciseDetail.getEndTime(), mExerciseDetail.getAttempts());
 			return true;
-
-			// case R.id.enable_sample:
-			//
-			// // Display Sample Dialog
-			// sampleDialog = new DialogEnableSamples(context);
-			// sampleDialog.loadSampleSettings();
-			// sampleDialog.displaySampleDialog();
-			// return true;
-
-		default:
+		} else {
 			return super.onOptionsItemSelected(item);
 		}
 	}

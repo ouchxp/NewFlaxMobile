@@ -1,6 +1,7 @@
 package flax.hangman.view;
 
 import flax.activity.ExerciseTypeEnum;
+import flax.baseview.BaseHomeScreenActivity;
 import flax.hangman.utils.LocalConstants;
 import flax.utils.FlaxUtil;
 
