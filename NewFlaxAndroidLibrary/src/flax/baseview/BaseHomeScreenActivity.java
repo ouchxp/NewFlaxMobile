@@ -60,13 +60,13 @@ import flax.utils.Mock;
  */
 public abstract class BaseHomeScreenActivity extends Activity {
 
-	protected static final String TAG = "HomeScreen";
+	public static final String TAG = "HomeScreen";
 
 	/**
 	 * Exercise type enum, contains exercise name, data module, converters
 	 * information
 	 */
-	protected ExerciseTypeEnum EXERCISE_TYPE;
+	protected final ExerciseTypeEnum EXERCISE_TYPE = getExerciseType();
 
 	/**
 	 * Displays the Home Screen when the app is loaded Overlays the Home Screen
@@ -76,8 +76,6 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_screen);
-
-		EXERCISE_TYPE = getExerciseType();
 
 		// TODO: On first time - create activities
 		// insertStartingActivities();

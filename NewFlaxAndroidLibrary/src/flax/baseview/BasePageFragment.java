@@ -13,8 +13,8 @@ import com.j256.ormlite.dao.Dao;
  */
 public abstract class BasePageFragment<P> extends Fragment implements OnClickListener {
 	public static final String TAG = "GamePageFragment";
-	public P mItem;
-	public Dao<P, ?> mItemDao;
+	protected P mItem;
+	protected Dao<P, ?> mItemDao;
 
 	public void setPageData(P item, Dao<P, ?> itemDao) {
 		mItem = item;

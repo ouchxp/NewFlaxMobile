@@ -44,26 +44,23 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	private Dao<PAGE, String> mPageDao = null;
 
 	@SuppressWarnings("rawtypes")
-	public ListPagerAdapter mPagerAdapter;
+	protected ListPagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the page contents.
 	 */
-	public ViewPager mViewPager;
+	protected ViewPager mViewPager;
 
-	public ExerciseTypeEnum EXERCISE_TYPE;
+	protected final ExerciseTypeEnum EXERCISE_TYPE = getExerciseType();
 	/** This is the item which be used to show exercise list, it contains exercise status.*/
-	public Exercise mExercise;
+	protected Exercise mExercise;
 	/** This is the actual exercise detail */
-	public EXEC mExerciseDetail;
+	protected EXEC mExerciseDetail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_screen);
-
-		/** Get exercise data */
-		EXERCISE_TYPE = getExerciseType();
 
 		/** Load exercise data from database */
 		mExercise = loadExercise();

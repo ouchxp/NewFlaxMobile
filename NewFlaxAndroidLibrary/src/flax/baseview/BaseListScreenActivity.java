@@ -54,7 +54,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	
 	protected ExerciseListAdapter mAdapter;
 	protected List<Exercise> mExercises;
-	protected ExerciseTypeEnum EXERCISE_TYPE;
+	protected final ExerciseTypeEnum EXERCISE_TYPE = getExerciseType();
 
 	/**
 	 * Display the list of activities when the user moves to this screen.
@@ -63,7 +63,6 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		EXERCISE_TYPE = getExerciseType();
 		
 		// TODO: Should Change to category list, and change ListView to ExpandableListView
 		// Get a list of all activities in the internal database
