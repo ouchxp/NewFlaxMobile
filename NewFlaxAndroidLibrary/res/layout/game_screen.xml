@@ -15,7 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dip"
-        android:paddingTop="1dip"
+        android:paddingTop="3dip"
         app:fillColor="@color/green_dark"
         app:strokeColor="@color/green_dark" />
 
