@@ -1,5 +1,6 @@
 package flax.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 
@@ -30,5 +31,8 @@ public class GlobalConstants {
 	public static final int PAGE_WIN = 1;
 	public static final int PAGE_INCOMPLETE = 0;
 	public static final int PAGE_FAIL = -1;
+	
+	// Summary
+	public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
 
 }

@@ -1,17 +1,10 @@
 package flax.hangman.utils;
 
-import static flax.utils.GlobalConstants.*;
-
-import java.text.SimpleDateFormat;
-
 import flax.hangman.R;
 
 public class LocalConstants {
 	/** for home screen */
 	public static final String HANGMAN_URL = "?a=pr&o=xml&ro=1&rt=r&s=Hangman&c=password&s1.service=11";
-	
-	/** for game screen */
-	public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
 	
 	/** for game page fragment */
 	// Keys for extra

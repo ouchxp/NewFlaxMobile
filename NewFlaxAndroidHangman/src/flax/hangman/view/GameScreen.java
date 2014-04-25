@@ -13,7 +13,6 @@
  */
 package flax.hangman.view;
 
-import static flax.hangman.utils.LocalConstants.*;
 import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
