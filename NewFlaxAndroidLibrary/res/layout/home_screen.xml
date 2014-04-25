@@ -41,6 +41,6 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/flax_icon"
         android:scaleType="fitXY"
-        android:src="@drawable/img_home_flax_title" />
+        android:src="@drawable/bg_home_screen" />
 
 </RelativeLayout>

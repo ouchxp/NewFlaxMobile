@@ -36,7 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/arrow_icon"
-        android:src="@drawable/list_img_arrow" />
+        android:src="@drawable/ic_list_arrow" />
 
     <!-- Rightend new icon -->
     <ImageView
@@ -47,6 +47,6 @@
         android:layout_marginRight="16dp"
         android:layout_centerVertical="true"
         android:contentDescription="@string/arrow_icon"
-        android:src="@drawable/list_img_icon_blank" />
+        android:src="@drawable/ic_list_blank" />
 
 </RelativeLayout>

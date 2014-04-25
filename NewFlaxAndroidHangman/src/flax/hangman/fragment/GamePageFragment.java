@@ -50,7 +50,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mRootView = inflater.inflate(R.layout.game_screen_fragment, container, false);
+		mRootView = inflater.inflate(R.layout.fragment_game_page, container, false);
 		
 		// Initialize text view
 		mWordTextView = (TextView) mRootView.findViewById(R.id.guessing_word);
@@ -74,10 +74,10 @@ public class GamePageFragment extends BasePageFragment<Word>{
 		int pageStatus = mItem.getPageStatus();
 		switch (pageStatus) {
 		case PAGE_WIN:
-			mHangmanImage.setImageResource(R.drawable.face_smile);
+			mHangmanImage.setImageResource(R.drawable.img_face_smile);
 			break;
 		case PAGE_FAIL:
-			mHangmanImage.setImageResource(R.drawable.face_worried);
+			mHangmanImage.setImageResource(R.drawable.img_face_worried);
 			break;
 		default:
 			int moves = mItem.getIntExtra(MOVES);
@@ -194,7 +194,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 			mHangmanImage.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					mHangmanImage.setImageResource(isWin ? R.drawable.face_smile : R.drawable.face_worried);
+					mHangmanImage.setImageResource(isWin ? R.drawable.img_face_smile : R.drawable.img_face_worried);
 				}
 			}, 300);
 			

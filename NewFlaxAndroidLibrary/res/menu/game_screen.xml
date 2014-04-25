@@ -4,7 +4,7 @@
         android:id="@+id/help"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:icon="@drawable/img_flax_help"
+        android:icon="@drawable/ic_flax_help"
         android:title="@string/help"/>
     
     <item
