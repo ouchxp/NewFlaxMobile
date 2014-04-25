@@ -15,6 +15,8 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import flax.activity.ExerciseTypeEnum;
 import flax.database.DatabaseDaoHelper;
@@ -112,7 +114,10 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-
+		
+		// create database table if the table is not exist yet.
+		createTableIfNotExist(helper);
+		
 		// If new exercise exist, download and save exercise detail to database.
 		if (!newExecs.isEmpty()) {
 			downloadAndSaveContentInTrans(newExecs,helper);
@@ -166,6 +171,19 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		mProgress.dismiss();
 	}
 
+	/** create database table if the table is not exist yet. */
+	private void createTableIfNotExist(final OrmLiteSqliteOpenHelper helper){
+		try {
+			ConnectionSource connectionSource = helper.getConnectionSource();
+			for(Class<?> clazz : EXERCISE_TYPE.getEntityClasses()){
+				if(!helper.getDao(clazz).isTableExists()){
+					TableUtils.createTable(connectionSource, clazz);
+				}
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	/**
 	 * Call downloadAndSaveContent in Transaction to gain better performance
@@ -176,7 +194,15 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 */
 	private void downloadAndSaveContentInTrans(final Collection<Exercise> execs, final OrmLiteSqliteOpenHelper helper) {
 		try {
-			TransactionManager.callInTransaction(helper.getConnectionSource(), new Callable<Void>() {
+			
+			ConnectionSource connectionSource = helper.getConnectionSource();
+			for(Class<?> clazz : EXERCISE_TYPE.getEntityClasses()){
+				if(!helper.getDao(clazz).isTableExists()){
+					TableUtils.createTable(connectionSource, clazz);
+				}
+			}
+			
+			TransactionManager.callInTransaction(connectionSource, new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
 					downloadAndSaveContent(execs,helper);
