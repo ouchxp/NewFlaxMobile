@@ -17,7 +17,7 @@ import flax.utils.IURLConverter;
  */
 public enum ExerciseTypeEnum {
 	@SuppressWarnings("unchecked")
-	HANGMAN("Hangman", "HANGMAN", HangmanURLConverter.class, HangmanExerciseDetail.class, Word.class,
+	HANGMAN("HANGMAN", "HANGMAN", HangmanURLConverter.class, HangmanExerciseDetail.class, Word.class,
 			HangmanExerciseDetail.class, Word.class);// ,
 	// COLLOCATION_MATCHING("collocationMatching");
 

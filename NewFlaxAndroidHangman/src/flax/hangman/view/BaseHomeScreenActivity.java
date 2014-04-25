@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import flax.activity.ExerciseTypeEnum;
 import flax.asynctask.BackgroundDowloadExercises;
@@ -86,6 +87,10 @@ public abstract class BaseHomeScreenActivity extends Activity {
 
 		// Make sure there is no text in the action bar on the home screen
 		setTitle("");
+		
+		// Represent the exercise name on home screen, which in large font.
+		TextView execiseName = (TextView)findViewById(R.id.text_view_home_game_title);
+		execiseName.setText(EXERCISE_TYPE.getName());
 
 		// TODO: Mocking to be removed
 		Mock.r = this.getResources();
