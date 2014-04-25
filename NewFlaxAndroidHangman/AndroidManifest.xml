@@ -34,7 +34,7 @@
         <activity
             android:theme="@style/MyTheme"
             android:name="flax.hangman.view.GameScreen"
-            android:label="@string/title_activity_collocation_game_view" >
+            android:label="@string/title_activity_game_screen" >
         </activity>
     </application>
 

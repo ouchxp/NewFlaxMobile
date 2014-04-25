@@ -28,7 +28,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="96dp"
-        android:text="@string/main_activity_text"
         android:textColor="@color/white"
         android:textSize="30dp" />
 

@@ -47,7 +47,7 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 
 	@Override
 	public String getHelpMessage() {
-		return getString(R.string.game_screen_help_message);
+		return getString(R.string.default_game_screen_help_message);
 	}
 
 	@Override

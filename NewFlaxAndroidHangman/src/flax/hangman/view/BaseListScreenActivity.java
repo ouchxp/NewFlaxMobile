@@ -120,7 +120,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	 * Get help message
 	 */
 	protected String getHelpMessage() {
-		return getString(R.string.home_screen_help_message);
+		return getString(R.string.default_home_screen_help_message);
 	}
 	
 	/**

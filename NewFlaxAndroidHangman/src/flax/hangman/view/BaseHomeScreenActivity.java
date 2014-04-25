@@ -174,7 +174,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 * Get help message, for building help dialog.
 	 */
 	public String getHelpMessage() {
-		return getString(R.string.home_screen_help_message);
+		return getString(R.string.default_home_screen_help_message);
 	}
 
 	/**

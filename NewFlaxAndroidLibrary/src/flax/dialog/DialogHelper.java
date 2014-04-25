@@ -141,7 +141,7 @@ public class DialogHelper {
 		
 		if (startTime == null) startTime = "";
 		if (endTime == null) endTime = "";
-		String message = MessageFormat.format(context.getString(R.string.summary_message),  startTime,endTime,attempts,score,possibleScore,percentage);
+		String message = MessageFormat.format(context.getString(R.string.default_summary_message),  startTime,endTime,attempts,score,possibleScore,percentage);
 		
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)	
