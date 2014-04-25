@@ -60,7 +60,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.game_screen_pager);
+		setContentView(R.layout.game_screen);
 
 		/** Get exercise data */
 		EXERCISE_TYPE = getExerciseType();
