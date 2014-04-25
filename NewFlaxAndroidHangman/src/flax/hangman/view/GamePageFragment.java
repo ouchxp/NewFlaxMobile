@@ -1,46 +1,34 @@
 package flax.hangman.view;
 
-import static flax.utils.GlobalConstants.*;
 import static flax.hangman.utils.LocalConstants.*;
+import static flax.utils.GlobalConstants.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.j256.ormlite.dao.Dao;
-
 import flax.entity.hangman.Word;
 import flax.hangman.R;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class GamePageFragment extends Fragment implements OnClickListener {
-	public static final String TAG = "GamePageFragment";
-
-	private OnPageEventListener listener;
-	private View mRootView;
-	private Word mItem;
-	private Dao<Word, String> wordDao;
-	private List<Button> mBtnList;
-	private TextView mWordTextView;
-	private ImageView mHangmanImage;
-
+public class GamePageFragment extends BasePageFragment<Word>{
 
 	/** Default Constructor */
 	public GamePageFragment() {}
+
+	private View mRootView;
+	private List<Button> mBtnList;
+	private TextView mWordTextView;
+	private ImageView mHangmanImage;
+	
+	private OnPageEventListener listener;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,12 +42,6 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		super.onAttach(activity);
 		// Setup listener in order to dispatch event to activity.
 		this.listener = (OnPageEventListener) activity;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void updatePageData(Object item, Dao<?, ?> itemDao) {
-		mItem = (Word) item;
-		wordDao = (Dao<Word, String>) itemDao;
 	}
 
 	/**
@@ -189,6 +171,11 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		return maskWord;
 	}
 
+	/**
+	 * Fragments of game page must implement this method.
+	 * This method will be called when user choose "Check Answer" in menu.
+	 */
+	@Override
 	public void checkAnswer() {
 		String currMaskWord = mWordTextView.getText().toString();
 		String rightMaskWord = mItem.getWord().replaceAll(".", "$0 ").trim();
@@ -198,6 +185,9 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 
 		// Game Over, Win or out of move
 		if (isWin || isOutOfMove) {
+			
+			// Disable all buttons
+			setUpAllButtons();
 
 			// Show smile face or worried face after 300ms.
 			mHangmanImage.postDelayed(new Runnable() {
@@ -211,37 +201,12 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 			
 			// Save the status for score calculation
 			updateItem(mItem);
-			
-			// Disable all buttons
-			setUpAllButtons();
 		}
 		
 		// Call activity to calculate score
 		if(isWin){
 			listener.onPageWin(mItem);
 		}
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		// Save information when page become not visible.
-		updateItem(mItem);
-	}
-	
-	/**
-	 * Update single item to database.
-	 * @param item
-	 * @return recode numbers updated.
-	 */
-	private int updateItem(Word item){
-		int count = 0;
-		try {
-			count = wordDao.update(item);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return count;
 	}
 	
 	/**
@@ -252,5 +217,4 @@ public class GamePageFragment extends Fragment implements OnClickListener {
 		public void onPageWin(Word itme);
 		public void onPageInteracted(Word itme);
 	}
-
 }

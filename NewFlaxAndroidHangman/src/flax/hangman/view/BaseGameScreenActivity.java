@@ -32,31 +32,31 @@ import flax.hangman.R;
  * @author Nan Wu
  *
  * @param <E extends BaseExerciseDetail> corresponding to the type 
- * @param <P>
+ * @param <PAGE>
  */
-public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P extends BasePage> extends FragmentActivity{
+public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity{
 
 	public static final String TAG = "GameScreen";
 
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
 	private Dao<Exercise, String> mExerciseDao = null;
-	private Dao<E, String> mExerciseDetailDao = null;
-	private Dao<P, String> mPageDao = null;
+	private Dao<EXEC, String> mExerciseDetailDao = null;
+	private Dao<PAGE, String> mPageDao = null;
 
 	@SuppressWarnings("rawtypes")
-	protected ListPagerAdapter mPagerAdapter;
+	public ListPagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the page contents.
 	 */
-	protected ViewPager mViewPager;
+	public ViewPager mViewPager;
 
-	protected ExerciseTypeEnum EXERCISE_TYPE;
+	public ExerciseTypeEnum EXERCISE_TYPE;
 	/** This is the item which be used to show exercise list, it contains exercise status.*/
-	protected Exercise mExercise;
+	public Exercise mExercise;
 	/** This is the actual exercise detail */
-	protected E mExerciseDetail;
+	public EXEC mExerciseDetail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P ext
 	
 	public abstract String getHelpMessage();
 
-	public abstract Collection<P> getPageItemList();
+	public abstract Collection<PAGE> getPageItemList();
 
 	/**
 	 * Load game data using ormlite
@@ -127,10 +127,10 @@ public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P ext
 	/**
 	 * Load game content data using ormlite
 	 */
-	private E loadExerciseDetail() {
+	private EXEC loadExerciseDetail() {
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
 		try {
-			return (E) getExerciseDetailDao().queryForId(exerciseId);
+			return (EXEC) getExerciseDetailDao().queryForId(exerciseId);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -163,8 +163,7 @@ public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P ext
 		case R.id.check_answer:
 			String date = DATE_FORMATTER.format(new Date());
 			mExerciseDetail.setEndTime(date);
-			GamePageFragment f = getCurrentFragment();
-			f.checkAnswer();
+			getCurrentFragment().checkAnswer();
 			return true;
 
 		case R.id.restart_game:
@@ -210,8 +209,8 @@ public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P ext
 				@SuppressWarnings("unchecked")
 				@Override
 				public Void call() throws Exception {
-					Collection<P> pages = getPageItemList();
-					for (P page : pages) {
+					Collection<PAGE> pages = getPageItemList();
+					for (PAGE page : pages) {
 						page.resetPage();
 						getPageDao().update(page);
 					}
@@ -261,11 +260,12 @@ public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P ext
 		}
 	}
 	
-	protected GamePageFragment getCurrentFragment() {
-		return (GamePageFragment) mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+	@SuppressWarnings("unchecked")
+	protected BasePageFragment<PAGE> getCurrentFragment() {
+		return mPagerAdapter.getFragment(mViewPager.getCurrentItem());
 	}
 
-	protected Dao<P, String> getPageDao() throws SQLException{
+	protected Dao<PAGE, String> getPageDao() throws SQLException{
 		if (mPageDao == null) {
 			mPageDao = getDBHelper().getDao(EXERCISE_TYPE.getPageEntityClass());
 		}
@@ -279,7 +279,7 @@ public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P ext
 		return mExerciseDao;
 	}
 
-	protected Dao<E, String> getExerciseDetailDao() throws SQLException {
+	protected Dao<EXEC, String> getExerciseDetailDao() throws SQLException {
 		if (mExerciseDetailDao == null) {
 			mExerciseDetailDao = getDBHelper().getDao(EXERCISE_TYPE.getExerciseEntityClass());
 		}

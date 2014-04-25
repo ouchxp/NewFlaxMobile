@@ -19,16 +19,16 @@ import flax.entity.base.BasePage;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of the sections/tabs/pages.
  */
-public class ListPagerAdapter<F extends GamePageFragment, P extends BasePage> extends FragmentPagerAdapter {
+public class ListPagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends BasePage> extends FragmentPagerAdapter {
 	private static final String TAG = "ListPagerAdapter";
-	private SparseArray<GamePageFragment> mFrags = new SparseArray<GamePageFragment>();
-	private List<P> mItems;
-	private Dao<P, ?> mItemDao;
-	private Class<F> mFragmentClass;
+	private SparseArray<BasePageFragment<PAGE>> mFrags = new SparseArray<BasePageFragment<PAGE>>();
+	private List<PAGE> mItems;
+	private Dao<PAGE, ?> mItemDao;
+	private Class<FRG> mFragmentClass;
 
-	public ListPagerAdapter(FragmentManager fm, Collection<P> pageItems, Dao<P, ?> itemDao, Class<F> fragmentClass) {
+	public ListPagerAdapter(FragmentManager fm, Collection<PAGE> pageItems, Dao<PAGE, ?> itemDao, Class<FRG> fragmentClass) {
 		super(fm);
-		mItems = new ArrayList<P>(pageItems);
+		mItems = new ArrayList<PAGE>(pageItems);
 		this.mItemDao = itemDao;
 		this.mFragmentClass = fragmentClass;
 	}
@@ -42,7 +42,7 @@ public class ListPagerAdapter<F extends GamePageFragment, P extends BasePage> ex
 	public Fragment getItem(int position) {
 		Fragment f = null;
 		try {
-			f = (GamePageFragment) mFragmentClass.newInstance();
+			f = (BasePageFragment<PAGE>) mFragmentClass.newInstance();
 		} catch (InstantiationException e) {
 			Log.e(TAG, "fragment class must have a public non-argument constructor.");
 			throw new RuntimeException(e);
@@ -75,8 +75,9 @@ public class ListPagerAdapter<F extends GamePageFragment, P extends BasePage> ex
 	 */
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
-		GamePageFragment f = (GamePageFragment) super.instantiateItem(container, position);
-		f.updatePageData(mItems.get(position), mItemDao);
+		@SuppressWarnings("unchecked")
+		BasePageFragment<PAGE> f = (BasePageFragment<PAGE>) super.instantiateItem(container, position);
+		f.setPageData(mItems.get(position), mItemDao);
 		mFrags.put(position, f);
 		return f;
 	}
@@ -87,9 +88,9 @@ public class ListPagerAdapter<F extends GamePageFragment, P extends BasePage> ex
 	 * 
 	 * @param items
 	 */
-	public void updateDataSet(Collection<P> items) {
+	public void updateDataSet(Collection<PAGE> items) {
 		if (items != null) {
-			mItems = new ArrayList<P>(items);
+			mItems = new ArrayList<PAGE>(items);
 		}
 		super.notifyDataSetChanged();
 	}
@@ -110,8 +111,8 @@ public class ListPagerAdapter<F extends GamePageFragment, P extends BasePage> ex
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public F getFragment(int position) {
-		return (F) mFrags.get(position);
+	public FRG getFragment(int position) {
+		return (FRG) mFrags.get(position);
 	}
 
 	/**
