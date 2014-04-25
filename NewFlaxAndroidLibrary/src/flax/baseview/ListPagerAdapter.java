@@ -44,10 +44,10 @@ public class ListPagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends B
 		try {
 			f = (BasePageFragment<PAGE>) mFragmentClass.newInstance();
 		} catch (InstantiationException e) {
-			Log.e(TAG, "fragment class must have a public non-argument constructor.");
+			Log.e(TAG, "fragment class must have a default non-argument constructor.");
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
-			Log.e(TAG, "fragment class must have a public non-argument constructor.");
+			Log.e(TAG, "fragment class must have a default non-argument constructor.");
 			throw new RuntimeException(e);
 		} catch (ClassCastException e) {
 			Log.e(TAG, "fragment class must extends GamePageFragment");

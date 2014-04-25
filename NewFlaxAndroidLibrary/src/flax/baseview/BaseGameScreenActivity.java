@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -211,6 +212,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 
 			updateTitle();
 		} catch (Exception e) {
+			Log.e(TAG, "Some thing went wrong when calling batch task.", e);
 			throw new RuntimeException(e);
 		}
 	}

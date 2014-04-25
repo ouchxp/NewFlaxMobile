@@ -37,7 +37,7 @@ public class DatabaseObjectHelper {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void save(BaseEntity rootEntity, OrmLiteSqliteOpenHelper helper, Class<? extends BaseEntity>... entityClasses)
-			throws IllegalAccessException, IllegalArgumentException, SQLException {
+			throws IllegalAccessException, SQLException {
 		if (rootEntity == null)
 			return;
 		UniqueStack<BaseEntity> entityStack = new UniqueStack<BaseEntity>();

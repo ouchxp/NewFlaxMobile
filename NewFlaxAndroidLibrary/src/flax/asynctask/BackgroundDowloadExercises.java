@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -34,7 +35,7 @@ import flax.utils.XmlParser;
  * @author Nan Wu
  */
 public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<Exercise>> {
-	
+	public static final String TAG = "BackgroundDowloadExercises";
 	private ExerciseTypeEnum EXERCISE_TYPE;
 	private Context mContext;
 	private ProgressDialog mProgress;
@@ -108,7 +109,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				}
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 
@@ -193,16 +194,18 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * @param helper
 	 * @return
 	 */
-	private String downloadAndSaveContent(Collection<Exercise> execs, OrmLiteSqliteOpenHelper helper) {
+	private void downloadAndSaveContent(Collection<Exercise> execs, OrmLiteSqliteOpenHelper helper) {
 		try {
 			// Go through each new exercise and download corresponding exercise detail
-			for (Exercise e : execs) {
-				BaseExerciseDetail exerciseDetail = XmlParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
-				// Save multiple hierarchical entity, with object tree analyse.
+			for (Exercise exec : execs) {
+				BaseExerciseDetail exerciseDetail = XmlParser.fromUrl(exec.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
+				// Save multiple hierarchical entity, with object tree analyze.
 				DatabaseObjectHelper.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
 			}
-			return null;
-		} catch (Exception e) {
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			Log.e(TAG, "DatabaseObjectHelper can not access entity field." , e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -219,10 +222,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		IUrlConverter urlConverter = null;
 		try {
 			urlConverter = EXERCISE_TYPE.getUrlConvertClass().newInstance();
-			for (Exercise a : downloadedExercises) {
-				a.setUrl(urlConverter.convert(a.getUrl()));
+			for (Exercise exec : downloadedExercises) {
+				exec.setUrl(urlConverter.convert(exec.getUrl()));
 			}
-		} catch (Exception e) {
+		} catch (InstantiationException e) {
+			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate." , e);
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate. Make sure it has a defult no argument constructor." , e);
 			throw new RuntimeException(e);
 		}
 		return downloadedExercises;
