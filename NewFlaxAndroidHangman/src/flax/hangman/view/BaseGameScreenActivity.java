@@ -1,9 +1,9 @@
 package flax.hangman.view;
 
+import static flax.hangman.utils.LocalConstants.*;
 import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -37,7 +37,6 @@ import flax.hangman.R;
 public abstract class BaseGameScreenActivity<E extends BaseExerciseDetail, P extends BasePage> extends FragmentActivity{
 
 	public static final String TAG = "GameScreen";
-	protected static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(SUMMARY_DATE_FORMAT, ENGLISH);
 
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;

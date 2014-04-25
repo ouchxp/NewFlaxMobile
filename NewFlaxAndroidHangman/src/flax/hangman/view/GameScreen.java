@@ -13,6 +13,7 @@
  */
 package flax.hangman.view;
 
+import static flax.hangman.utils.LocalConstants.*;
 import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
@@ -123,7 +124,7 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 	}
 
 	/**
-	 * Update score after (one page) game finished.
+	 * Update score after (one page) game win.
 	 */
 	@Override
 	public void onPageWin(Word itme) {
