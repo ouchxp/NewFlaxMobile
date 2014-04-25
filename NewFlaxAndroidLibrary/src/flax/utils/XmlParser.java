@@ -40,11 +40,11 @@ import flax.network.Downloader;
  * 
  * @author Nan Wu
  */
-public class XMLParser {
+public class XmlParser {
 	private static final String TAG = "XMLParser";
 	private static final String UNIQUE_URL_SETTING_METHOD = "setUniqueUrl";
 	/* XmlParser class constructor */
-	private XMLParser() {}
+	private XmlParser() {}
 
 	/**
 	 * Parse XML from URL

@@ -1,8 +1,8 @@
 package flax.converters;
 
 import flax.utils.FlaxUtil;
-import flax.utils.IURLConverter;
-public class HangmanURLConverter implements IURLConverter{
+import flax.utils.IUrlConverter;
+public class HangmanUrlConverter implements IUrlConverter{
 
 	@Override
 	public String convert(String url) {

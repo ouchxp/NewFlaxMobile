@@ -1,5 +1,5 @@
 package flax.utils;
 
-public interface IURLConverter {
+public interface IUrlConverter {
 	public String convert(String url);
 }

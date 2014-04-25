@@ -23,9 +23,9 @@ import flax.entity.exerciselist.Category;
 import flax.entity.exerciselist.Exercise;
 import flax.entity.exerciselist.ExerciseListResponse;
 import flax.utils.GlobalConstants;
-import flax.utils.IURLConverter;
+import flax.utils.IUrlConverter;
 import flax.utils.SPHelper;
-import flax.utils.XMLParser;
+import flax.utils.XmlParser;
 
 /**
  * BackgroundDowloadExercises Class
@@ -63,7 +63,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		final long startTime = System.currentTimeMillis();
 
 		// Begin parsing the xml from url
-		ExerciseListResponse response = XMLParser.fromUrl(urls[0], ExerciseListResponse.class);
+		ExerciseListResponse response = XmlParser.fromUrl(urls[0], ExerciseListResponse.class);
 		
 		// If something wrong then return null.
 		if (response == null) {
@@ -197,7 +197,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		try {
 			// Go through each new exercise and download corresponding exercise detail
 			for (Exercise e : execs) {
-				BaseExerciseDetail exerciseDetail = XMLParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
+				BaseExerciseDetail exerciseDetail = XmlParser.fromUrl(e.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
 				// Save multiple hierarchical entity, with object tree analyse.
 				DatabaseObjectHelper.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
 			}
@@ -216,7 +216,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 
 		// invoke urlConverter that alters the exercise content URL to get the correctly formatted
 		// xml.
-		IURLConverter urlConverter = null;
+		IUrlConverter urlConverter = null;
 		try {
 			urlConverter = EXERCISE_TYPE.getUrlConvertClass().newInstance();
 			for (Exercise a : downloadedExercises) {

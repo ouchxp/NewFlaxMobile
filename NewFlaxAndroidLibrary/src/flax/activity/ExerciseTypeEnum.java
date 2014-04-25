@@ -1,12 +1,12 @@
 package flax.activity;
 
-import flax.converters.HangmanURLConverter;
+import flax.converters.HangmanUrlConverter;
 import flax.entity.base.BaseEntity;
 import flax.entity.base.BaseExerciseDetail;
 import flax.entity.base.BasePage;
 import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
-import flax.utils.IURLConverter;
+import flax.utils.IUrlConverter;
 
 /**
  * Define different types of exercises. Provide information for creating
@@ -17,19 +17,19 @@ import flax.utils.IURLConverter;
  */
 public enum ExerciseTypeEnum {
 	@SuppressWarnings("unchecked")
-	HANGMAN("HANGMAN", "HANGMAN", HangmanURLConverter.class, HangmanExerciseDetail.class, Word.class,
+	HANGMAN("HANGMAN", "HANGMAN", HangmanUrlConverter.class, HangmanExerciseDetail.class, Word.class,
 			HangmanExerciseDetail.class, Word.class);// ,
 	// COLLOCATION_MATCHING("collocationMatching");
 
 	private String name;
 	private String title;
 
-	private Class<? extends IURLConverter> urlConvertClass;
+	private Class<? extends IUrlConverter> urlConvertClass;
 	private Class<? extends BaseExerciseDetail> exerciseEntityClass;
 	private Class<? extends BasePage> pageEntityClass;
 	private Class<? extends BaseEntity>[] entityClasses;
 
-	private ExerciseTypeEnum(String name, String title, Class<? extends IURLConverter> urlConvertClass,
+	private ExerciseTypeEnum(String name, String title, Class<? extends IUrlConverter> urlConvertClass,
 			Class<? extends BaseExerciseDetail> exerciseEntityClass, Class<? extends BasePage> pageEntityClass,
 			Class<? extends BaseEntity>... entityClasses) {
 		this.name = name;
@@ -40,11 +40,11 @@ public enum ExerciseTypeEnum {
 		this.entityClasses = entityClasses;
 	}
 
-	public Class<? extends IURLConverter> getUrlConvertClass() {
+	public Class<? extends IUrlConverter> getUrlConvertClass() {
 		return urlConvertClass;
 	}
 
-	public void setUrlConvertClass(Class<? extends IURLConverter> urlConvertClass) {
+	public void setUrlConvertClass(Class<? extends IUrlConverter> urlConvertClass) {
 		this.urlConvertClass = urlConvertClass;
 	}
 
