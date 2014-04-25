@@ -39,7 +39,7 @@ public class ExerciseListAdapter extends ArrayAdapter<Exercise> {
 
 	/* Class constructor */
 	public ExerciseListAdapter(Context context, List<Exercise> exercises) {
-		super(context, R.layout.list_row, exercises);
+		super(context, R.layout.list_screen_item, exercises);
 		layout_inflater = LayoutInflater.from(context);
 	}
 
@@ -56,7 +56,7 @@ public class ExerciseListAdapter extends ArrayAdapter<Exercise> {
 		ViewHolder holder;
 		if (convertView == null) {
 			// Create view from inflater
-			convertView = layout_inflater.inflate(R.layout.list_row, parent, false);
+			convertView = layout_inflater.inflate(R.layout.list_screen_item, parent, false);
 			holder = new ViewHolder();
 			
 			// Get the two text view from the rowView
