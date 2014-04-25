@@ -1,6 +1,7 @@
 package flax.hangman.view;
 
 import static flax.utils.GlobalConstants.*;
+import static flax.hangman.utils.LocalConstants.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,14 +29,6 @@ import flax.hangman.R;
  */
 public class GamePageFragment extends Fragment implements OnClickListener {
 	public static final String TAG = "GamePageFragment";
-	private static final String PRESSED_KEYS = "pressedKeys";
-	private static final String MOVES = "moves";
-	
-	private static final int[] BUTTON_GROUPS = { R.id.btns_a2i, R.id.btns_j2r, R.id.btns_s2z };
-	private static final int[] HANGMAN_PICS = { R.drawable.hang0, R.drawable.hang1, R.drawable.hang2, R.drawable.hang3,
-			R.drawable.hang4, R.drawable.hang5, R.drawable.hang6, R.drawable.hang7, R.drawable.hang8, R.drawable.hang9,
-			R.drawable.hang10 };
-	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 	private OnPageEventListener listener;
 	private View mRootView;
