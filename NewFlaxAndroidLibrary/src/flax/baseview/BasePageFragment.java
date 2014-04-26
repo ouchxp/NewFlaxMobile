@@ -16,7 +16,7 @@ public abstract class BasePageFragment<PAGE> extends Fragment implements OnClick
 	public static final String TAG = "GamePageFragment";
 	protected PAGE mItem;
 	protected Dao<PAGE, ?> mItemDao;
-	protected OnPageCheckAnswerListener<PAGE> mListener;
+	protected OnPageAnswerCheckedListener<PAGE> mListener;
 	
 	public void setPageData(PAGE item, Dao<PAGE, ?> itemDao) {
 		mItem = item;
@@ -36,7 +36,7 @@ public abstract class BasePageFragment<PAGE> extends Fragment implements OnClick
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		// Setup listener in order to dispatch event to activity.
-		this.mListener = (OnPageCheckAnswerListener<PAGE>) activity;
+		this.mListener = (OnPageAnswerCheckedListener<PAGE>) activity;
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public abstract class BasePageFragment<PAGE> extends Fragment implements OnClick
 	 * Use this interface interact with activity.
 	 * @author Nan Wu
 	 */
-	public static interface OnPageCheckAnswerListener<P> {
+	public static interface OnPageAnswerCheckedListener<P> {
 		public void onPageAnswerChecked(P itme);
 	}
 }

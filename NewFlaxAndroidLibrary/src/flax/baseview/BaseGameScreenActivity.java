@@ -20,7 +20,7 @@ import com.j256.ormlite.dao.Dao;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import flax.activity.ExerciseTypeEnum;
-import flax.baseview.BasePageFragment.OnPageCheckAnswerListener;
+import flax.baseview.BasePageFragment.OnPageAnswerCheckedListener;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
 import flax.entity.base.BaseExerciseDetail;
@@ -35,7 +35,7 @@ import flax.library.R;
  * @param <EXEC> corresponding to exercise detail class (ExerciseTypeEnum.exerciseEntityClass)
  * @param <PAGE> corresponding to game page class (ExerciseTypeEnum.pageEntityClass)
  */
-public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity implements OnPageCheckAnswerListener<PAGE> {
+public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity implements OnPageAnswerCheckedListener<PAGE> {
 
 	public static final String TAG = "GameScreen";
 
