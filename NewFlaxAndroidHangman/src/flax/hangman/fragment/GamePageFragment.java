@@ -6,7 +6,6 @@ import static flax.utils.GlobalConstants.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,30 +18,21 @@ import flax.baseview.BasePageFragment;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
 
-public class GamePageFragment extends BasePageFragment<Word>{
+public class GamePageFragment extends BasePageFragment<Word> {
 
 	/** Default Constructor */
-	public GamePageFragment() {}
+	public GamePageFragment() {
+	}
 
 	private View mRootView;
 	private List<Button> mBtnList;
 	private TextView mWordTextView;
 	private ImageView mHangmanImage;
-	
-	private OnPageCheckAnswerListener listener;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Keep the fragment object when activity recreate.
 		setRetainInstance(true);
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		// Setup listener in order to dispatch event to activity.
-		this.listener = (OnPageCheckAnswerListener) activity;
 	}
 
 	/**
@@ -51,7 +41,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mRootView = inflater.inflate(R.layout.fragment_game_page, container, false);
-		
+
 		// Initialize text view
 		mWordTextView = (TextView) mRootView.findViewById(R.id.guessing_word);
 		mWordTextView.setText(getMaskWord());
@@ -59,16 +49,16 @@ public class GamePageFragment extends BasePageFragment<Word>{
 		// Initialize image view
 		mHangmanImage = (ImageView) mRootView.findViewById(R.id.hangman);
 		setUpImageView();
-		
+
 		// Get and hold all buttons for future use
 		mBtnList = getAllButtons();
 		setUpAllButtons();
-		
+
 		return mRootView;
 	}
 
 	/**
-	 * Setup image view, decide which image should be shown. 
+	 * Setup image view, decide which image should be shown.
 	 */
 	private void setUpImageView() {
 		int pageStatus = mItem.getPageStatus();
@@ -85,7 +75,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 			break;
 		}
 	}
-	
+
 	/**
 	 * Setup buttons' listener, enable etc.
 	 */
@@ -95,13 +85,14 @@ public class GamePageFragment extends BasePageFragment<Word>{
 		String pressedKeys = mItem.getExtra(PRESSED_KEYS, "");
 		for (Button btn : mBtnList) {
 			String letter = btn.getText().toString().toLowerCase(ENGLISH);
-			
-			// Disable pressed buttons, and when page is done, disable all buttons.
-			if(isPageDone || pressedKeys.contains(letter)){
+
+			// Disable pressed buttons, and when page is done, disable all
+			// buttons.
+			if (isPageDone || pressedKeys.contains(letter)) {
 				btn.setEnabled(false);
 				continue;
 			}
-			
+
 			// Set event listener for available buttons
 			btn.setOnClickListener(this);
 		}
@@ -127,7 +118,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 	@Override
 	public void onClick(View v) {
 		String letter = ((Button) v).getText().toString().toLowerCase(ENGLISH);
-		
+
 		// Update pressed keys
 		String pressedKeys = mItem.getExtra(PRESSED_KEYS, "") + letter;
 		mItem.putExtra(PRESSED_KEYS, pressedKeys);
@@ -170,8 +161,8 @@ public class GamePageFragment extends BasePageFragment<Word>{
 	}
 
 	/**
-	 * Fragments of game page must implement this method.
-	 * This method will be called when user choose "Check Answer" in menu.
+	 * Fragments of game page must implement this method. This method will be
+	 * called when user choose "Check Answer" in menu.
 	 */
 	@Override
 	public void checkAnswer() {
@@ -183,7 +174,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 
 		// Game Over, Win or out of move
 		if (isWin || isOutOfMove) {
-			
+
 			// Disable all buttons
 			setUpAllButtons();
 
@@ -194,23 +185,18 @@ public class GamePageFragment extends BasePageFragment<Word>{
 					mHangmanImage.setImageResource(isWin ? R.drawable.img_face_smile : R.drawable.img_face_worried);
 				}
 			}, 300);
-			
+
 			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
-			
+
 			// Save the status to database for score calculation
 			updateItem(mItem);
 		}
 		
-		// Dispatch event to activity, in order to update summary's start/end time 
-		// and calculate score
-		listener.onPageAnswerChecked(mItem);
+		// call this method when checkAnswer process finished in order to
+		// dispatch event to activity, in order to update summary's start/end
+		// time and calculate score
+		/** Must call this method when checkAnswer process finished */
+		mListener.onPageAnswerChecked(mItem);
 	}
-	
-	/**
-	 * Use this interface interact with activity.
-	 * @author Nan Wu
-	 */
-	public interface OnPageCheckAnswerListener {
-		public void onPageAnswerChecked(Word itme);
-	}
+
 }

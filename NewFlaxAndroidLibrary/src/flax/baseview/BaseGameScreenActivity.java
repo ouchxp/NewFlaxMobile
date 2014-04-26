@@ -20,6 +20,7 @@ import com.j256.ormlite.dao.Dao;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import flax.activity.ExerciseTypeEnum;
+import flax.baseview.BasePageFragment.OnPageCheckAnswerListener;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
 import flax.entity.base.BaseExerciseDetail;
@@ -34,7 +35,7 @@ import flax.library.R;
  * @param <EXEC> corresponding to exercise detail class (ExerciseTypeEnum.exerciseEntityClass)
  * @param <PAGE> corresponding to game page class (ExerciseTypeEnum.pageEntityClass)
  */
-public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity{
+public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity implements OnPageCheckAnswerListener<PAGE> {
 
 	public static final String TAG = "GameScreen";
 
@@ -230,6 +231,32 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		} catch (Exception e) {
 			Log.e(TAG, "Some thing went wrong when calling batch task.", e);
 			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * This method will be invoke when after any page's checkAnswer method
+	 * have been called.
+	 * Update information for status change.
+	 */
+	@Override
+	public void onPageAnswerChecked(PAGE item) {
+		// Update start time for summary if this exercise is a new exercise.
+		if (mExercise.getStatus() == EXERCISE_NEW) {
+			mExercise.setStatus(EXERCISE_INCOMPLETE);
+		}
+		
+		// Update end time for summary
+		String date = DATE_FORMATTER.format(new Date());
+		mExerciseDetail.setEndTime(date);
+		
+		// Update score after (one page) game win.
+		if(item.getPageStatus() == PAGE_WIN){
+			mExerciseDetail.setScore(calculateScore());
+			// Update exercise status to complete if exercise is done.
+			if (mExerciseDetail.isComplete()) {
+				mExercise.setStatus(EXERCISE_COMPLETE);
+			}
 		}
 	}
 

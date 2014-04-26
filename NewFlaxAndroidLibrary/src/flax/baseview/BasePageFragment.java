@@ -2,6 +2,7 @@ package flax.baseview;
 
 import java.sql.SQLException;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.view.View.OnClickListener;
 
@@ -11,12 +12,13 @@ import com.j256.ormlite.dao.Dao;
  * A placeholder fragment containing a simple view.
  * Fragments of game page must extends this class
  */
-public abstract class BasePageFragment<P> extends Fragment implements OnClickListener {
+public abstract class BasePageFragment<PAGE> extends Fragment implements OnClickListener {
 	public static final String TAG = "GamePageFragment";
-	protected P mItem;
-	protected Dao<P, ?> mItemDao;
-
-	public void setPageData(P item, Dao<P, ?> itemDao) {
+	protected PAGE mItem;
+	protected Dao<PAGE, ?> mItemDao;
+	protected OnPageCheckAnswerListener<PAGE> mListener;
+	
+	public void setPageData(PAGE item, Dao<PAGE, ?> itemDao) {
 		mItem = item;
 		if (itemDao != null) {
 			mItemDao = itemDao;
@@ -28,6 +30,14 @@ public abstract class BasePageFragment<P> extends Fragment implements OnClickLis
 	 * This method will be called when user choose "Check Answer" in menu.
 	 */
 	public abstract void checkAnswer();
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		// Setup listener in order to dispatch event to activity.
+		this.mListener = (OnPageCheckAnswerListener<PAGE>) activity;
+	}
 	
 	@Override
 	public void onStop() {
@@ -41,7 +51,7 @@ public abstract class BasePageFragment<P> extends Fragment implements OnClickLis
 	 * @param item
 	 * @return recode numbers updated.
 	 */
-	public int updateItem(P item){
+	public int updateItem(PAGE item){
 		int count = 0;
 		try {
 			count = mItemDao.update(item);
@@ -49,5 +59,13 @@ public abstract class BasePageFragment<P> extends Fragment implements OnClickLis
 			throw new RuntimeException(e);
 		}
 		return count;
+	}
+	
+	/**
+	 * Use this interface interact with activity.
+	 * @author Nan Wu
+	 */
+	public static interface OnPageCheckAnswerListener<P> {
+		public void onPageAnswerChecked(P itme);
 	}
 }

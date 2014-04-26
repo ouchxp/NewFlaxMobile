@@ -17,7 +17,6 @@ import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Date;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +28,6 @@ import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
 import flax.hangman.fragment.GamePageFragment;
-import flax.hangman.fragment.GamePageFragment.OnPageCheckAnswerListener;
 
 /**
  * GameScreen Class
@@ -41,7 +39,7 @@ import flax.hangman.fragment.GamePageFragment.OnPageCheckAnswerListener;
  * 
  * @author Nan Wu
  */
-public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Word> implements OnPageCheckAnswerListener {
+public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Word> {
 
 	@Override
 	public String getHowToPlayMessage() {
@@ -98,31 +96,5 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 		checkAnswerMenu.setVisible(false);
 
 		return dispalyMenu;
-	}
-
-	/**
-	 * This method will be invoke when after any page's checkAnswer method
-	 * have been called.
-	 * Update information for status change.
-	 */
-	@Override
-	public void onPageAnswerChecked(Word item) {
-		// Update start time for summary if this exercise is a new exercise.
-		if (mExercise.getStatus() == EXERCISE_NEW) {
-			mExercise.setStatus(EXERCISE_INCOMPLETE);
-		}
-		
-		// Update end time for summary
-		String date = DATE_FORMATTER.format(new Date());
-		mExerciseDetail.setEndTime(date);
-		
-		// Update score after (one page) game win.
-		if(item.getPageStatus() == PAGE_WIN){
-			mExerciseDetail.setScore(calculateScore());
-			// Update exercise status to complete if exercise is done.
-			if (mExerciseDetail.isComplete()) {
-				mExercise.setStatus(EXERCISE_COMPLETE);
-			}
-		}
 	}
 } // end of class
