@@ -120,5 +120,10 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 		if (EXERCISE_NEW == mExercise.getStatus()) {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
 		}
+		
+		// Update exercise status to complete if exercise is done.
+		if (mExerciseDetail.isComplete()) {
+			mExercise.setStatus(EXERCISE_COMPLETE);
+		}
 	}
 } // end of class

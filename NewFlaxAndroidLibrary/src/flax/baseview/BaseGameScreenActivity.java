@@ -198,12 +198,16 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 
 	public void restartGame() {
 		try {
-			mExercise.setStatus(EXERCISE_INCOMPLETE);
+			
+			// Reset exercise status
+			mExercise.setStatus(EXERCISE_NEW);
 			getExerciseDao().update(mExercise);
 
+			// Reset exercise score start time etc.
 			mExerciseDetail.resetExercise();
 			getExerciseDetailDao().update(mExerciseDetail);
 
+			// Reset page information
 			getPageDao().callBatchTasks(new Callable<Void>() {
 				@SuppressWarnings("unchecked")
 				@Override
@@ -220,8 +224,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 					return null;
 				}
 			});
-
-			updateTitle();
+			
+			// Set up exercise again.
+			setUpExercise();
 		} catch (Exception e) {
 			Log.e(TAG, "Some thing went wrong when calling batch task.", e);
 			throw new RuntimeException(e);
@@ -233,9 +238,6 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		super.onStop();
 		// Save information
 		try {
-			if (mExerciseDetail.isComplete()) {
-				mExercise.setStatus(EXERCISE_COMPLETE);
-			}
 			getExerciseDao().update(mExercise);
 			getExerciseDetailDao().update(mExerciseDetail);
 		} catch (SQLException e) {
