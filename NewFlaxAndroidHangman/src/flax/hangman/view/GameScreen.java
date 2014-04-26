@@ -69,11 +69,6 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 	}
 
 	@Override
-	public void updateTitle() {
-		setTitle("Score: " + mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
-	}
-
-	@Override
 	public int calculatePossibleScore() {
 		return mExerciseDetail.getWords().size();
 	}
@@ -115,7 +110,6 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 		// Update score after (one page) game win.
 		if(item.getPageStatus() == PAGE_WIN){
 			mExerciseDetail.setScore(calculateScore());
-			updateTitle();
 		}
 		
 		// Update end time for summary
@@ -125,8 +119,6 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 		// Update start time for summary
 		if (EXERCISE_NEW == mExercise.getStatus()) {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
-			// Add Summary start time
-			mExerciseDetail.setStartTime(date);
 		}
 	}
 } // end of class

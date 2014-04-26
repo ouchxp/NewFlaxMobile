@@ -4,6 +4,7 @@ import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.Callable;
 
 import android.content.DialogInterface;
@@ -30,8 +31,8 @@ import flax.library.R;
  * 
  * @author Nan Wu
  *
- * @param <E extends BaseExerciseDetail> corresponding to the type 
- * @param <PAGE>
+ * @param <EXEC> corresponding to exercise detail class (ExerciseTypeEnum.exerciseEntityClass)
+ * @param <PAGE> corresponding to game page class (ExerciseTypeEnum.pageEntityClass)
  */
 public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity{
 
@@ -65,9 +66,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		/** Load exercise data from database */
 		mExercise = loadExercise();
 		mExerciseDetail = loadExerciseDetail();
-
+		
 		/** Setup exercise */
-		mExerciseDetail.setPossibleScore(calculatePossibleScore());
+		setUpExercise();
 
 		/** Set title */
 		updateTitle();
@@ -83,6 +84,21 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		setUpPageIndicator();
 
 	}
+	
+	public void updateTitle() {
+		setTitle(mExercise.getName());
+	}
+	
+	public void setUpExercise() {
+		// Set possible score for exercise.
+		mExerciseDetail.setPossibleScore(calculatePossibleScore());
+		
+		// Set start time for summary.
+		if (mExerciseDetail.getStartTime() == null || mExercise.getStatus() == EXERCISE_NEW) {
+			String date = DATE_FORMATTER.format(new Date());
+			mExerciseDetail.setStartTime(date);
+		}
+	}
 
 	public void setUpPageIndicator() {
 		CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
@@ -94,8 +110,6 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	public abstract ExerciseTypeEnum getExerciseType();
 	
 	public abstract void setUpListPagerAdapter();
-
-	public abstract void updateTitle();
 
 	public abstract int calculatePossibleScore();
 
