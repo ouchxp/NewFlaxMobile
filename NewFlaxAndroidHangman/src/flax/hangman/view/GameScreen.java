@@ -107,7 +107,7 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 	 */
 	@Override
 	public void onPageAnswerChecked(Word item) {
-		// Update start time for summary if this exercis is a new exercise.
+		// Update start time for summary if this exercise is a new exercise.
 		if (mExercise.getStatus() == EXERCISE_NEW) {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
 		}
