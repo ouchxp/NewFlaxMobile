@@ -4,7 +4,6 @@ import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.concurrent.Callable;
 
 import android.content.DialogInterface;
@@ -160,8 +159,6 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			d.displayHowToPlayDialog(getHowToPlayMessage());
 			return true;
 		} else if (itemId == R.id.check_answer) {
-			String date = DATE_FORMATTER.format(new Date());
-			mExerciseDetail.setEndTime(date);
 			getCurrentFragment().checkAnswer();
 			return true;
 		} else if (itemId == R.id.restart_game) {
@@ -220,12 +217,6 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	@Override
 	protected void onStop() {
 		super.onStop();
-
-		// Do not save anything when no interaction (Still New)
-		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
-			return;
-		}
-
 		// Save information
 		try {
 			if (mExerciseDetail.isComplete()) {

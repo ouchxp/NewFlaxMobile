@@ -12,6 +12,9 @@
 
     <!-- List Screen strings -->
     <string name="arrow_icon">Arrow Icon</string>
+    <string name="exercise_new">New</string>
+    <string name="exercise_incomplete">Incomplete</string>
+    <string name="exercise_complete">Complete</string>
 
     <!-- Home Screen Options Menu Strings -->
     <string name="network_settings">Network settings</string>

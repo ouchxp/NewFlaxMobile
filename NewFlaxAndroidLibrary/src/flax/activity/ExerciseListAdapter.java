@@ -13,9 +13,12 @@
  */
 package flax.activity;
 
+import static flax.utils.GlobalConstants.*;
+
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,14 +36,15 @@ import flax.library.R;
  * @author Nan Wu
  */
 public class ExerciseListAdapter extends ArrayAdapter<Exercise> {
+	public static final String TAG = "ExerciseListAdapter";
 
 	// Declare variables for adapter
-	private LayoutInflater layout_inflater;
+	private LayoutInflater mInflater;
 
 	/* Class constructor */
 	public ExerciseListAdapter(Context context, List<Exercise> exercises) {
 		super(context, R.layout.list_screen_item, exercises);
-		layout_inflater = LayoutInflater.from(context);
+		mInflater = LayoutInflater.from(context);
 	}
 
 	/*
@@ -56,13 +60,13 @@ public class ExerciseListAdapter extends ArrayAdapter<Exercise> {
 		ViewHolder holder;
 		if (convertView == null) {
 			// Create view from inflater
-			convertView = layout_inflater.inflate(R.layout.list_screen_item, parent, false);
+			convertView = mInflater.inflate(R.layout.list_screen_item, parent, false);
 			holder = new ViewHolder();
-			
+
 			// Get the two text view from the rowView
 			holder.labelView = (TextView) convertView.findViewById(R.id.label);
 			holder.valueView = (TextView) convertView.findViewById(R.id.value);
-			
+
 			// Set text style
 			holder.labelView.setTextColor(R.drawable.style_text_selector);
 			holder.valueView.setTextColor(R.drawable.style_text_selector);
@@ -73,10 +77,16 @@ public class ExerciseListAdapter extends ArrayAdapter<Exercise> {
 		}
 
 		Exercise exercise = this.getItem(position);
-		
+
 		// Set text for textView
 		holder.labelView.setText(exercise.getName());
-		holder.valueView.setText(exercise.getStatus());
+		
+		try {
+			holder.valueView.setText(EXERCISE_STATUS_NAME[exercise.getStatus()]);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			Log.e(TAG, "GlobalConstants.EXERCISE_STATUS_NAME does not contains a name for status " + exercise.getStatus(), e);
+			holder.valueView.setText(String.valueOf(exercise.getStatus()));
+		}
 
 		// return convertView
 		return convertView;

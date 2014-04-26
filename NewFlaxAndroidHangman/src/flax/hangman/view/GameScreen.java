@@ -29,7 +29,7 @@ import flax.entity.hangman.HangmanExerciseDetail;
 import flax.entity.hangman.Word;
 import flax.hangman.R;
 import flax.hangman.fragment.GamePageFragment;
-import flax.hangman.fragment.GamePageFragment.OnPageEventListener;
+import flax.hangman.fragment.GamePageFragment.OnPageCheckAnswerListener;
 
 /**
  * GameScreen Class
@@ -41,7 +41,7 @@ import flax.hangman.fragment.GamePageFragment.OnPageEventListener;
  * 
  * @author Nan Wu
  */
-public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Word> implements OnPageEventListener {
+public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Word> implements OnPageCheckAnswerListener {
 
 	@Override
 	public String getHowToPlayMessage() {
@@ -106,32 +106,27 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 	}
 
 	/**
-	 * This method will be invoke when any page have interaction, In this case,
-	 * button pressed.
-	 * 
-	 * Update Incomplete status for first interaction
+	 * This method will be invoke when after any page's checkAnswer method
+	 * have been called.
+	 * Update information for status change.
 	 */
 	@Override
-	public void onPageInteracted(Word itme) {
+	public void onPageAnswerChecked(Word item) {
+		// Update score after (one page) game win.
+		if(item.getPageStatus() == PAGE_WIN){
+			mExerciseDetail.setScore(calculateScore());
+			updateTitle();
+		}
+		
 		// Update end time for summary
 		String date = DATE_FORMATTER.format(new Date());
 		mExerciseDetail.setEndTime(date);
 
 		// Update start time for summary
-		if (EXERCISE_NEW.equals(mExercise.getStatus())) {
+		if (EXERCISE_NEW == mExercise.getStatus()) {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
 			// Add Summary start time
 			mExerciseDetail.setStartTime(date);
 		}
 	}
-
-	/**
-	 * Update score after (one page) game win.
-	 */
-	@Override
-	public void onPageWin(Word itme) {
-		mExerciseDetail.setScore(calculateScore());
-		updateTitle();
-	}
-
 } // end of class

@@ -159,7 +159,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 		// Check whether exercise status changed.
 		if(mCurrentPos != INVALID_POS){
 			final Exercise currentExercise = mExercises.get(mCurrentPos);
-			final String oldStatus = currentExercise.getStatus();
+			final int oldStatus = currentExercise.getStatus();
 			
 			// Delay for 500ms, cause GameScreen's onStop runs later than ListScreen's onResume
 			getListView().postDelayed(new Runnable() {
@@ -174,10 +174,10 @@ public abstract class BaseListScreenActivity extends ListActivity {
 					}
 					
 					// Get new status
-					String newStatus = currentExercise.getStatus();
+					final int newStatus = currentExercise.getStatus();
 					
 					// If status changed then update list
-					if(!oldStatus.equals(newStatus)){
+					if(oldStatus == newStatus){
 						mAdapter.notifyDataSetChanged();
 					}
 				}

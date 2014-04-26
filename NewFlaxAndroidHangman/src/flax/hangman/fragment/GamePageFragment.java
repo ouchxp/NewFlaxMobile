@@ -29,7 +29,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 	private TextView mWordTextView;
 	private ImageView mHangmanImage;
 	
-	private OnPageEventListener listener;
+	private OnPageCheckAnswerListener listener;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class GamePageFragment extends BasePageFragment<Word>{
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		// Setup listener in order to dispatch event to activity.
-		this.listener = (OnPageEventListener) activity;
+		this.listener = (OnPageCheckAnswerListener) activity;
 	}
 
 	/**
@@ -147,9 +147,6 @@ public class GamePageFragment extends BasePageFragment<Word>{
 		v.setEnabled(false);
 
 		checkAnswer();
-		
-		// Dispatch event to activity, in order to update summary's start/end time 
-		listener.onPageInteracted(mItem);
 	}
 
 	private String getMaskWord() {
@@ -200,22 +197,20 @@ public class GamePageFragment extends BasePageFragment<Word>{
 			
 			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
 			
-			// Save the status for score calculation
+			// Save the status to database for score calculation
 			updateItem(mItem);
 		}
 		
-		// Call activity to calculate score
-		if(isWin){
-			listener.onPageWin(mItem);
-		}
+		// Dispatch event to activity, in order to update summary's start/end time 
+		// and calculate score
+		listener.onPageAnswerChecked(mItem);
 	}
 	
 	/**
-	 * Use this interface interactive with activity.
+	 * Use this interface interact with activity.
 	 * @author Nan Wu
 	 */
-	public interface OnPageEventListener {
-		public void onPageWin(Word itme);
-		public void onPageInteracted(Word itme);
+	public interface OnPageCheckAnswerListener {
+		public void onPageAnswerChecked(Word itme);
 	}
 }

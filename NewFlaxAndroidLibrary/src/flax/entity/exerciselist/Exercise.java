@@ -2,7 +2,7 @@ package flax.entity.exerciselist;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import static flax.utils.GlobalConstants.*;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -37,8 +37,8 @@ public class Exercise extends BaseEntity {
 	@Element
 	private String summary;
 
-	@DatabaseField(defaultValue = EXERCISE_NEW)
-	private String status;
+	@DatabaseField(defaultValue = "0")
+	private int status;
 
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_foreign_id")
 	private Category category;
@@ -104,11 +104,11 @@ public class Exercise extends BaseEntity {
 		this.summary = summary;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
