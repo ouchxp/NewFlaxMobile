@@ -177,7 +177,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 					final int newStatus = currentExercise.getStatus();
 					
 					// If status changed then update list
-					if(oldStatus == newStatus){
+					if(oldStatus != newStatus){
 						mAdapter.notifyDataSetChanged();
 					}
 				}
