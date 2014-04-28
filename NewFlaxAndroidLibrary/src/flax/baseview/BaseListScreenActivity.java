@@ -48,7 +48,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	protected static final String TAG = "ListScreen";
 	private static final int INVALID_POS = -1;
 	private int mCurrentPos = INVALID_POS;
-	/** Ormlite database helper, use getDBHelper method to get a instance */
+	/** Ormlite database helper, use getDaoHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
 	private Dao<Exercise, String> mExerciseDao = null;
 	
