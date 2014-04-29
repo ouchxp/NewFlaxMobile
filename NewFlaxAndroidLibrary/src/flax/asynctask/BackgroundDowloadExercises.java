@@ -176,9 +176,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		try {
 			ConnectionSource connectionSource = helper.getConnectionSource();
 			for(Class<?> clazz : EXERCISE_TYPE.getEntityClasses()){
-				if(!helper.getDao(clazz).isTableExists()){
-					TableUtils.createTable(connectionSource, clazz);
-				}
+				TableUtils.createTableIfNotExists(connectionSource, clazz);
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
