@@ -11,7 +11,7 @@ import flax.entity.base.BaseEntity;
 /**
  * Represent "exercise" Tag in XML.
  * 
- * @author ouchxp
+ * @author Nan Wu
  * 
  */
 @DatabaseTable(tableName = "exerciselist_item")
@@ -19,20 +19,24 @@ public class Exercise extends BaseEntity {
 	@DatabaseField
 	@Attribute(name = "category_id")
 	private String categoryId;
+
 	@DatabaseField
 	@Attribute
 	private String id;
+
 	@DatabaseField
 	@Attribute
 	private String name;
+
 	@DatabaseField
 	@Attribute
 	private String type;
 
-	// Use url as unique id
+	// Using URL as unique id
 	@DatabaseField(id = true)
 	@Element
 	private String url;
+
 	@DatabaseField
 	@Element
 	private String summary;
