@@ -174,9 +174,8 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	/** create database table if the table is not exist yet. */
 	private void createTableIfNotExist(final OrmLiteSqliteOpenHelper helper){
 		try {
-			ConnectionSource connectionSource = helper.getConnectionSource();
 			for(Class<?> clazz : EXERCISE_TYPE.getEntityClasses()){
-				TableUtils.createTableIfNotExists(connectionSource, clazz);
+				TableUtils.createTableIfNotExists(helper.getConnectionSource(), clazz);
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
