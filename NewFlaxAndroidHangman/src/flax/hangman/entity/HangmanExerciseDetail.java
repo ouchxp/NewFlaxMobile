@@ -29,7 +29,7 @@ public class HangmanExerciseDetail extends BaseExerciseDetail {
 	@Attribute(name = "from")
 	private String from;
 
-	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL, foreignFieldName = "exercise")
+	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL)
 	@Path("player")
 	@ElementList(inline = true, entry = "word")
 	private Collection<Word> words;
