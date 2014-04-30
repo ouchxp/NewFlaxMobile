@@ -1,4 +1,4 @@
-package flax.activity;
+package flax.core;
 
 import flax.entity.base.BaseEntity;
 import flax.entity.base.BaseExerciseDetail;

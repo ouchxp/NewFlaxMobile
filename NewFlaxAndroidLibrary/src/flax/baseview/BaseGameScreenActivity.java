@@ -18,8 +18,8 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import flax.activity.ExerciseType;
 import flax.baseview.BasePageFragment.OnPageAnswerCheckedListener;
+import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
 import flax.database.FlaxDao;
 import flax.dialog.DialogHelper;

@@ -12,17 +12,17 @@ import android.preference.PreferenceManager;
  * @author ouchxp
  *
  */
-public class SPHelper {
-	private static SPHelper instances;
-	private static SPHelper getInstance() {
+public class SpHelper {
+	private static SpHelper instances;
+	private static SpHelper getInstance() {
 		if (instances == null) {
-			instances = new SPHelper();
+			instances = new SpHelper();
 		}
 		return instances;
 	}
 	
 	private final SharedPreferences sp;
-	private SPHelper(){
+	private SpHelper(){
 		sp = PreferenceManager.getDefaultSharedPreferences(FlaxUtil.getApplication());
 	}
 	

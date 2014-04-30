@@ -20,9 +20,9 @@ import java.util.Collection;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import flax.activity.ExerciseType;
 import flax.baseview.BaseGameScreenActivity;
 import flax.baseview.ListPagerAdapter;
+import flax.core.ExerciseType;
 import flax.entity.base.BasePage;
 import flax.hangman.R;
 import flax.hangman.entity.HangmanExerciseDetail;

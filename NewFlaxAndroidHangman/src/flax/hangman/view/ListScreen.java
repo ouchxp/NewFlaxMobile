@@ -15,8 +15,8 @@
 package flax.hangman.view;
 
 import static flax.hangman.utils.LocalConstants.*;
-import flax.activity.ExerciseType;
 import flax.baseview.BaseListScreenActivity;
+import flax.core.ExerciseType;
 
 /**
  * ListScreen

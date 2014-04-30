@@ -18,7 +18,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import flax.activity.ExerciseType;
+import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseObjectHelper;
 import flax.entity.base.BaseExerciseDetail;
@@ -27,7 +27,7 @@ import flax.entity.exerciselist.Exercise;
 import flax.entity.exerciselist.ExerciseListResponse;
 import flax.utils.GlobalConstants;
 import flax.utils.IUrlConverter;
-import flax.utils.SPHelper;
+import flax.utils.SpHelper;
 import flax.utils.XmlParser;
 
 /**
@@ -260,6 +260,6 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 * getDownloadStatus method get if download is done
 	 */
 	private boolean getDownloadStatus() {
-		return SPHelper.getBoolean(GlobalConstants.DOWNLOAD_STATUS_KEY, false);
+		return SpHelper.getBoolean(GlobalConstants.DOWNLOAD_STATUS_KEY, false);
 	}
 } // end of async task

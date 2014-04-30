@@ -12,7 +12,7 @@ public class FlaxUtil {
 	 * getServerPath method Get sercer path from shared pref
 	 */
 	public static String getServerPath() {
-		return SPHelper.getString(SERVER_PATH_KEY, DEFAULT_SERVER_PATH);
+		return SpHelper.getString(SERVER_PATH_KEY, DEFAULT_SERVER_PATH);
 	}
 
 	/**
@@ -29,10 +29,10 @@ public class FlaxUtil {
 	 */
 	public static boolean isFirstTime() {
 		// Retrieve value from shared pref
-		boolean isFirstTime = SPHelper.getBoolean(CHECK_FIRST_KEY, true);
+		boolean isFirstTime = SpHelper.getBoolean(CHECK_FIRST_KEY, true);
 
 		// After check, set first time flag as false
-		SPHelper.putSingleBoolean(CHECK_FIRST_KEY, false);
+		SpHelper.putSingleBoolean(CHECK_FIRST_KEY, false);
 		return isFirstTime;
 	}
 

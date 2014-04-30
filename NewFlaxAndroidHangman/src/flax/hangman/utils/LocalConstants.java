@@ -1,12 +1,14 @@
 package flax.hangman.utils;
 
-import flax.activity.ExerciseType;
+import flax.core.ExerciseType;
 import flax.hangman.R;
 import flax.hangman.converter.HangmanUrlConverter;
 import flax.hangman.entity.HangmanExerciseDetail;
 import flax.hangman.entity.Word;
 
 public class LocalConstants {
+	
+	/** define Hangman exercise type */
 	@SuppressWarnings("unchecked")
 	public static final ExerciseType HANGMAN = ExerciseType
 			.newInstance("HANGMAN", "HANGMAN", HangmanUrlConverter.class, HangmanExerciseDetail.class, Word.class,

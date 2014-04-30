@@ -31,7 +31,7 @@ import android.widget.ExpandableListView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
-import flax.activity.ExerciseType;
+import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
 import flax.database.FlaxDao;
 import flax.dialog.DialogHelper;
