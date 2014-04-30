@@ -1,12 +1,9 @@
 package flax.baseview;
 
-import java.sql.SQLException;
-
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.view.View.OnClickListener;
-
-import com.j256.ormlite.dao.Dao;
+import flax.database.FlaxDao;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -15,10 +12,10 @@ import com.j256.ormlite.dao.Dao;
 public abstract class BasePageFragment<PAGE> extends Fragment implements OnClickListener {
 	public static final String TAG = "GamePageFragment";
 	protected PAGE mItem;
-	protected Dao<PAGE, ?> mItemDao;
+	protected FlaxDao<PAGE, ?> mItemDao;
 	protected OnPageAnswerCheckedListener<PAGE> mListener;
 	
-	public void setPageData(PAGE item, Dao<PAGE, ?> itemDao) {
+	public void setPageData(PAGE item, FlaxDao<PAGE, ?> itemDao) {
 		mItem = item;
 		if (itemDao != null) {
 			mItemDao = itemDao;
@@ -52,13 +49,7 @@ public abstract class BasePageFragment<PAGE> extends Fragment implements OnClick
 	 * @return recode numbers updated.
 	 */
 	public int updateItem(PAGE item){
-		int count = 0;
-		try {
-			count = mItemDao.update(item);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return count;
+		return mItemDao.update(item);
 	}
 	
 	/**

@@ -59,12 +59,8 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 
 	@Override
 	public void setUpListPagerAdapter() {
-		try {
-			mPagerAdapter = new ListPagerAdapter<GamePageFragment, Word>(getSupportFragmentManager(),
-					getPageItemList(), getPageDao(), GamePageFragment.class);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		mPagerAdapter = new ListPagerAdapter<GamePageFragment, Word>(getSupportFragmentManager(), getPageItemList(),
+				getPageDao(), GamePageFragment.class);
 	}
 
 	@Override
@@ -91,7 +87,7 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean dispalyMenu = super.onCreateOptionsMenu(menu);
-		
+
 		// Hangman exercise doesn't need checkAnswer menu.
 		MenuItem checkAnswerMenu = menu.findItem(R.id.check_answer);
 		checkAnswerMenu.setVisible(false);

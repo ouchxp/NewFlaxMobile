@@ -33,6 +33,7 @@ import com.j256.ormlite.dao.Dao;
 import flax.activity.ExerciseListAdapter;
 import flax.activity.ExerciseType;
 import flax.database.DatabaseDaoHelper;
+import flax.database.FlaxDao;
 import flax.dialog.DialogHelper;
 import flax.entity.exerciselist.Exercise;
 import flax.library.R;
@@ -50,24 +51,26 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	private int mCurrentPos = INVALID_POS;
 	/** Ormlite database helper, use getDaoHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
-	private Dao<Exercise, String> mExerciseDao = null;
-	
+	private FlaxDao<Exercise, String> mExerciseDao = null;
+
 	protected ExerciseListAdapter mAdapter;
 	protected List<Exercise> mExercises;
 	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 
 	/**
 	 * Display the list of activities when the user moves to this screen.
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		// TODO: Should Change to category list, and change ListView to ExpandableListView
+
+		// TODO: Should Change to category list, and change ListView to
+		// ExpandableListView
 		// Get a list of all activities in the internal database
 		mExercises = getExercises();
-		
+
 		// Set the list adapter
 		mAdapter = new ExerciseListAdapter(this, mExercises);
 		setListAdapter(mAdapter);
@@ -79,13 +82,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	 * Get list items for ListView to display.
 	 */
 	private List<Exercise> getExercises() {
-		List<Exercise> items = null;
-		try {
-			items = getExerciseDao().queryForAll();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return items;
+		return getExerciseDao().queryForAll();
 	}
 
 	/**
@@ -95,16 +92,16 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		//Save position
+		// Save position
 		mCurrentPos = position;
-		
+
 		Intent i = new Intent(BaseListScreenActivity.this, getNextActivityClass());
 		// Pass exercise id
 		String exerciseId = mExercises.get(position).getUrl();
 		i.putExtra(EXERCISE_ID, exerciseId);
 		startActivity(i);
 	}
-	
+
 	/**
 	 * Return the class of next activity for building Intent.
 	 */
@@ -114,14 +111,14 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	 * Get exercise type for initialize activity
 	 */
 	public abstract ExerciseType getExerciseType();
-	
+
 	/**
 	 * Get help message
 	 */
 	protected String getHelpMessage() {
 		return getString(R.string.default_home_screen_help_message);
 	}
-	
+
 	/**
 	 * onCreateOptionsMenu method Inflate the menu; this adds items to the
 	 * action bar if it is present.
@@ -148,43 +145,39 @@ public abstract class BaseListScreenActivity extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	/**
 	 * Check exercise changes and update list view.
 	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		// Check whether exercise status changed.
-		if(mCurrentPos != INVALID_POS){
+		if (mCurrentPos != INVALID_POS) {
 			final Exercise currentExercise = mExercises.get(mCurrentPos);
 			final int oldStatus = currentExercise.getStatus();
-			
-			// Delay for 500ms, cause GameScreen's onStop runs later than ListScreen's onResume
+
+			// Delay for 500ms, cause GameScreen's onStop runs later than
+			// ListScreen's onResume
 			getListView().postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					
 					// refresh current entity
-					try {
-						getExerciseDao().refresh(currentExercise);
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}
-					
+					getExerciseDao().refresh(currentExercise);
+	
 					// Get new status
 					final int newStatus = currentExercise.getStatus();
-					
+
 					// If status changed then update list
-					if(oldStatus != newStatus){
+					if (oldStatus != newStatus) {
 						mAdapter.notifyDataSetChanged();
 					}
 				}
 			}, 500);
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -197,16 +190,21 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	}
 
 	/**
-	 * Generate DatabaseDao
-	 * @throws SQLException 
+	 * Generate Dao
 	 */
-	protected Dao<Exercise, String> getExerciseDao() throws SQLException {
+	protected FlaxDao<Exercise, String> getExerciseDao() {
 		if (mExerciseDao == null) {
-			mExerciseDao = getDaoHelper().getDao(Exercise.class);
+			Dao<Exercise, String> dao;
+			try {
+				dao = getDaoHelper().getDao(Exercise.class);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			mExerciseDao = new FlaxDao<Exercise, String>(dao);
 		}
 		return mExerciseDao;
 	}
-	
+
 	/**
 	 * Generate DatabaseDaoHelper for database operation.
 	 */

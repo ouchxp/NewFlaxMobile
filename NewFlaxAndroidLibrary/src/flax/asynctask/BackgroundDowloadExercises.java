@@ -194,9 +194,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			
 			ConnectionSource connectionSource = helper.getConnectionSource();
 			for(Class<?> clazz : EXERCISE_TYPE.getEntityClasses()){
-				if(!helper.getDao(clazz).isTableExists()){
-					TableUtils.createTable(connectionSource, clazz);
-				}
+				TableUtils.createTableIfNotExists(connectionSource, clazz);
 			}
 			
 			TransactionManager.callInTransaction(connectionSource, new Callable<Void>() {
@@ -252,7 +250,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate." , e);
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
-			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate. Make sure it has a defult no argument constructor." , e);
+			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate. Make sure it has a default no argument constructor." , e);
 			throw new RuntimeException(e);
 		}
 		return downloadedExercises;

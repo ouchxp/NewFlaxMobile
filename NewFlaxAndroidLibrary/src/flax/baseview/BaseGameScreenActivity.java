@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,6 +21,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import flax.activity.ExerciseType;
 import flax.baseview.BasePageFragment.OnPageAnswerCheckedListener;
 import flax.database.DatabaseDaoHelper;
+import flax.database.FlaxDao;
 import flax.dialog.DialogHelper;
 import flax.entity.base.BaseExerciseDetail;
 import flax.entity.base.BasePage;
@@ -31,19 +31,24 @@ import flax.library.R;
 /**
  * 
  * @author Nan Wu
- *
- * @param <EXEC> corresponding to exercise detail class (ExerciseTypeEnum.exerciseEntityClass)
- * @param <PAGE> corresponding to game page class (ExerciseTypeEnum.pageEntityClass)
+ * 
+ * @param <EXEC>
+ *            corresponding to exercise detail class
+ *            (ExerciseTypeEnum.exerciseEntityClass)
+ * @param <PAGE>
+ *            corresponding to game page class
+ *            (ExerciseTypeEnum.pageEntityClass)
  */
-public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends FragmentActivity implements OnPageAnswerCheckedListener<PAGE> {
+public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PAGE extends BasePage> extends
+		FragmentActivity implements OnPageAnswerCheckedListener<PAGE> {
 
 	public static final String TAG = "GameScreen";
 
 	/** Ormlite database helper, use getDBHelper method to get a instance */
 	private DatabaseDaoHelper mDaoHelper = null;
-	private Dao<Exercise, String> mExerciseDao = null;
-	private Dao<EXEC, String> mExerciseDetailDao = null;
-	private Dao<PAGE, String> mPageDao = null;
+	private FlaxDao<Exercise, String> mExerciseDao = null;
+	private FlaxDao<EXEC, String> mExerciseDetailDao = null;
+	private FlaxDao<PAGE, String> mPageDao = null;
 
 	@SuppressWarnings("rawtypes")
 	protected ListPagerAdapter mPagerAdapter;
@@ -54,7 +59,10 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	protected ViewPager mViewPager;
 
 	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
-	/** This is the item which be used to show exercise list, it contains exercise status.*/
+	/**
+	 * This is the item which be used to show exercise list, it contains
+	 * exercise status.
+	 */
 	protected Exercise mExercise;
 	/** This is the actual exercise detail */
 	protected EXEC mExerciseDetail;
@@ -67,7 +75,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		/** Load exercise data from database */
 		mExercise = loadExercise();
 		mExerciseDetail = loadExerciseDetail();
-		
+
 		/** Setup exercise */
 		setUpExercise();
 
@@ -81,19 +89,19 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
 
-		/** Setup page indicator */ 
+		/** Setup page indicator */
 		setUpPageIndicator();
 
 	}
-	
+
 	public void updateTitle() {
 		setTitle(mExercise.getName());
 	}
-	
+
 	public void setUpExercise() {
 		// Set possible score for exercise.
 		mExerciseDetail.setPossibleScore(calculatePossibleScore());
-		
+
 		// Set start time for summary.
 		if (mExerciseDetail.getStartTime() == null || mExercise.getStatus() == EXERCISE_NEW) {
 			String date = DATE_FORMATTER.format(new Date());
@@ -105,11 +113,11 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 	}
-	
+
 	/** Methods that sub class have to implement */
 
 	public abstract ExerciseType getExerciseType();
-	
+
 	public abstract void setUpListPagerAdapter();
 
 	public abstract int calculatePossibleScore();
@@ -117,7 +125,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	public abstract int calculateScore();
 
 	public abstract String getHowToPlayMessage();
-	
+
 	public abstract String getHelpMessage();
 
 	public abstract Collection<PAGE> getPageItemList();
@@ -126,13 +134,8 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	 * Load game data using ormlite
 	 */
 	private Exercise loadExercise() {
-
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
-		try {
-			return getExerciseDao().queryForId(exerciseId);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		return getExerciseDao().queryForId(exerciseId);
 	}
 
 	/**
@@ -140,11 +143,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	 */
 	private EXEC loadExerciseDetail() {
 		String exerciseId = this.getIntent().getStringExtra(EXERCISE_ID);
-		try {
-			return (EXEC) getExerciseDetailDao().queryForId(exerciseId);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		return getExerciseDetailDao().queryForId(exerciseId);
 	}
 
 	@Override
@@ -156,8 +155,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	}
 
 	/**
-	 * Display help, how to play or summary report dialog depending on which menu item
-	 * has been selected
+	 * Display help, how to play or summary report dialog depending on which
+	 * menu item has been selected
+	 * 
 	 * @see http://tools.android.com/tips/non-constant-fields
 	 */
 	@Override
@@ -189,8 +189,8 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		} else if (itemId == R.id.summary_report) {
 			// Display Summary Report Dialog
 			DialogHelper s = new DialogHelper(this);
-			s.displaySummaryReportDialog(mExerciseDetail.getScore(), mExerciseDetail.getPossibleScore(), mExerciseDetail.getStartTime(),
-					mExerciseDetail.getEndTime(), mExerciseDetail.getAttempts());
+			s.displaySummaryReportDialog(mExerciseDetail.getScore(), mExerciseDetail.getPossibleScore(),
+					mExerciseDetail.getStartTime(), mExerciseDetail.getEndTime(), mExerciseDetail.getAttempts());
 			return true;
 		} else {
 			return super.onOptionsItemSelected(item);
@@ -198,46 +198,40 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	}
 
 	public void restartGame() {
-		try {
-			
-			// Reset exercise status
-			mExercise.setStatus(EXERCISE_NEW);
-			getExerciseDao().update(mExercise);
 
-			// Reset exercise score start time etc.
-			mExerciseDetail.resetExercise();
-			getExerciseDetailDao().update(mExerciseDetail);
+		// Reset exercise status
+		mExercise.setStatus(EXERCISE_NEW);
+		getExerciseDao().update(mExercise);
 
-			// Reset page information
-			getPageDao().callBatchTasks(new Callable<Void>() {
-				@SuppressWarnings("unchecked")
-				@Override
-				public Void call() throws Exception {
-					Collection<PAGE> pages = getPageItemList();
-					for (PAGE page : pages) {
-						page.resetPage();
-						getPageDao().update(page);
-					}
+		// Reset exercise score start time etc.
+		mExerciseDetail.resetExercise();
+		getExerciseDetailDao().update(mExerciseDetail);
 
-					// Update dataSet if necessary, and call
-					// notifyDataSetChanged.
-					mPagerAdapter.updateDataSet(pages);
-					return null;
+		// Reset page information
+		getPageDao().callBatchTasks(new Callable<Void>() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public Void call() throws Exception {
+				Collection<PAGE> pages = getPageItemList();
+				for (PAGE page : pages) {
+					page.resetPage();
+					getPageDao().update(page);
 				}
-			});
-			
-			// Set up exercise again.
-			setUpExercise();
-		} catch (Exception e) {
-			Log.e(TAG, "Some thing went wrong when calling batch task.", e);
-			throw new RuntimeException(e);
-		}
+
+				// Update dataSet if necessary, and call
+				// notifyDataSetChanged.
+				mPagerAdapter.updateDataSet(pages);
+				return null;
+			}
+		});
+
+		// Set up exercise again.
+		setUpExercise();
 	}
-	
+
 	/**
-	 * This method will be invoke when after any page's checkAnswer method
-	 * have been called.
-	 * Update information for status change.
+	 * This method will be invoke when after any page's checkAnswer method have
+	 * been called. Update information for status change.
 	 */
 	@Override
 	public void onPageAnswerChecked(PAGE item) {
@@ -245,13 +239,13 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		if (mExercise.getStatus() == EXERCISE_NEW) {
 			mExercise.setStatus(EXERCISE_INCOMPLETE);
 		}
-		
+
 		// Update end time for summary
 		String date = DATE_FORMATTER.format(new Date());
 		mExerciseDetail.setEndTime(date);
-		
+
 		// Update score after (one page) game win.
-		if(item.getPageStatus() == PAGE_WIN){
+		if (item.getPageStatus() == PAGE_WIN) {
 			mExerciseDetail.setScore(calculateScore());
 			// Update exercise status to complete if exercise is done.
 			if (mExerciseDetail.isComplete()) {
@@ -264,12 +258,8 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	protected void onStop() {
 		super.onStop();
 		// Save information
-		try {
-			getExerciseDao().update(mExercise);
-			getExerciseDetailDao().update(mExerciseDetail);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		getExerciseDao().update(mExercise);
+		getExerciseDetailDao().update(mExerciseDetail);
 	}
 
 	@Override
@@ -282,29 +272,47 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			mDaoHelper = null;
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected BasePageFragment<PAGE> getCurrentFragment() {
 		return mPagerAdapter.getFragment(mViewPager.getCurrentItem());
 	}
 
-	protected Dao<PAGE, String> getPageDao() throws SQLException{
-		if (mPageDao == null) {
-			mPageDao = getDBHelper().getDao(EXERCISE_TYPE.getPageEntityClass());
-		}
-		return mPageDao;
-	}
-
-	protected Dao<Exercise, String> getExerciseDao() throws SQLException {
+	protected FlaxDao<Exercise, String> getExerciseDao() {
 		if (mExerciseDao == null) {
-			mExerciseDao = getDBHelper().getDao(Exercise.class);
+			Dao<Exercise, String> dao;
+			try {
+				dao = getDaoHelper().getDao(Exercise.class);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			mExerciseDao = new FlaxDao<Exercise, String>(dao);
 		}
 		return mExerciseDao;
 	}
 
-	protected Dao<EXEC, String> getExerciseDetailDao() throws SQLException {
+	protected FlaxDao<PAGE, String> getPageDao() {
+		if (mPageDao == null) {
+			Dao<PAGE, String> dao;
+			try {
+				dao = getDaoHelper().getDao(EXERCISE_TYPE.getPageEntityClass());
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			mPageDao = new FlaxDao<PAGE, String>(dao);
+		}
+		return mPageDao;
+	}
+
+	protected FlaxDao<EXEC, String> getExerciseDetailDao() {
 		if (mExerciseDetailDao == null) {
-			mExerciseDetailDao = getDBHelper().getDao(EXERCISE_TYPE.getExerciseEntityClass());
+			Dao<EXEC, String> dao;
+			try {
+				dao = getDaoHelper().getDao(EXERCISE_TYPE.getExerciseEntityClass());
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			mExerciseDetailDao = new FlaxDao<EXEC, String>(dao);
 		}
 		return mExerciseDetailDao;
 	}
@@ -312,7 +320,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	/**
 	 * Generate DatabaseDaoHelper for database operation.
 	 */
-	protected DatabaseDaoHelper getDBHelper() {
+	protected DatabaseDaoHelper getDaoHelper() {
 		if (mDaoHelper == null) {
 			mDaoHelper = OpenHelperManager.getHelper(this, DatabaseDaoHelper.class);
 		}

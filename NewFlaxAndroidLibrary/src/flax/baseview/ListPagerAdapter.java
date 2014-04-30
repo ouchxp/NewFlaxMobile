@@ -10,9 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
-
-import com.j256.ormlite.dao.Dao;
-
+import flax.database.FlaxDao;
 import flax.entity.base.BasePage;
 
 /**
@@ -23,10 +21,10 @@ public class ListPagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends B
 	private static final String TAG = "ListPagerAdapter";
 	private SparseArray<BasePageFragment<PAGE>> mFrags = new SparseArray<BasePageFragment<PAGE>>();
 	private List<PAGE> mItems;
-	private Dao<PAGE, ?> mItemDao;
+	private FlaxDao<PAGE, ?> mItemDao;
 	private Class<FRG> mFragmentClass;
 
-	public ListPagerAdapter(FragmentManager fm, Collection<PAGE> pageItems, Dao<PAGE, ?> itemDao, Class<FRG> fragmentClass) {
+	public ListPagerAdapter(FragmentManager fm, Collection<PAGE> pageItems, FlaxDao<PAGE, ?> itemDao, Class<FRG> fragmentClass) {
 		super(fm);
 		mItems = new ArrayList<PAGE>(pageItems);
 		this.mItemDao = itemDao;
