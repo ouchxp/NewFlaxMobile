@@ -45,7 +45,7 @@ public class ExerciseListResponse extends BaseEntity {
 	@Path("categoryList")
 	private String type;
 
-	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL, foreignFieldName = "response")
+	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL)
 	@ElementList(inline = true, entry = "category")
 	@Path("categoryList")
 	private Collection<Category> categoryList;
