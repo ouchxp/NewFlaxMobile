@@ -1,8 +1,8 @@
 package flax.hangman.utils;
 
 import flax.activity.ExerciseType;
-import flax.converter.HangmanUrlConverter;
 import flax.hangman.R;
+import flax.hangman.converter.HangmanUrlConverter;
 import flax.hangman.entity.HangmanExerciseDetail;
 import flax.hangman.entity.Word;
 
