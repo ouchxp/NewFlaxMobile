@@ -18,7 +18,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import flax.activity.ExerciseTypeEnum;
+import flax.activity.ExerciseType;
 import flax.database.DatabaseDaoHelper;
 import flax.database.DatabaseObjectHelper;
 import flax.entity.base.BaseExerciseDetail;
@@ -38,11 +38,11 @@ import flax.utils.XmlParser;
  */
 public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<Exercise>> {
 	public static final String TAG = "BackgroundDowloadExercises";
-	private ExerciseTypeEnum EXERCISE_TYPE;
+	private ExerciseType EXERCISE_TYPE;
 	private Context mContext;
 	private ProgressDialog mProgress;
 
-	public BackgroundDowloadExercises(Context context, ExerciseTypeEnum type) {
+	public BackgroundDowloadExercises(Context context, ExerciseType type) {
 		this.mContext = context;
 		this.EXERCISE_TYPE = type;
 	}

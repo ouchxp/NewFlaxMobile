@@ -13,6 +13,7 @@
  */
 package flax.hangman.view;
 
+import static flax.hangman.utils.LocalConstants.*;
 import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ import java.util.Collection;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import flax.activity.ExerciseTypeEnum;
+import flax.activity.ExerciseType;
 import flax.baseview.BaseGameScreenActivity;
 import flax.baseview.ListPagerAdapter;
 import flax.entity.base.BasePage;
@@ -52,8 +53,8 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 	}
 
 	@Override
-	public ExerciseTypeEnum getExerciseType() {
-		return ExerciseTypeEnum.HANGMAN;
+	public ExerciseType getExerciseType() {
+		return HANGMAN;
 	}
 
 	@Override

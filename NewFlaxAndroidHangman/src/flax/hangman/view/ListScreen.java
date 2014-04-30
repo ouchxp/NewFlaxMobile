@@ -14,18 +14,20 @@
  */
 package flax.hangman.view;
 
-import flax.activity.ExerciseTypeEnum;
+import static flax.hangman.utils.LocalConstants.*;
+import flax.activity.ExerciseType;
 import flax.baseview.BaseListScreenActivity;
 
 /**
  * ListScreen
+ * 
  * @author Nan Wu
- *
+ * 
  */
 public class ListScreen extends BaseListScreenActivity {
 
-	public ExerciseTypeEnum getExerciseType() {
-		return ExerciseTypeEnum.HANGMAN;
+	public ExerciseType getExerciseType() {
+		return HANGMAN;
 	}
 
 	/**

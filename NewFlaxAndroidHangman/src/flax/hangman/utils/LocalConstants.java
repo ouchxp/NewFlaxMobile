@@ -1,8 +1,17 @@
 package flax.hangman.utils;
 
+import flax.activity.ExerciseType;
+import flax.converters.HangmanUrlConverter;
+import flax.entity.hangman.HangmanExerciseDetail;
+import flax.entity.hangman.Word;
 import flax.hangman.R;
 
 public class LocalConstants {
+	@SuppressWarnings("unchecked")
+	public static final ExerciseType HANGMAN = ExerciseType
+			.newInstance("HANGMAN", "HANGMAN", HangmanUrlConverter.class, HangmanExerciseDetail.class, Word.class,
+					HangmanExerciseDetail.class, Word.class);
+
 	/** for home screen */
 	public static final String HANGMAN_URL = "?a=pr&o=xml&ro=1&rt=r&s=Hangman&c=password&s1.service=11";
 

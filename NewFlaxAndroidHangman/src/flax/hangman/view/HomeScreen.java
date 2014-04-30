@@ -1,8 +1,8 @@
 package flax.hangman.view;
 
-import flax.activity.ExerciseTypeEnum;
+import flax.activity.ExerciseType;
 import flax.baseview.BaseHomeScreenActivity;
-import flax.hangman.utils.LocalConstants;
+import static flax.hangman.utils.LocalConstants.*;
 import flax.utils.FlaxUtil;
 
 /**
@@ -12,12 +12,12 @@ import flax.utils.FlaxUtil;
  */
 public class HomeScreen extends BaseHomeScreenActivity{
 
-	public ExerciseTypeEnum getExerciseType() {
-		return ExerciseTypeEnum.HANGMAN;
+	public ExerciseType getExerciseType() {
+		return HANGMAN;
 	}
 
 	public String[] getUrls() {
-		String url = FlaxUtil.getServerPath() + LocalConstants.HANGMAN_URL;
+		String url = FlaxUtil.getServerPath() + HANGMAN_URL;
 		return new String[]{url};
 	}
 

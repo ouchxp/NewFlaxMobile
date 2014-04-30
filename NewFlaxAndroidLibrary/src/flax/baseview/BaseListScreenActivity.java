@@ -31,7 +31,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
 import flax.activity.ExerciseListAdapter;
-import flax.activity.ExerciseTypeEnum;
+import flax.activity.ExerciseType;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
 import flax.entity.exerciselist.Exercise;
@@ -54,7 +54,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	
 	protected ExerciseListAdapter mAdapter;
 	protected List<Exercise> mExercises;
-	protected final ExerciseTypeEnum EXERCISE_TYPE = getExerciseType();
+	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 
 	/**
 	 * Display the list of activities when the user moves to this screen.
@@ -113,7 +113,7 @@ public abstract class BaseListScreenActivity extends ListActivity {
 	/**
 	 * Get exercise type for initialize activity
 	 */
-	public abstract ExerciseTypeEnum getExerciseType();
+	public abstract ExerciseType getExerciseType();
 	
 	/**
 	 * Get help message

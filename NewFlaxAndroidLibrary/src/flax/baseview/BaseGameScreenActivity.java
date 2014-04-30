@@ -19,7 +19,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import flax.activity.ExerciseTypeEnum;
+import flax.activity.ExerciseType;
 import flax.baseview.BasePageFragment.OnPageAnswerCheckedListener;
 import flax.database.DatabaseDaoHelper;
 import flax.dialog.DialogHelper;
@@ -53,7 +53,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	 */
 	protected ViewPager mViewPager;
 
-	protected final ExerciseTypeEnum EXERCISE_TYPE = getExerciseType();
+	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 	/** This is the item which be used to show exercise list, it contains exercise status.*/
 	protected Exercise mExercise;
 	/** This is the actual exercise detail */
@@ -108,7 +108,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	
 	/** Methods that sub class have to implement */
 
-	public abstract ExerciseTypeEnum getExerciseType();
+	public abstract ExerciseType getExerciseType();
 	
 	public abstract void setUpListPagerAdapter();
 

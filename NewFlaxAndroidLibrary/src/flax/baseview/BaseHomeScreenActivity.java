@@ -24,7 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import flax.activity.ExerciseTypeEnum;
+import flax.activity.ExerciseType;
 import flax.asynctask.BackgroundDowloadExercises;
 import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelper;
@@ -66,7 +66,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 * Exercise type enum, contains exercise name, data module, converters
 	 * information
 	 */
-	protected final ExerciseTypeEnum EXERCISE_TYPE = getExerciseType();
+	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 
 	/**
 	 * Displays the Home Screen when the app is loaded Overlays the Home Screen
@@ -97,7 +97,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	/**
 	 * Get exercise type information for different exercise activity
 	 */
-	protected abstract ExerciseTypeEnum getExerciseType();
+	protected abstract ExerciseType getExerciseType();
 
 	/**
 	 * Inflate the menu; this adds items to the action bar if it is present.
