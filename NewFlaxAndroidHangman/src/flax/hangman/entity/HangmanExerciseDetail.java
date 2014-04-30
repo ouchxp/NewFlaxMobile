@@ -1,4 +1,4 @@
-package flax.entity.hangman;
+package flax.hangman.entity;
 
 import static flax.utils.GlobalConstants.*;
 

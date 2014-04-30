@@ -25,9 +25,9 @@ import flax.activity.ExerciseType;
 import flax.baseview.BaseGameScreenActivity;
 import flax.baseview.ListPagerAdapter;
 import flax.entity.base.BasePage;
-import flax.entity.hangman.HangmanExerciseDetail;
-import flax.entity.hangman.Word;
 import flax.hangman.R;
+import flax.hangman.entity.HangmanExerciseDetail;
+import flax.hangman.entity.Word;
 import flax.hangman.fragment.GamePageFragment;
 
 /**

@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import flax.baseview.BasePageFragment;
-import flax.entity.hangman.Word;
 import flax.hangman.R;
+import flax.hangman.entity.Word;
 
 public class GamePageFragment extends BasePageFragment<Word> {
 

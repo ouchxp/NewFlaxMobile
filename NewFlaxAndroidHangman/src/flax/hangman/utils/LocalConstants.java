@@ -2,9 +2,9 @@ package flax.hangman.utils;
 
 import flax.activity.ExerciseType;
 import flax.converters.HangmanUrlConverter;
-import flax.entity.hangman.HangmanExerciseDetail;
-import flax.entity.hangman.Word;
 import flax.hangman.R;
+import flax.hangman.entity.HangmanExerciseDetail;
+import flax.hangman.entity.Word;
 
 public class LocalConstants {
 	@SuppressWarnings("unchecked")
