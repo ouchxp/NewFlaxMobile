@@ -21,7 +21,7 @@ import java.util.Collection;
 import android.view.Menu;
 import android.view.MenuItem;
 import flax.baseview.BaseGameScreenActivity;
-import flax.baseview.ListPagerAdapter;
+import flax.baseview.GamePagerAdapter;
 import flax.core.ExerciseType;
 import flax.entity.base.BasePage;
 import flax.hangman.R;
@@ -58,7 +58,7 @@ public class GameScreen extends BaseGameScreenActivity<HangmanExerciseDetail, Wo
 
 	@Override
 	public void setUpListPagerAdapter() {
-		mPagerAdapter = new ListPagerAdapter<GamePageFragment, Word>(getSupportFragmentManager(), getPageItemList(),
+		mPagerAdapter = new GamePagerAdapter<GamePageFragment, Word>(getSupportFragmentManager(), getPageItemList(),
 				getPageDao(), GamePageFragment.class);
 	}
 

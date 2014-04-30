@@ -24,7 +24,7 @@ import flax.utils.FlaxUtil;
  * @author Nan Wu
  *
  */
-public class DatabaseObjectHelper {
+public class DatabaseObjectSaver {
 	
 	/**
 	 * Save multiple hierarchical entity without helper.

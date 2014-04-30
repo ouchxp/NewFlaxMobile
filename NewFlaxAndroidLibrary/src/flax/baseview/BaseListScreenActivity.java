@@ -59,7 +59,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 	private FlaxDao<Category, String> mCategoryDao = null;
 
 	protected ExpandableListView mListView;
-	protected ExpandableExerciseListAdapter mAdapter;
+	protected ExerciseListAdapter mAdapter;
 	protected List<Category> mCategories;
 	protected List<List<Exercise>> mExerciseGroups;
 	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
@@ -100,7 +100,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 			List<Exercise> group = new ArrayList<Exercise>(category.getExercises());
 			mExerciseGroups.add(group);
 		}
-		mAdapter = new ExpandableExerciseListAdapter(this, mCategories, mExerciseGroups);
+		mAdapter = new ExerciseListAdapter(this, mCategories, mExerciseGroups);
 		setListAdapter(mAdapter);
 	}
 

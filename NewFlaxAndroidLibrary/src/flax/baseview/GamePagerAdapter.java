@@ -17,14 +17,14 @@ import flax.entity.base.BasePage;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of the sections/tabs/pages.
  */
-public class ListPagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends BasePage> extends FragmentPagerAdapter {
+public class GamePagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends BasePage> extends FragmentPagerAdapter {
 	private static final String TAG = "ListPagerAdapter";
 	private SparseArray<BasePageFragment<PAGE>> mFrags = new SparseArray<BasePageFragment<PAGE>>();
 	private List<PAGE> mItems;
 	private FlaxDao<PAGE, ?> mItemDao;
 	private Class<FRG> mFragmentClass;
 
-	public ListPagerAdapter(FragmentManager fm, Collection<PAGE> pageItems, FlaxDao<PAGE, ?> itemDao, Class<FRG> fragmentClass) {
+	public GamePagerAdapter(FragmentManager fm, Collection<PAGE> pageItems, FlaxDao<PAGE, ?> itemDao, Class<FRG> fragmentClass) {
 		super(fm);
 		mItems = new ArrayList<PAGE>(pageItems);
 		this.mItemDao = itemDao;

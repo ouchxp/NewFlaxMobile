@@ -51,7 +51,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	private FlaxDao<PAGE, String> mPageDao = null;
 
 	@SuppressWarnings("rawtypes")
-	protected ListPagerAdapter mPagerAdapter;
+	protected GamePagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the page contents.

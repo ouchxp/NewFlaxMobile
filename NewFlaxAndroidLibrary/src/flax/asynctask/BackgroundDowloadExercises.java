@@ -20,7 +20,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
-import flax.database.DatabaseObjectHelper;
+import flax.database.DatabaseObjectSaver;
 import flax.entity.base.BaseExerciseDetail;
 import flax.entity.exerciselist.Category;
 import flax.entity.exerciselist.Exercise;
@@ -221,7 +221,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 			for (Exercise exec : execs) {
 				BaseExerciseDetail exerciseDetail = XmlParser.fromUrl(exec.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
 				// Save multiple hierarchical entity, with object tree analyze.
-				DatabaseObjectHelper.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
+				DatabaseObjectSaver.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

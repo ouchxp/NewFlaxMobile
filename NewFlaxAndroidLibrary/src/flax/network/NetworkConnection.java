@@ -21,9 +21,9 @@ import android.preference.PreferenceManager;
 
 /**
  * NetworkConnection Class
- *
- * This class is used to check whether there is Internet connection.
- * Compares user preferences ("wi-fi" or "any network") against connectivity.
+ * 
+ * This class is used to check whether there is Internet connection. Compares
+ * user preferences ("wi-fi" or "any network") against connectivity.
  * 
  * @author Jemma Konig
  */
@@ -31,56 +31,53 @@ public class NetworkConnection {
 
 	// Declare constants for connection
 	protected final Context context;
-	protected static final String WIFI 			= "Wi-Fi";
-    protected static final String ANY 			= "Any";
-    
-    // Declare variables for connection
-    protected static String networkPref 		= null;
-    protected static boolean connect 			= false;
-	
+	protected static final String WIFI = "Wi-Fi";
+	protected static final String ANY = "Any";
+
+	// Declare variables for connection
+	protected static String networkPref = null;
+	protected static boolean connect = false;
+
 	/* NetworkConnection class constructor */
-	public NetworkConnection(Context c){
-		context 						= c;
+	public NetworkConnection(Context c) {
+		context = c;
 		loadNetworkPreferences();
 	}
-	
+
 	/*
 	 * loadNetworkPreferences method
 	 * 
-	 * Used to load the user preferences
-	 * Connect to server with Wi-Fi only, or any connection
+	 * Used to load the user preferences Connect to server with Wi-Fi only, or
+	 * any connection
 	 */
-	protected void loadNetworkPreferences(){
-		SharedPreferences sharedPref = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		networkPref 	= sharedPref.getString("network", "Wi-Fi");
+	protected void loadNetworkPreferences() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		networkPref = sharedPref.getString("network", "Wi-Fi");
 	}
-	
+
 	/*
 	 * checkNetworkConnection method
 	 * 
-	 * Check if the user preferences and the
-	 * network connection match.
+	 * Check if the user preferences and the network connection match.
 	 * 
 	 * @return connect, boolean true if connection is okay.
 	 */
-	public boolean checkNetworkConnection(){
+	public boolean checkNetworkConnection() {
 		// Load user preferences
 		loadNetworkPreferences();
-		
-		// Check the  connection status of the device
-        ConnectivityManager conMan 	= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInf 			= conMan.getActiveNetworkInfo();
-        
-        // Set 'connect = true' if preferences and network status match
-        if (WIFI.equals(networkPref) && netInf != null
-                && netInf.getType() == ConnectivityManager.TYPE_WIFI) {
-        	connect 				= true;
-        } else if (ANY.equals(networkPref) && netInf != null) {
-        	connect 				= true;
-        } else {
-        	connect 				= false;
-        }
-        return connect;
-	}	
+
+		// Check the connection status of the device
+		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInf = conMan.getActiveNetworkInfo();
+
+		// Set 'connect = true' if preferences and network status match
+		if (WIFI.equals(networkPref) && netInf != null && netInf.getType() == ConnectivityManager.TYPE_WIFI) {
+			connect = true;
+		} else if (ANY.equals(networkPref) && netInf != null) {
+			connect = true;
+		} else {
+			connect = false;
+		}
+		return connect;
+	}
 } // end of class

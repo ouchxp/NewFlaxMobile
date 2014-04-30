@@ -37,7 +37,7 @@ import flax.library.R;
  * 
  * @author Nan Wu
  */
-public class ExpandableExerciseListAdapter extends BaseExpandableListAdapter {
+public class ExerciseListAdapter extends BaseExpandableListAdapter {
 	public static final String TAG = "ExpandableExerciseListAdapter";
 	private static final String NONE_CATEGORY = "none";
 	
@@ -48,7 +48,7 @@ public class ExpandableExerciseListAdapter extends BaseExpandableListAdapter {
 	private List<List<Exercise>> mExerciseGroups;
 
 	/* Class constructor */
-	public ExpandableExerciseListAdapter(Context context, List<Category> categories, List<List<Exercise>> exerciseGroups) {
+	public ExerciseListAdapter(Context context, List<Category> categories, List<List<Exercise>> exerciseGroups) {
 		mInflater = LayoutInflater.from(context);
 		this.mContext = context;
 		this.mCategories = categories;

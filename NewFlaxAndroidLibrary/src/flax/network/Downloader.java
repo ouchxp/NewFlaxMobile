@@ -38,74 +38,13 @@ public class Downloader {
 	// Declare variables for download
 	
 	/* NetworkDowload class constructor */
-	public Downloader(){
+	private Downloader(){
 	}
-	
-/*	
-	 * saveServerPath method
-	 * 
-	 * Uses shared preferences to save the 
-	 * Users chosen server path
-	 
-	public void saveDownloadStatus(){
-		
-		// Declare shared preference manager
-        SharedPreferences sharedPref 					= PreferenceManager
-        												.getDefaultSharedPreferences(context);
-        // Declare shared preference editor
-        Editor editor 									= sharedPref.edit();
-        
-        // Save shared preference value for "server"
-        editor.putBoolean("downloadStatus", downloadStatus);
-        editor.commit();
-	}
-	
-	
-	 * loadServerPath method
-	 * 
-	 * Uses shared preferences to load the 
-	 * Users chosen server path
-	 
-	public void loadDownloadStatus(){
-		
-		// Declare shared preference manager
-		SharedPreferences sharedPref 					= PreferenceManager
-														.getDefaultSharedPreferences(context);
-        // Retrieve value from shared pref
-		downloadStatus	 									= sharedPref.getBoolean("downloadStatus", false);
-	}*/
-    
-    /* 
-     * getExerciseList method
-     * 
-     * Returns the list of ActivityExercise objects
-     * @return arr, list containing activities
-     */
-//    public List<ActivityItem> getExerciseList(String url) throws IOException {
-//    	
-//
-//    }
-	
-	
- 	/* 
- 	 * dowloadActivities method
- 	 * 
- 	 * Downloads the xml file for activities, parses it and 
- 	 * stores it in a list of of ActivityExercise objects.
- 	 * 
- 	 * @param urlString, the string used in the http request
- 	 */
-//    public List<ActivityItem> xmlParse(InputStream stream) throws IOException {
-//        
-//        // Declare and initialize new xml parser
-//        
-//    }
     
     /*
      * downloadUrl method
      * 
      * Set up a http connection and get the response
-     * 
  	 * @param urlString, the string used in the http request
  	 * @return is, the input stream containing the http response
      */
