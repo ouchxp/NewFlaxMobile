@@ -26,14 +26,14 @@ import flax.library.R;
  * This class holds the help dialog for the app. Specific messages are set when
  * the method is called.
  * 
- * @author Jemma Konig
+ * @author Nan Wu
  */
 public class DialogHelper {
 
 	// Declare context for help dialogs
 	protected Context context;
 
-	/*
+	/**
 	 * DialogHelp class constructor
 	 * 
 	 * @param context. The context for the activity where the dialog will be
@@ -43,7 +43,7 @@ public class DialogHelper {
 		context = c;
 	}
 
-	/*
+	/**
 	 * displayGameHelpDialog method
 	 * 
 	 * Displays the dialog for the game help icon
@@ -97,7 +97,7 @@ public class DialogHelper {
 				.create().show();
 	}
 
-	/*
+	/**
 	 * displayRestartGameDialog method
 	 * 
 	 * Displays the restart game dialog
@@ -126,48 +126,51 @@ public class DialogHelper {
 				// create alert dialog and display it
 				.create().show();
 	}
-	
-	/*
+
+	/**
 	 * displaySummaryReportDialog method
 	 * 
 	 * Displays the dialog for the summary report
 	 */
-	public void displaySummaryReportDialog(int score, int possibleScore, String startTime, 
-			String endTime, int attempts){
-		
+	public void displaySummaryReportDialog(int score, int possibleScore, String startTime, String endTime, int attempts) {
+
 		// Determine score percentage
 		double percent = (((double) score / (double) possibleScore) * 100);
-		double percentage = Math.ceil(percent);	
-		
-		if (startTime == null) startTime = "";
-		if (endTime == null) endTime = "";
-		String message = MessageFormat.format(context.getString(R.string.default_summary_message),  startTime,endTime,attempts,score,possibleScore,percentage);
-		
+		double percentage = Math.ceil(percent);
+
+		if (startTime == null)
+			startTime = "";
+		if (endTime == null)
+			endTime = "";
+		String message = MessageFormat.format(context.getString(R.string.default_summary_message), startTime, endTime,
+				attempts, score, possibleScore, percentage);
+
 		// Instantiate alert dialog builder
-		new AlertDialog.Builder(context)	
-		
+		new AlertDialog.Builder(context)
+
 		// set dialog title
-		.setTitle("Summary report")
-		
-		// set message
-//		.setMessage(
-//				"Start time:   " + startTime + "\n" +
-//				"End time:     " + endTime + "\n \n" +
-//				"Attempts:     " + attempts + "\n" +
-//				"Total Score:  " + score + " out of " + possibleScore + " (" + percentage + "%)" 
-//				)
-		.setMessage(message)
-		
-		// set dialog Done button
-		.setNegativeButton("Done",new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog,int id) {
-				dialog.cancel();
-		}})
-		
-		// create alert dialog and display it
-		.create().show();
+				.setTitle("Summary report")
+
+				// set message
+				// .setMessage(
+				// "Start time:   " + startTime + "\n" +
+				// "End time:     " + endTime + "\n \n" +
+				// "Attempts:     " + attempts + "\n" +
+				// "Total Score:  " + score + " out of " + possibleScore + " ("
+				// + percentage + "%)"
+				// )
+				.setMessage(message)
+
+				// set dialog Done button
+				.setNegativeButton("Done", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				})
+
+				// create alert dialog and display it
+				.create().show();
 	}
-	
 
 	/**
 	 * showDownloadDialog method
@@ -176,7 +179,7 @@ public class DialogHelper {
 	 * startingDownload()
 	 */
 	public void displayDownloadDialog(final DialogInterface.OnClickListener yesCallback) {
-		//Log.d(TAG, "download dialog being created ...");
+		// Log.d(TAG, "download dialog being created ...");
 
 		// Create dialog
 		new AlertDialog.Builder(context)
@@ -198,6 +201,21 @@ public class DialogHelper {
 					}
 				})
 
-		.create().show();
+				.create().show();
+	}
+
+	/**
+	 * displayCheckAnswerDialog method Displays the check answer dialog
+	 */
+	public void displayCheckAnswerDialog(String msgTitle, String msgBody) {
+
+		// Instantiate alert dialog builder
+		new AlertDialog.Builder(context).setTitle(msgTitle).setMessage(msgBody)
+		// set dialog Done button
+				.setNegativeButton("Done", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				}).create().show();
 	}
 } // end of class
