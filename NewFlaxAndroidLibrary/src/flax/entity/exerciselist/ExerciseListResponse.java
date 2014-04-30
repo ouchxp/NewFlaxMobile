@@ -11,52 +11,54 @@ import org.simpleframework.xml.core.Commit;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
+import static flax.utils.GlobalConstants.*;
 import flax.entity.base.BaseEntity;
 
 /**
  * Represent "response" Tag in XML(root tag).
+ * 
  * @author ouchxp
- *
+ * 
  */
 @Root(name = "response")
-@DatabaseTable(tableName="exerciselist_response")
-public class ExerciseListResponse extends BaseEntity{
-	@DatabaseField(id=true)
+@DatabaseTable(tableName = "exerciselist_response")
+public class ExerciseListResponse extends BaseEntity {
+	@DatabaseField(id = true)
 	private String uniqueUrl;
-	
+
 	@DatabaseField
 	@Attribute
 	private String from;
-	
+
 	@DatabaseField
 	@Attribute
 	@Path("categoryList")
 	private String c;
-	
+
 	@DatabaseField
-	@Attribute(name="flax_server_domain")
+	@Attribute(name = "flax_server_domain")
 	@Path("categoryList")
 	private String flaxServerDomain;
-	
+
 	@DatabaseField
 	@Attribute
 	@Path("categoryList")
 	private String type;
-	
-	@ForeignCollectionField(eager = false,foreignFieldName="response")
-	@ElementList(inline=true,entry="category")
+
+	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL, foreignFieldName = "response")
+	@ElementList(inline = true, entry = "category")
 	@Path("categoryList")
 	private Collection<Category> categoryList;
-	
+
 	/** Constructor */
-	public ExerciseListResponse(){}
-	
+	public ExerciseListResponse() {
+	}
+
 	/**
 	 * Build one-to-many relation, prepare for orm.
 	 */
 	@Commit
-	private void buildRelation(){
+	private void buildRelation() {
 		for (Category category : categoryList) {
 			category.setResponse(this);
 		}
@@ -109,6 +111,7 @@ public class ExerciseListResponse extends BaseEntity{
 
 	/**
 	 * Will be use in XMLParser.setUniqueUrl, do not modify this method rashly.
+	 * 
 	 * @param uniqueUrl
 	 */
 	public void setUniqueUrl(String uniqueUrl) {

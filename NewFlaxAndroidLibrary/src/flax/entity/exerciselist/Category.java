@@ -1,5 +1,7 @@
 package flax.entity.exerciselist;
 
+import static flax.utils.GlobalConstants.*;
+
 import java.util.Collection;
 
 import org.simpleframework.xml.Attribute;
@@ -15,37 +17,39 @@ import flax.entity.base.BaseEntity;
 
 /**
  * Represent "category" Tag in XML.
+ * 
  * @author ouchxp
- *
+ * 
  */
-@DatabaseTable(tableName="exerciselist_category")
-public class Category extends BaseEntity{
-	
-	
+@DatabaseTable(tableName = "exerciselist_category")
+public class Category extends BaseEntity {
+
 	/** Composite Id Start */
-	
+
 	/**
-	 * Currently ormlite doesn't support Composite Id(Multiple primary keys), 
-	 * but we can simulate that, use an extra field which returns a combination 
+	 * Currently ormlite doesn't support Composite Id(Multiple primary keys),
+	 * but we can simulate that, use an extra field which returns a combination
 	 * of all primary keys as unique id. In order to do this, useGetSet=true is
 	 * necessary.
 	 */
-	@DatabaseField(id=true,useGetSet=true)
+	@DatabaseField(id = true, useGetSet = true)
 	private String uniqueId;
-	
+
 	public String getUniqueId() {
 		return id + "@" + response.getUniqueUrl();
 	}
 
 	/**
-	 * Strongly <B>NOT</B> recommend to use this method.
-	 * This method should <B>ONLY</B> be called by ORM framework.
+	 * Strongly <B>NOT</B> recommend to use this method. This method should
+	 * <B>ONLY</B> be called by ORM framework.
+	 * 
 	 * @param uniqueId
 	 */
 	@Deprecated
 	public void setUniqueId(String uniqueId) {
 		this.uniqueId = uniqueId;
 	}
+
 	/** Composite Id End */
 
 	@Element
@@ -58,22 +62,23 @@ public class Category extends BaseEntity{
 	@DatabaseField
 	@Attribute
 	private String name;
-	
-	@ForeignCollectionField(eager = false)
-	@ElementList(inline=true,entry="exercise")
+
+	@ForeignCollectionField(eager = true, maxEagerLevel = MAX_EAGER_LEVEL)
+	@ElementList(inline = true, entry = "exercise")
 	private Collection<Exercise> exercises;
-	
-	@DatabaseField(foreign = true, foreignAutoRefresh = true,columnName="response_foreign_id") 
+
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "response_foreign_id")
 	private ExerciseListResponse response;
-	
+
 	/** Constructors */
-	public Category(){}
-	
+	public Category() {
+	}
+
 	/**
 	 * Build one-to-many relation, prepare for orm.
 	 */
 	@Commit
-	private void buildRelation(){
+	private void buildRelation() {
 		for (Exercise exercise : exercises) {
 			exercise.setCategory(this);
 		}
@@ -119,7 +124,5 @@ public class Category extends BaseEntity{
 	public void setResponse(ExerciseListResponse response) {
 		this.response = response;
 	}
-	
+
 }
-
-
