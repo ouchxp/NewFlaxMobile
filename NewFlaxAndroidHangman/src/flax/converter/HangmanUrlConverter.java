@@ -1,4 +1,4 @@
-package flax.converters;
+package flax.converter;
 
 import flax.utils.FlaxUtil;
 import flax.utils.IUrlConverter;
