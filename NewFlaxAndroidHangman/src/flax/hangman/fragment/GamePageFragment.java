@@ -77,6 +77,8 @@ public class GamePageFragment extends BasePageFragment<Word> {
 	}
 
 	/**
+	 * Set up buttons depends on item status, so should call this after
+	 * item status changed, not before.
 	 * Setup buttons' listener, enable etc.
 	 */
 	private void setUpAllButtons() {
@@ -185,7 +187,7 @@ public class GamePageFragment extends BasePageFragment<Word> {
 				}
 			}, 300);
 
-			// Disable all buttons
+			// Set up buttons depends on item status, in this case Disable all buttons
 			setUpAllButtons();
 			
 			// Save the status to database for score calculation
