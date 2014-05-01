@@ -45,21 +45,35 @@ public class DefaultExerciseLoader {
 		boolean isFirstTime = isFirstTime();
 		if(!isFirstTime) return isFirstTime;
 		
+		Log.i(TAG, "Loading default exercises");
 		final OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
+		
+		// Creating table
 		createTableIfNotExist(helper);
+		
 		try {
 			for (String fileName : exerciseListfiles) {
+				
+				// Get exercise list data 
 				ExerciseListResponse response = XmlParser
 						.fromAsset(fileName, mAssetManager, ExerciseListResponse.class);
 
+				// Save exercise list and get exercise urls
 				List<String> savedExercises = saveExerciseList(helper, response);
+				
+				// Get all exercises' detail
 				for (String execFileName : savedExercises) {
 					Log.i(TAG, "loading " + execFileName);
-					BaseEntity exercise = XmlParser.fromAsset(execFileName, mAssetManager, mExerciseType.getExerciseEntityClass());
-					DatabaseObjectSaver.save(exercise, helper, mExerciseType.getEntityClasses());
+					
+					// Get exercise detail
+					BaseEntity exerciseDetail = XmlParser.fromAsset(execFileName, mAssetManager, mExerciseType.getExerciseEntityClass());
+					
+					// Save to database
+					DatabaseObjectSaver.save(exerciseDetail, helper, mExerciseType.getEntityClasses());
 				}
 			}
 		} catch (Exception e) {
+			Log.e(TAG, "Error loading default exercises. Message: " + e.getMessage());
 			throw new RuntimeException(e);
 		}
 		
