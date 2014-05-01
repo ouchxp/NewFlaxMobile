@@ -92,8 +92,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 	/**
 	 * Set up adapter for expandable list view
 	 */
-	private void setUpAdapter() {
-
+	public void setUpAdapter() {
 		mAdapter = new ExerciseListAdapter(this, mCategories);
 		setListAdapter(mAdapter);
 	}
