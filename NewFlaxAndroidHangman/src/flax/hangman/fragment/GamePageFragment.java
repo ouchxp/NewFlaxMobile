@@ -77,9 +77,8 @@ public class GamePageFragment extends BasePageFragment<Word> {
 	}
 
 	/**
-	 * Set up buttons depends on item status, so should call this after
-	 * item status changed, not before.
-	 * Setup buttons' listener, enable etc.
+	 * Set up buttons depends on item status, so should call this after item
+	 * status changed, not before. Setup buttons' listener, enable etc.
 	 */
 	private void setUpAllButtons() {
 		// Page status is fail or win means page is done.
@@ -150,9 +149,12 @@ public class GamePageFragment extends BasePageFragment<Word> {
 
 		// Replace the letter which has not been selected to "_".
 		for (char letter : ALPHABET.toCharArray()) {
-			// Skip letters which word does not contain or the key has been
-			// pressed.
-			if (maskWord.indexOf(letter) == -1 || pressedKeys.indexOf(letter) != -1)
+			// Skip letters which word does not contain
+			if (maskWord.toLowerCase(ENGLISH).indexOf(letter) == -1)
+				continue;
+			
+			 //Skip letters which the key has been pressed.
+			if ((pressedKeys.indexOf(letter) != -1))
 				continue;
 
 			// Change letters to "_". (?i) case insensitive.
@@ -178,7 +180,6 @@ public class GamePageFragment extends BasePageFragment<Word> {
 		if (isWin || isOutOfMove) {
 			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
 
-
 			// Show smile face or worried face after 300ms.
 			mHangmanImage.postDelayed(new Runnable() {
 				@Override
@@ -187,13 +188,14 @@ public class GamePageFragment extends BasePageFragment<Word> {
 				}
 			}, 300);
 
-			// Set up buttons depends on item status, in this case Disable all buttons
+			// Set up buttons depends on item status, in this case Disable all
+			// buttons
 			setUpAllButtons();
-			
+
 			// Save the status to database for score calculation
 			updateItem(mItem);
 		}
-		
+
 		// call this method when checkAnswer process finished in order to
 		// dispatch event to activity, in order to update summary's start/end
 		// time and calculate score
