@@ -14,6 +14,11 @@
  */
 package flax.baseview;
 
+import static flax.utils.GlobalConstants.*;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,15 +30,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import flax.asynctask.BackgroundDowloadExercises;
+import flax.asynctask.DefaultExercisesLoader;
 import flax.core.ExerciseType;
 import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelper;
 import flax.dialog.DialogNetworkSettings;
 import flax.library.R;
-import flax.utils.DefaultExerciseLoader;
 import flax.utils.FlaxUtil;
 import flax.utils.Mock;
-import static flax.utils.GlobalConstants.*;
 
 /**
  * HomeScreen Class
@@ -63,6 +67,7 @@ import static flax.utils.GlobalConstants.*;
 public abstract class BaseHomeScreenActivity extends Activity {
 
 	public static final String TAG = "HomeScreen";
+	private final Executor SINGLE_THREAD_EXECUTOR = Executors.newSingleThreadExecutor();
 
 	/**
 	 * Exercise type enum, contains exercise name, data module, converters
@@ -82,6 +87,8 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		// On first time, load and save default exercises from
 		// assets folder
 		loadDefaultExercises();
+		
+		
 
 		// Show download Dialog
 		showDownloadDialog();
@@ -188,8 +195,9 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 * opened for the first time. 
 	 */
 	public void loadDefaultExercises(){
-		DefaultExerciseLoader loader = new DefaultExerciseLoader(this, EXERCISE_TYPE);
-		loader.loadDefaultExercises(DEFAULT_EXERCISE_LIST_FILE);
+		DefaultExercisesLoader loader = new DefaultExercisesLoader(this, EXERCISE_TYPE);
+		// Run on SINGLE_THREAD_EXECUTOR then won't conflict with downloading process
+		loader.executeOnExecutor(SINGLE_THREAD_EXECUTOR, DEFAULT_EXERCISE_LIST_FILE);
 	}
 
 	/**
@@ -206,7 +214,8 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		if (FlaxUtil.isConnected()) {
 			Log.d(TAG, "connected. Start downloading");
 			BackgroundDowloadExercises backgoundDownload = new BackgroundDowloadExercises(this, EXERCISE_TYPE);
-			backgoundDownload.execute(getUrls());
+			// Run on SINGLE_THREAD_EXECUTOR then won't conflict with loading default exercise process
+			backgoundDownload.executeOnExecutor(SINGLE_THREAD_EXECUTOR, getUrls());
 		} else {
 			Log.d(TAG, "Internet not Connected");
 			Toast.makeText(
