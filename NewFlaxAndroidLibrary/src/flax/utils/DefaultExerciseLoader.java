@@ -9,6 +9,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -53,6 +54,7 @@ public class DefaultExerciseLoader {
 
 				List<String> savedExercises = saveExerciseList(helper, response);
 				for (String execFileName : savedExercises) {
+					Log.i(TAG, "loading " + execFileName);
 					BaseEntity exercise = XmlParser.fromAsset(execFileName, mAssetManager, mExerciseType.getExerciseEntityClass());
 					DatabaseObjectSaver.save(exercise, helper, mExerciseType.getEntityClasses());
 				}

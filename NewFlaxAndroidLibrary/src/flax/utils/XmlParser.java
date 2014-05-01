@@ -98,8 +98,13 @@ public class XmlParser {
 	public static <T> T fromAsset(String fileName, AssetManager assetManager, Class<T> resultType) {
 		InputStream is = null;
 		try {
-			// Downloading
-			is = assetManager.open(fileName);
+			// loading
+			try {
+				is = assetManager.open(fileName);
+			} catch (IOException e) {
+				Log.e(TAG, "Error loading " + fileName);
+				throw e;
+			}
 			
 			// Parsing
 			Serializer serializer = new Persister();
@@ -113,7 +118,7 @@ public class XmlParser {
 			
 			return result;
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
+			Log.e(TAG, "Error loading " + fileName + " Message: " +e.getMessage());
 			throw new RuntimeException();
 		} finally {
 			if (is != null) {
