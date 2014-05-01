@@ -1,5 +1,6 @@
 <response from="password">
   <categoryList c="password" flax_server_domain="/greenstone3" type="11">
+  <!--
     <category id="1" name="none">
       <categorysummary>default category</categorysummary>
       <exercise category_id="1" id="3" name="Drop/Slice/Bar/Chunk-Multiples" type="Hangman">
@@ -54,6 +55,7 @@
         <summary>CollocationMatching activity</summary>
       </exercise>
     </category>
+    -->
      <category id="3" name="goood">
       <categorysummary>default category</categorysummary>
       <exercise category_id="1" id="3" name="Drop/Slice/Bar/Chunk-Multiples" type="Hangman">
@@ -84,6 +86,39 @@
         <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;drop|7573032|757304|757305|757306|757307|757310|)slice|717661|717662|717663|717665|717666|717674|)piece|15314|15315|15317|15318|15320|15323|)part|470656|470657|470658|470659|470660|470664|)]targetWords;drop slice piece part]colloType;non]numOfCollos;10]quest_len;6&amp;s1.flaxdbinfo=dbid;11&amp;s1.exercisename=Book of Flax 5</url>
         <summary>CollocationMatching activity</summary>
       </exercise>
+      <exercise category_id="1" id="5" name="ManyWordsa" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;slice|7176612|717665|)bar|864340|864341|)drop|757303|757304|)chunk|58098|58103|)piece|15314|15320|)part|470656|470658|)section|817104|817105|)sliver|212515|212516|)pair|468913|468914|)set|899799|899801|)]targetWords;slice a bar drop chunk piece part section sliver pair set]colloType;non]numOfCollos;10]quest_len;2&amp;s1.flaxdbinfo=dbid;5&amp;s1.exercisename=Slice/Bar/Drop/Rain</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="4" name="Slice/Bar/Drop/Raina" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;slice|7176612|717662|717663|717665|717666|717667|717669|717670|717672|717674|)bar|864340|864341|647798|171822|894397|983349|399826|412663|58279|617970|)drop|757303|757304|757305|757306|757307|287818|757308|757309|757310|757311|)r a ain|928410|81501|377161|88661|876476|446572|345196|601555|180146|192848|)]targetWords;slice bar drop rain]colloType;non]numOfCollos;10]quest_len;10&amp;s1.flaxdbinfo=dbid;4&amp;s1.exercisename=Slice/Bar/Drop/Rain</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="9" name="Book of Flax example 2a" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;slice|7176612|717662|717663|717665|717666|717667|717669|717670|717672|717674|717677|717678|717679|717692|)drop|757303|757304|757305|757306|757307|287818|757310|757312|757313|757314|757315|757318|757326|757328|)piece|15314|15315|15316|a 15317|15318|15319|15320|15321|15322|15323|15324|15325|15326|15328|)days|39589|67332|88651|90339|88653|88655|88659|661503|88661|88665|88666|88668|88670|88671|)]targetWords;slice drop piece days]colloType;non]numOfCollos;25]quest_len;14&amp;s1.flaxdbinfo=dbid;9&amp;s1.exercisename=Book of Flax 3</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="11" name="Book of Flax example 1a" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;drop|7573032|757304|757305|757306|757307|757310|)slice|717661|717662|717663|717665|717666|717674|)piece|15314|15315|15317|15318|15320|15323|)part|470656|470657|470658|470659|470660|470664|)]targetWords;drop slice piece part]colloType;non]na umOfCollos;10]quest_len;6&amp;s1.flaxdbinfo=dbid;11&amp;s1.exercisename=Book of Flax 5</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="5" name="ManyWordsab" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;slice|7176612|717665|)bar|864340|864341|)drop|757303|757304|)chunk|58098|58103|)piece|15314|15320|)part|470656|470658|)section|817104|817105|)sliver|212515|212516|)pair|468913|468914|)set|899799|899801|)]targetWords;slice a bar drop chunk piece part section sliver pair set]colloType;non]numOfCollos;10]quest_len;2&amp;s1.flaxdbinfo=dbid;5&amp;s1.exerbcisename=Slice/Bar/Drop/Rain</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="4" name="Slice/Bar/Drop/Rainab" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;slice|7176612|717662|717663|717665|717666|717667|717669|717670|717672|717674|)bar|864340|864341|647798|171822|894397|983349|399826|412663|58279|617970|)drop|757303|757304|757305|757306|757307|287818|757308|757309|757310|757311|)r a ain|928410|81501|377161|88661|876476|446572|345196|601555|180146|192848|)]targetWords;slice bar drop rain]colloType;bnon]numOfCollos;10]quest_len;10&amp;s1.flaxdbinfo=dbid;4&amp;s1.exercisename=Slice/Bar/Drop/Rain</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="9" name="Book of Flax example 2ab" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;slice|7176612|717662|717663|717665|717666|717667|717669|717670|717672|717674|717677|717678|717679|717692|)drop|757303|757304|757305|757306|757307|287818|757310|757312|757313|757314|757315|757318|757326|757328|)piece|15314|15315|15316|a 15317|15318|15319|15320|15321|15322|15323|15324|15325|15326|15328|)days|39589|67332|88651|90339|88653|88655|8b8659|661503|88661|88665|88666|88668|88670|88671|)]targetWords;slice drop piece days]colloType;non]numOfCollos;25]quest_len;14&amp;s1.flaxdbinfo=dbid;9&amp;s1.exercisename=Book of Flax 3</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      <exercise category_id="1" id="11" name="Book of Flax example 1ab" type="Hangman">
+        <url>3?a=g&amp;rt=r&amp;c=password&amp;s111.collname=password&amp;s=CollocationMatching&amp;sa=Activity&amp;s1.service=99&amp;s1.activity=CollocationMatching&amp;s1.params=qs;drop|7573032|757304|757305|757306|757307|757310|)slice|717661|717662|717663|717665|717666|717674|)piece|15314|15315|15317|15318|15320|15323|)part|470656|470657|470658|470659|470660|470664|)]targetWords;drop slice piece part]colloType;non]na umOfCollos;10]quest_len;6&amp;s1.flaxdbinfo=dbid;11&amp;s1.exercisename=Bobok of Flax 5</url>
+        <summary>CollocationMatching activity</summary>
+      </exercise>
+      
     </category>
   </categoryList>
 </response>

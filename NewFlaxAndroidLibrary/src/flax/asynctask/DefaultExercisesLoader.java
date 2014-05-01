@@ -2,7 +2,6 @@ package flax.asynctask;
 
 import static flax.utils.GlobalConstants.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,14 +13,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.table.TableUtils;
 
 import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
-import flax.database.DatabaseObjectSaver;
+import flax.database.DatabaseNestedObjectHelper;
+import flax.database.FlaxDao;
 import flax.entity.base.BaseEntity;
 import flax.entity.exerciselist.Category;
 import flax.entity.exerciselist.Exercise;
@@ -57,34 +53,34 @@ public class DefaultExercisesLoader extends AsyncTask<String, Void, Void> {
 			return null;
 
 		Log.i(TAG, "Loading default exercises");
-		final OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
+		final DatabaseDaoHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
 
 		// Creating table
-		createTableIfNotExist(helper);
+		helper.createTablesIfNotExist(mExerciseType.getEntityClasses());
 
 		// Load and save data
-		loadDefaultExercisesInTrans(helper, exerciseListfiles);
+		loadDefaultExercisesInBatch(helper, exerciseListfiles);
+
+		// Release helper
+		OpenHelperManager.releaseHelper();
 		return null;
 	}
 
 	/**
-	 * Call loadDefaultExercises in database transaction to gain better performance.
+	 * Call loadDefaultExercises in batch task to gain better performance.
+	 * 
 	 * @param helper
 	 * @param exerciseListfiles
 	 */
-	public void loadDefaultExercisesInTrans(final OrmLiteSqliteOpenHelper helper, final String... exerciseListfiles) {
-		try {
-			TransactionManager.callInTransaction(helper.getConnectionSource(), new Callable<Void>() {
-				@Override
-				public Void call() throws Exception {
-					loadDefaultExercises(helper, exerciseListfiles);
-					return null;
-				}
-			});
-		} catch (SQLException e) {
-			Log.e(TAG, "Error loading default exercises. Message: " + e.getMessage());
-			throw new RuntimeException(e);
-		}
+	public void loadDefaultExercisesInBatch(final DatabaseDaoHelper helper, final String... exerciseListfiles) {
+		Callable<Void> batchTasks = new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				loadDefaultExercises(helper, exerciseListfiles);
+				return null;
+			}
+		};
+		helper.callBatchTasks(batchTasks);
 	}
 
 	/**
@@ -92,11 +88,10 @@ public class DefaultExercisesLoader extends AsyncTask<String, Void, Void> {
 	 * 
 	 * @param exerciseListfiles
 	 * @return
-	 * @throws SQLException
 	 * @throws IllegalAccessException
 	 */
-	public void loadDefaultExercises(final OrmLiteSqliteOpenHelper helper, final String... exerciseListfiles)
-			throws SQLException, IllegalAccessException {
+	public void loadDefaultExercises(final DatabaseDaoHelper helper, final String... exerciseListfiles)
+			throws IllegalAccessException {
 
 		for (String fileName : exerciseListfiles) {
 
@@ -115,19 +110,8 @@ public class DefaultExercisesLoader extends AsyncTask<String, Void, Void> {
 						mExerciseType.getExerciseEntityClass());
 
 				// Save to database
-				DatabaseObjectSaver.save(exerciseDetail, helper, mExerciseType.getEntityClasses());
+				DatabaseNestedObjectHelper.save(exerciseDetail, helper, mExerciseType.getEntityClasses());
 			}
-		}
-	}
-
-	/** create database table if the table is not exist yet. */
-	private void createTableIfNotExist(final OrmLiteSqliteOpenHelper helper) {
-		try {
-			for (Class<?> clazz : mExerciseType.getEntityClasses()) {
-				TableUtils.createTableIfNotExists(helper.getConnectionSource(), clazz);
-			}
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -137,16 +121,14 @@ public class DefaultExercisesLoader extends AsyncTask<String, Void, Void> {
 	 * @param helper
 	 * @param response
 	 * @return
-	 * @throws SQLException
 	 */
-	private List<String> saveExerciseList(final OrmLiteSqliteOpenHelper helper, ExerciseListResponse response)
-			throws SQLException {
+	private List<String> saveExerciseList(final DatabaseDaoHelper helper, ExerciseListResponse response) {
 		List<String> savedExercises = new ArrayList<String>();
 
 		// Get daos
-		Dao<ExerciseListResponse, String> responseDao = helper.getDao(ExerciseListResponse.class);
-		Dao<Category, String> categoryDao = helper.getDao(Category.class);
-		Dao<Exercise, String> exerciseItemDao = helper.getDao(Exercise.class);
+		FlaxDao<ExerciseListResponse, String> responseDao = helper.getFlaxDao(ExerciseListResponse.class);
+		FlaxDao<Category, String> categoryDao = helper.getFlaxDao(Category.class);
+		FlaxDao<Exercise, String> exerciseItemDao = helper.getFlaxDao(Exercise.class);
 
 		// Save response
 		responseDao.create(response);

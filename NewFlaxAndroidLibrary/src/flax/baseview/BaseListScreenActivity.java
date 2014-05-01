@@ -16,7 +16,6 @@ package flax.baseview;
 
 import static flax.utils.GlobalConstants.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import android.app.ExpandableListActivity;
@@ -28,7 +27,6 @@ import android.view.View;
 import android.widget.ExpandableListView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 
 import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
@@ -207,13 +205,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 	 */
 	protected FlaxDao<Category, String> getCategoryDao() {
 		if (mCategoryDao == null) {
-			Dao<Category, String> dao;
-			try {
-				dao = getDaoHelper().getDao(Category.class);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-			mCategoryDao = new FlaxDao<Category, String>(dao);
+			mCategoryDao = getDaoHelper().getFlaxDao(Category.class);
 		}
 		return mCategoryDao;
 	}
@@ -223,13 +215,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 	 */
 	protected FlaxDao<Exercise, String> getExerciseDao() {
 		if (mExerciseDao == null) {
-			Dao<Exercise, String> dao;
-			try {
-				dao = getDaoHelper().getDao(Exercise.class);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-			mExerciseDao = new FlaxDao<Exercise, String>(dao);
+			mExerciseDao = getDaoHelper().getFlaxDao(Exercise.class);
 		}
 		return mExerciseDao;
 	}

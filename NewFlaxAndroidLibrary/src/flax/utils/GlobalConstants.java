@@ -21,6 +21,7 @@ public class GlobalConstants {
 	public static final String SUMMARY_DATE_FORMAT = "E MMM d HH:mm:ss";
 
 	// Exercise
+	public static final int MAX_EXEC_PER_CATEGORY = 10;
 	public static final String EXERCISE_ID = "exericseId";
 
 	// Exercise status

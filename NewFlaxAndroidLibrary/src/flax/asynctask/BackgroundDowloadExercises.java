@@ -1,8 +1,10 @@
 package flax.asynctask;
 
-import java.sql.SQLException;
+import static flax.utils.GlobalConstants.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import android.app.ProgressDialog;
@@ -12,15 +14,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 
 import flax.core.ExerciseType;
 import flax.database.DatabaseDaoHelper;
-import flax.database.DatabaseObjectSaver;
+import flax.database.DatabaseNestedObjectHelper;
+import flax.database.FlaxDao;
+import flax.entity.base.BaseEntity;
 import flax.entity.base.BaseExerciseDetail;
 import flax.entity.exerciselist.Category;
 import flax.entity.exerciselist.Exercise;
@@ -31,9 +30,10 @@ import flax.utils.SpHelper;
 import flax.utils.XmlParser;
 
 /**
- * BackgroundDowloadExercises Class
- * Download and retrieve exercises from specific activity. Done in background to
- * take the load off of the HomeScreen Activity
+ * BackgroundDowloadExercises Class Download and retrieve exercises from
+ * specific activity. Done in background to take the load off of the HomeScreen
+ * Activity
+ * 
  * @author Nan Wu
  */
 public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collection<Exercise>> {
@@ -66,80 +66,184 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		final long startTime = System.currentTimeMillis();
 
 		// Begin parsing the xml from url
-		ExerciseListResponse response = XmlParser.fromUrl(urls[0], ExerciseListResponse.class);
-		
+		final ExerciseListResponse response = XmlParser.fromUrl(urls[0], ExerciseListResponse.class);
+
 		// If something wrong then return null.
 		if (response == null) {
 			sleepForAWhile(startTime);
 			return null;
 		}
 
-		// "new" exercises, which doesn't exist in database.
-		final Collection<Exercise> newExecs = new ArrayList<Exercise>();
-		
 		// Get database helper
-		final OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
-		try {
+		final DatabaseDaoHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
 
-			// Get daos
-			Dao<ExerciseListResponse, String> responseDao = helper.getDao(ExerciseListResponse.class);
-			Dao<Category, String> categoryDao = helper.getDao(Category.class);
-			Dao<Exercise, String> exerciseItemDao = helper.getDao(Exercise.class);
-			
-			// Save response
-			responseDao.createIfNotExists(response);
-			
-			// Get categoryList
-			Collection<Category> categoryList = response.getCategoryList();
-			for (Category category : categoryList) {
-				// Save categories
-				categoryDao.createIfNotExists(category);
-				
-				// Get exercise items.
-				Collection<Exercise> exerciseItems = category.getExercises();
-				
-				// format exercise url
-				formatExerciseUrl(exerciseItems);
-				
-				// Process each exercise item
-				for (Exercise exercise : exerciseItems) {
-					// Save exercise that not exist
-					if(!exerciseItemDao.idExists(exerciseItemDao.extractId(exercise))){
-						exerciseItemDao.create(exercise);
-						newExecs.add(exercise);
-					}
+		// Define batch task for all database operation
+		final Callable<Collection<Exercise>> batchTask = new Callable<Collection<Exercise>>() {
+			@Override
+			public Collection<Exercise> call() throws Exception {
+
+				// "new" exercises, which doesn't exist in database.
+				final Collection<Exercise> newExecs = downloadAndSaveExerciseList(response, helper);
+
+				// Delete old exercises
+				final List<String> deletedIds = deleteOldExercises(response, helper);
+
+				// Check whether there are deleted exercises in new exercise
+				// list (only
+				// happen if more than 10 exercises in a category in XML)
+				checkNewExercise(newExecs, deletedIds);
+
+				// If new exercise exist, download and save exercise detail to
+				// database.
+				if (!newExecs.isEmpty()) {
+					downloadAndSaveContent(newExecs, helper);
 				}
-			}
 
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		
-		// If new exercise exist, download and save exercise detail to database.
-		if (!newExecs.isEmpty()) {
-			downloadAndSaveContentInTrans(newExecs,helper);
-		}
+				return newExecs;
+			}
+		};
+
+		// Get new exercises by execute batch task
+		final Collection<Exercise> newExecs = helper.callBatchTasks(batchTask);
 
 		// have to release helper after use
 		OpenHelperManager.releaseHelper();
-		
+
 		// If time spent less than 1 sec, then sleep until 1 sec.
 		sleepForAWhile(startTime);
 		return newExecs;
 	}
-	
-	private void sleepForAWhile(final long startTime){
+
+	private Collection<Exercise> downloadAndSaveExerciseList(ExerciseListResponse response,
+			final DatabaseDaoHelper helper) {
+		final Collection<Exercise> newExecs = new ArrayList<Exercise>();
+
+		// Get daos
+		FlaxDao<ExerciseListResponse, String> responseDao = helper.getFlaxDao(ExerciseListResponse.class);
+		FlaxDao<Category, String> categoryDao = helper.getFlaxDao(Category.class);
+		FlaxDao<Exercise, String> exerciseItemDao = helper.getFlaxDao(Exercise.class);
+
+		// Save response
+		responseDao.createIfNotExists(response);
+
+		// Get categoryList
+		Collection<Category> categoryList = response.getCategoryList();
+		for (Category category : categoryList) {
+			// Save categories
+			categoryDao.createIfNotExists(category);
+
+			// Get exercise items.
+			Collection<Exercise> exerciseItems = category.getExercises();
+
+			// format exercise url
+			formatExerciseUrl(exerciseItems);
+
+			// Process each exercise item
+			for (Exercise exercise : exerciseItems) {
+				// Save exercise that not exist
+				if (!exerciseItemDao.idExists(exerciseItemDao.extractId(exercise))) {
+					exerciseItemDao.create(exercise);
+					newExecs.add(exercise);
+				}
+			}
+		}
+
+		return newExecs;
+	}
+
+	/**
+	 * Delete old exercises from database
+	 * 
+	 * @param response
+	 * @param helper
+	 * @return
+	 * @throws IllegalAccessException
+	 */
+	private List<String> deleteOldExercises(ExerciseListResponse response, final DatabaseDaoHelper helper)
+			throws IllegalAccessException {
+
+		// Get daos
+		FlaxDao<ExerciseListResponse, String> responseDao = helper.getFlaxDao(ExerciseListResponse.class);
+		FlaxDao<Exercise, String> exerciseItemDao = helper.getFlaxDao(Exercise.class);
+		FlaxDao<BaseEntity, String> exerciseDetailDao = helper.getFlaxDao(EXERCISE_TYPE.getExerciseEntityClass());
+
+		// Load new data from database
+		responseDao.refresh(response);
+
+		// old exercises that exceeds MAX_EXEC_PER_CATEGORY in category should
+		// be delete.
+		List<Exercise> execToBeDeleted = new ArrayList<Exercise>();
+		for (Category category : response.getCategoryList()) {
+
+			// Warp exercises in order to get a subList
+			List<Exercise> exercises = new ArrayList<Exercise>(category.getExercises());
+			if (exercises.size() > MAX_EXEC_PER_CATEGORY) {
+				execToBeDeleted.addAll(exercises.subList(0, exercises.size() - MAX_EXEC_PER_CATEGORY));
+			}
+		}
+
+		// Delete exercise details if exist
+		List<String> deletedIds = new ArrayList<String>();
+		for (Exercise exercise : execToBeDeleted) {
+			String exerciseId = exercise.getUrl();
+			deletedIds.add(exerciseId);
+
+			BaseEntity exerciseDetail = exerciseDetailDao.queryForId(exerciseId);
+			if (exerciseDetail == null) {
+				continue;
+			}
+			DatabaseNestedObjectHelper.delete(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
+		}
+
+		// Delete all old exercises
+		int count = exerciseItemDao.delete(execToBeDeleted);
+
+		Log.i(TAG, count + " old exercises deleted");
+		return deletedIds;
+	}
+
+	private void checkNewExercise(final Collection<Exercise> newExecs, final List<String> deletedIds) {
+		// Check whether items were deleted.
+		List<Exercise> exercisesDeleted = new ArrayList<Exercise>();
+		for (Exercise exercise : newExecs) {
+			if (deletedIds.contains(exercise.getUrl())) {
+				exercisesDeleted.add(exercise);
+			}
+		}
+		newExecs.removeAll(exercisesDeleted);
+	}
+
+	/**
+	 * Download and save exercise content
+	 * 
+	 * @param execs
+	 * @param helper
+	 * @return
+	 * @throws IllegalAccessException
+	 */
+	private void downloadAndSaveContent(Collection<Exercise> execs, DatabaseDaoHelper helper)
+			throws IllegalAccessException {
+		// Go through each new exercise and download corresponding exercise
+		// detail
+		for (Exercise exec : execs) {
+			BaseExerciseDetail exerciseDetail = XmlParser
+					.fromUrl(exec.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
+			// Save multiple hierarchical entity, with object tree analyze.
+			DatabaseNestedObjectHelper.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
+		}
+	}
+
+	private void sleepForAWhile(final long startTime) {
 		final long timeSpent = System.currentTimeMillis() - startTime;
-		if(timeSpent < 1000){
+		if (timeSpent < 1000) {
 			// Sleep app for one second to show progress
 			try {
-				Thread.sleep(1000-timeSpent);
+				Thread.sleep(1000 - timeSpent);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
-
 
 	/**
 	 * onPostExecute method
@@ -158,63 +262,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 		} else if (result == null) {
 			Toast.makeText(mContext, "Please try again to download the new activities.", Toast.LENGTH_SHORT).show();
 		} else if (result.isEmpty()) {
-			Toast.makeText(mContext, "No new exercises. " + "Press 'Play' to see existing exercises", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(mContext, "No new exercises. " + "Press 'Play' to see existing exercises",
+					Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(mContext, "New exercises saved. " + "Press 'Play' to see all exercises", Toast.LENGTH_SHORT)
 					.show();
 		}
 
 		mProgress.dismiss();
-	}
-	
-	/**
-	 * Call downloadAndSaveContent in Transaction to gain better performance
-	 * @see http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_5.html#index-database-transactions
-	 * @see http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_5.html#callBatchTasks
-	 * @param execs
-	 * @param helper
-	 */
-	private void downloadAndSaveContentInTrans(final Collection<Exercise> execs, final OrmLiteSqliteOpenHelper helper) {
-		try {
-			
-			ConnectionSource connectionSource = helper.getConnectionSource();
-			for(Class<?> clazz : EXERCISE_TYPE.getEntityClasses()){
-				TableUtils.createTableIfNotExists(connectionSource, clazz);
-			}
-			
-			TransactionManager.callInTransaction(connectionSource, new Callable<Void>() {
-				@Override
-				public Void call() throws Exception {
-					downloadAndSaveContent(execs,helper);
-					return null;
-				}
-			});
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/**
-	 * Download and save exercise content
-	 * @param execs
-	 * @param helper
-	 * @return
-	 */
-	private void downloadAndSaveContent(Collection<Exercise> execs, OrmLiteSqliteOpenHelper helper) {
-		try {
-			// Go through each new exercise and download corresponding exercise detail
-			for (Exercise exec : execs) {
-				BaseExerciseDetail exerciseDetail = XmlParser.fromUrl(exec.getUrl(), EXERCISE_TYPE.getExerciseEntityClass());
-				// Save multiple hierarchical entity, with object tree analyze.
-				DatabaseObjectSaver.save(exerciseDetail, helper, EXERCISE_TYPE.getEntityClasses());
-			}
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			Log.e(TAG, "DatabaseObjectHelper can not access entity field." , e);
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -224,7 +279,8 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	 */
 	private Collection<Exercise> formatExerciseUrl(Collection<Exercise> downloadedExercises) {
 
-		// invoke urlConverter that alters the exercise content URL to get the correctly formatted
+		// invoke urlConverter that alters the exercise content URL to get the
+		// correctly formatted
 		// xml.
 		IUrlConverter urlConverter = null;
 		try {
@@ -233,10 +289,11 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 				exec.setUrl(urlConverter.convert(exec.getUrl()));
 			}
 		} catch (InstantiationException e) {
-			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate." , e);
+			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate.", e);
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
-			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName() + " can not be instantiate. Make sure it has a default no argument constructor." , e);
+			Log.e(TAG, EXERCISE_TYPE.getUrlConvertClass().getName()
+					+ " can not be instantiate. Make sure it has a default no argument constructor.", e);
 			throw new RuntimeException(e);
 		}
 		return downloadedExercises;

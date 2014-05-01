@@ -2,7 +2,6 @@ package flax.baseview;
 
 import static flax.utils.GlobalConstants.*;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -15,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import flax.baseview.BasePageFragment.OnPageAnswerCheckedListener;
@@ -280,39 +278,21 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 
 	protected FlaxDao<Exercise, String> getExerciseDao() {
 		if (mExerciseDao == null) {
-			Dao<Exercise, String> dao;
-			try {
-				dao = getDaoHelper().getDao(Exercise.class);
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-			mExerciseDao = new FlaxDao<Exercise, String>(dao);
+			mExerciseDao = getDaoHelper().getFlaxDao(Exercise.class);
 		}
 		return mExerciseDao;
 	}
 
 	protected FlaxDao<PAGE, String> getPageDao() {
 		if (mPageDao == null) {
-			Dao<PAGE, String> dao;
-			try {
-				dao = getDaoHelper().getDao(EXERCISE_TYPE.getPageEntityClass());
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-			mPageDao = new FlaxDao<PAGE, String>(dao);
+			mPageDao = getDaoHelper().getFlaxDao(EXERCISE_TYPE.getPageEntityClass());
 		}
 		return mPageDao;
 	}
 
 	protected FlaxDao<EXEC, String> getExerciseDetailDao() {
 		if (mExerciseDetailDao == null) {
-			Dao<EXEC, String> dao;
-			try {
-				dao = getDaoHelper().getDao(EXERCISE_TYPE.getExerciseEntityClass());
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-			mExerciseDetailDao = new FlaxDao<EXEC, String>(dao);
+			mExerciseDetailDao = getDaoHelper().getFlaxDao(EXERCISE_TYPE.getExerciseEntityClass());
 		}
 		return mExerciseDetailDao;
 	}
