@@ -174,9 +174,8 @@ public class GamePageFragment extends BasePageFragment<Word> {
 
 		// Game Over, Win or out of move
 		if (isWin || isOutOfMove) {
+			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
 
-			// Disable all buttons
-			setUpAllButtons();
 
 			// Show smile face or worried face after 300ms.
 			mHangmanImage.postDelayed(new Runnable() {
@@ -186,8 +185,9 @@ public class GamePageFragment extends BasePageFragment<Word> {
 				}
 			}, 300);
 
-			mItem.setPageStatus(isWin ? PAGE_WIN : PAGE_FAIL);
-
+			// Disable all buttons
+			setUpAllButtons();
+			
 			// Save the status to database for score calculation
 			updateItem(mItem);
 		}
