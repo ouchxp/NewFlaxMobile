@@ -1,0 +1,37 @@
+<response from="password">
+  <categoryList c="password" flax_server_domain="/greenstone3" type="11">
+    <category id="1" name="none">
+      <categorysummary>default category</categorysummary>
+      <exercise category_id="1" id="3" name="Drop" type="Hangman">
+        <url>default_exercises/drop.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <!-- 
+      <exercise category_id="1" id="1" name="bar" type="Hangman">
+        <url>./bar.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="6" name="Book" type="Hangman">
+        <url>./book.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="5" name="ManyWords" type="Hangman">
+        <url>./manywords.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="4" name="Rain" type="Hangman">
+        <url>./rain.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="9" name="Book of Flax example 2" type="Hangman">
+        <url>./book2.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="11" name="Book of Flax example 1" type="Hangman">
+        <url>./book1.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+       -->
+    </category>
+  </categoryList>
+</response>
