@@ -17,7 +17,6 @@ package flax.baseview;
 import static flax.utils.GlobalConstants.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ExpandableListActivity;
@@ -95,12 +94,8 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 	 * Set up adapter for expandable list view
 	 */
 	private void setUpAdapter() {
-		mExerciseGroups = new ArrayList<List<Exercise>>();
-		for (Category category : mCategories) {
-			List<Exercise> group = new ArrayList<Exercise>(category.getExercises());
-			mExerciseGroups.add(group);
-		}
-		mAdapter = new ExerciseListAdapter(this, mCategories, mExerciseGroups);
+
+		mAdapter = new ExerciseListAdapter(this, mCategories);
 		setListAdapter(mAdapter);
 	}
 
@@ -116,7 +111,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 
 		Intent i = new Intent(BaseListScreenActivity.this, getNextActivityClass());
 		// Pass exercise id
-		String exerciseId = mExerciseGroups.get(groupPosition).get(childPosition).getUrl();
+		String exerciseId = mAdapter.getExercise(groupPosition, childPosition).getUrl();
 		i.putExtra(EXERCISE_ID, exerciseId);
 		startActivity(i);
 		return true;

@@ -23,6 +23,7 @@ import java.util.Collection;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -73,15 +74,54 @@ public class XmlParser {
 			return result;
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException();
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage());
-					e.printStackTrace();
+					throw new RuntimeException();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Parse XML from URL
+	 * @see http://simple.sourceforge.net/download/stream/doc/tutorial/tutorial.php#deserialize
+	 * 
+	 * @param url
+	 * @param resultType
+	 * @return
+	 */
+	public static <T> T fromAsset(String fileName, AssetManager assetManager, Class<T> resultType) {
+		InputStream is = null;
+		try {
+			// Downloading
+			is = assetManager.open(fileName);
+			
+			// Parsing
+			Serializer serializer = new Persister();
+			T result = serializer.read(resultType, is);
+			
+			// Setting unique url
+			setUniqueUrl(result,fileName);
+			
+			// Set up foreign relation @Deprecated
+			// prepareForOrm(result);
+			
+			return result;
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			throw new RuntimeException();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getMessage());
+					throw new RuntimeException();
 				}
 			}
 		}

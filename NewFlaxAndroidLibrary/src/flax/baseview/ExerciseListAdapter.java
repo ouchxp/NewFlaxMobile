@@ -15,6 +15,9 @@ package flax.baseview;
 
 import static flax.utils.GlobalConstants.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
@@ -48,11 +51,38 @@ public class ExerciseListAdapter extends BaseExpandableListAdapter {
 	private List<List<Exercise>> mExerciseGroups;
 
 	/* Class constructor */
-	public ExerciseListAdapter(Context context, List<Category> categories, List<List<Exercise>> exerciseGroups) {
-		mInflater = LayoutInflater.from(context);
+	public ExerciseListAdapter(Context context, List<Category> categories) {
+		this.mInflater = LayoutInflater.from(context);
 		this.mContext = context;
-		this.mCategories = categories;
-		this.mExerciseGroups = exerciseGroups;
+		
+		// recreate an array, then the sorting won't affect the original list.
+		this.mCategories = new ArrayList<Category>(categories);
+		
+		// Sort categories, make "none" first.
+		Collections.sort(mCategories, new Comparator<Category>() {
+
+			@Override
+			public int compare(Category lhs, Category rhs) {
+				String lName = lhs.getName();
+				String rName = rhs.getName();
+				
+				// Set up "none" group view (not show "none" group view, but keep the children)
+				if(NONE_CATEGORY.equals(lName) || "".equals(lName)){
+					return -1;
+				}else if (NONE_CATEGORY.equals(rName) || "".equals(rName)) {
+					return 1;
+				}else {
+					return 0;
+				}
+				
+			}
+		});
+		
+		mExerciseGroups = new ArrayList<List<Exercise>>();
+		for (Category category : mCategories) {
+			List<Exercise> group = new ArrayList<Exercise>(category.getExercises());
+			mExerciseGroups.add(group);
+		}
 	}
 
 	/**
@@ -113,7 +143,7 @@ public class ExerciseListAdapter extends BaseExpandableListAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		Exercise exercise = mExerciseGroups.get(groupPosition).get(childPosition);
+		Exercise exercise = getExercise(groupPosition, childPosition);
 
 		// Set text for textView
 		holder.labelView.setText(exercise.getName());
@@ -132,6 +162,10 @@ public class ExerciseListAdapter extends BaseExpandableListAdapter {
 	static class ViewHolder {
 		TextView labelView;
 		TextView valueView;
+	}
+	
+	public Exercise getExercise(int groupPosition, int childPosition) {
+		return mExerciseGroups.get(groupPosition).get(childPosition);
 	}
 
 	@Override

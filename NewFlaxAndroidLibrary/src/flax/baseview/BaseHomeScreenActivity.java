@@ -30,8 +30,10 @@ import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelper;
 import flax.dialog.DialogNetworkSettings;
 import flax.library.R;
+import flax.utils.DefaultExerciseLoader;
 import flax.utils.FlaxUtil;
 import flax.utils.Mock;
+import static flax.utils.GlobalConstants.*;
 
 /**
  * HomeScreen Class
@@ -77,8 +79,9 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_screen);
 
-		// TODO: On first time - create activities
-		// insertStartingActivities();
+		// On first time, load and save default exercises from
+		// assets folder
+		loadDefaultExercises();
 
 		// Show download Dialog
 		showDownloadDialog();
@@ -180,55 +183,20 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 */
 	public abstract Class<?> getNextActivityClass();
 
-	//TODO: Sould add insertStartingActivities function
 	/**
-	 * insertStartingActivities method
-	 * 
-	 * This method inserts ten activities into the database when the app is
-	 * opened for the first time. For the collocation xml see res / raw /
-	 * game_name.xml Ten activities will need to be added.
+	 * This method load default exercises into the database when the app is
+	 * opened for the first time. 
 	 */
-	/*
-	 *  insertStartingActivities function should add back after refactoring
-	 * public void insertStartingActivities() {
-	 * 
-	 * CollocationNetworkXmlParser colloParser = new
-	 * CollocationNetworkXmlParser(); // Check is first
-	 * time execution, and set first time flag automatically. if
-	 * (FlaxUtil.isFirstTime()) { try { // Add activities to the database
-	 * dbManager.addActivity("1a", "1", LocalConstants.ACTIVITY_TYPE, "hangman",
-	 * "none", "new", 0, 0);
-	 * 
-	 * // Retrieve the input stream based on the xml files saved in res // / raw
-	 * / game_name.xml List<ActivityItem> firstActivities =
-	 * dbManager.selectAllActivities(LocalConstants.ACTIVITY_TYPE);
-	 * ArrayList<InputStream> isArr = new ArrayList<InputStream>(); InputStream
-	 * is0 = this.getResources().openRawResource(R.raw.activity_template_xml);
-	 * 
-	 * // Put input streams in an array for more efficient access // (enables
-	 * use of a for loop) isArr.add(is0);
-	 * 
-	 * // Add collocations to the database int i = firstActivities.size() - 1;
-	 * for (ActivityItem a : firstActivities) {
-	 * 
-	 * int j = 0; List<CollocationItem> colloList = new
-	 * ArrayList<CollocationItem>(); colloList =
-	 * colloParser.parse(isArr.get(i)); for (CollocationItem c : colloList) {
-	 * 
-	 * dbManager.addCollocation(c.collocationId, j, c.type, c.fre, c.sendId,
-	 * c.word, "none", "none", "none", c.baseWord, a.uniqueId); j++; }
-	 * 
-	 * // Add initial entry to summary report table in db
-	 * dbManager.addSummary("", "", 0, 0, a.uniqueId); i--; colloList.clear(); }
-	 * 
-	 * } catch (XmlPullParserException e) { e.printStackTrace(); } catch
-	 * (IOException e) { e.printStackTrace(); } } }
-	 */
+	public void loadDefaultExercises(){
+		DefaultExerciseLoader loader = new DefaultExerciseLoader(this, EXERCISE_TYPE);
+		loader.loadDefaultExercises(DEFAULT_EXERCISE_LIST_FILE);
+	}
 
 	/**
 	 * Return URLs should be download by this APP;
 	 */
 	public abstract String[] getUrls();
+
 	
 	/**
 	 * Download all exercises in given URLs.

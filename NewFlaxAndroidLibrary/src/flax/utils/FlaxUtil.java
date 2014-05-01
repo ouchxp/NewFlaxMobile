@@ -24,19 +24,6 @@ public class FlaxUtil {
 	}
 
 	/**
-	 * isFirstTime method Check is first time execution, and set first time flag
-	 * automatically
-	 */
-	public static boolean isFirstTime() {
-		// Retrieve value from shared pref
-		boolean isFirstTime = SpHelper.getBoolean(CHECK_FIRST_KEY, true);
-
-		// After check, set first time flag as false
-		SpHelper.putSingleBoolean(CHECK_FIRST_KEY, false);
-		return isFirstTime;
-	}
-
-	/**
 	 * getApplication method Get application object, can be used as global
 	 * context
 	 */
