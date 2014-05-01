@@ -60,7 +60,6 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 	protected ExpandableListView mListView;
 	protected ExerciseListAdapter mAdapter;
 	protected List<Category> mCategories;
-	protected List<List<Exercise>> mExerciseGroups;
 	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 
 	/**
@@ -170,7 +169,7 @@ public abstract class BaseListScreenActivity extends ExpandableListActivity {
 
 		// Check whether exercise status changed.
 		if (mCurrentGroup != INVALID_POS && mCurrentPos != INVALID_POS) {
-			final Exercise currentExercise = mExerciseGroups.get(mCurrentGroup).get(mCurrentPos);
+			final Exercise currentExercise = mAdapter.getExercise(mCurrentGroup, mCurrentPos);
 			final int oldStatus = currentExercise.getStatus();
 
 			// Delay for 500ms, cause GameScreen's onStop runs later than
