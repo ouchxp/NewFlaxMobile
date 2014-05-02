@@ -41,10 +41,15 @@ import flax.entity.base.BasePage;
 import flax.library.R;
 
 /**
- * Draws circles (one for each view). The current view position is filled and
- * others are only stroked.
+ * Draws circles (one for each view). The current view position is thicker stroked 
+ * page wins with filled circle, others only stroked.
+ * 
+ * This indicator is customized from an open source indicator.
+ * @see http://viewpagerindicator.com/
+ * 
+ * @author Nan Wu
  */
-public class CirclePageIndicator extends View implements PageIndicator {
+public class CirclePageIndicator extends View implements ViewPager.OnPageChangeListener  {
 	private static final int INVALID_POINTER = -1;
 
 	private float mRadius;
@@ -409,7 +414,11 @@ public class CirclePageIndicator extends View implements PageIndicator {
 		return true;
 	}
 
-	@Override
+    /**
+     * Bind the indicator to a ViewPager.
+     *
+     * @param view
+     */
 	public void setViewPager(ViewPager view) {
 		if (mViewPager == view) {
 			return;
@@ -426,13 +435,25 @@ public class CirclePageIndicator extends View implements PageIndicator {
 		invalidate();
 	}
 
-	@Override
+    /**
+     * Bind the indicator to a ViewPager.
+     *
+     * @param view
+     * @param initialPosition
+     */
 	public void setViewPager(ViewPager view, int initialPosition) {
 		setViewPager(view);
 		setCurrentItem(initialPosition);
 	}
 
-	@Override
+    /**
+     * <p>Set the current page of both the ViewPager and indicator.</p>
+     *
+     * <p>This <strong>must</strong> be used if you need to set the page before
+     * the views are drawn on screen (e.g., default start page).</p>
+     *
+     * @param item
+     */
 	public void setCurrentItem(int item) {
 		if (mViewPager == null) {
 			throw new IllegalStateException("ViewPager has not been bound.");
@@ -442,7 +463,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
 		invalidate();
 	}
 
-	@Override
+    /**
+     * Notify the indicator that the fragment list has changed.
+     */
 	public void notifyDataSetChanged() {
 		invalidate();
 	}
@@ -480,7 +503,11 @@ public class CirclePageIndicator extends View implements PageIndicator {
 		}
 	}
 
-	@Override
+    /**
+     * Set a page change listener which will receive forwarded events.
+     *
+     * @param listener
+     */
 	public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 		mListener = listener;
 	}

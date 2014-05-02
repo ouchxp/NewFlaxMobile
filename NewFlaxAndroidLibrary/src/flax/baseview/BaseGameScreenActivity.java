@@ -249,7 +249,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			}
 			
 			// Redraw indicator to show win status.
-			mPageIndicator.invalidate();
+			mPageIndicator.notifyDataSetChanged();
 		}
 	}
 
