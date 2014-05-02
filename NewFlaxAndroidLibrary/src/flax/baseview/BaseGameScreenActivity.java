@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
@@ -47,7 +48,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	private FlaxDao<EXEC, String> mExerciseDetailDao = null;
 	private FlaxDao<PAGE, String> mPageDao = null;
 
-
+	protected TextView mTotalScore;
 	/**
 	 * The {@link ViewPager} that will host the page contents.
 	 */
@@ -90,11 +91,19 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		/** Setup page indicator */
 		setUpPageIndicator();
 
+		mTotalScore = (TextView) findViewById(R.id.total_score);
+		updateTotalScore();
+		
 	}
 
 	public void updateTitle() {
 		setTitle(mExercise.getName());
 	}
+	
+	public void updateTotalScore() {
+		mTotalScore.setText(mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
+	}
+	
 
 	public void setUpExercise() {
 		// Set possible score for exercise.
@@ -250,6 +259,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			
 			// Redraw indicator to show win status.
 			mPageIndicator.notifyDataSetChanged();
+			
+			//update score text
+			updateTotalScore();
 		}
 	}
 

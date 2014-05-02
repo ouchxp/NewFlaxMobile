@@ -10,17 +10,31 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <flax.baseview.CirclePageIndicator
-        android:id="@+id/indicator"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dip"
-        android:paddingTop="3dip"
-        app:currentRadius="4dp"
-        app:currentStrokeColor="@color/green_dark"
-        app:currentStrokeWidth="2dp"
-        app:fillColor="@color/green_dark"
-        app:radius="3dp"
-        app:strokeColor="@color/green_dark" />
+        android:layout_height="wrap_content" >
+
+        <flax.baseview.CirclePageIndicator
+            android:id="@+id/indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="6dp"
+            android:paddingBottom="2dp"
+            app:currentRadius="4dp"
+            app:currentStrokeColor="@color/green_dark"
+            app:currentStrokeWidth="2dp"
+            app:fillColor="@color/green_dark"
+            app:radius="3dp"
+            app:strokeColor="@color/green_dark" />
+
+        <TextView
+            android:id="@+id/total_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="2dp"
+            android:textSize="12sp" />
+    </RelativeLayout>
 
 </LinearLayout>
