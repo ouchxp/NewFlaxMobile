@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.viewpagerindicator.CirclePageIndicator;
 
 import flax.baseview.BasePageFragment.OnPageAnswerCheckedListener;
 import flax.core.ExerciseType;
