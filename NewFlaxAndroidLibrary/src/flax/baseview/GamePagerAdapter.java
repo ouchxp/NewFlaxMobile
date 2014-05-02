@@ -79,18 +79,13 @@ public class GamePagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends B
 		mFrags.put(position, f);
 		return f;
 	}
-
+	
 	/**
-	 * Update dataSet of this adapter, and then notifyDataSetChanged will be
-	 * called to recreate fragments.
-	 * 
-	 * @param items
+	 * Get page item list for page indicator to draw win status.
+	 * @return
 	 */
-	public void updateDataSet(Collection<PAGE> items) {
-		if (items != null) {
-			mItems = new ArrayList<PAGE>(items);
-		}
-		super.notifyDataSetChanged();
+	public List<PAGE> getPageItemList(){
+		return mItems;
 	}
 
 	/**
@@ -111,26 +106,5 @@ public class GamePagerAdapter<FRG extends BasePageFragment<PAGE>, PAGE extends B
 	@SuppressWarnings("unchecked")
 	public FRG getFragment(int position) {
 		return (FRG) mFrags.get(position);
-	}
-
-	/**
-	 * <b>Not recommend</b> to use this method, should use updateDataSet
-	 * instead. Cause updateDataSet provide an argument to allow updating
-	 * dataSet.<br>
-	 * This is because of when using <b>lazy collection</b> in OrmLite, retrieve
-	 * element from lazy collection multiple times will return different objects
-	 * represent database records of retrieving time point. <br>
-	 * That means the feature of "pass by reference" is hard to gain on dataSet.
-	 * Modify different objects won't affect dataSet's value.<br>
-	 * That could be problematic when using <b>lazy collection</b>, so It's
-	 * better to reset dataSet using updateDataSet method.
-	 * 
-	 * @see http
-	 *      ://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_2.html#Foreign
-	 *      -Collection
-	 */
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
 	}
 }

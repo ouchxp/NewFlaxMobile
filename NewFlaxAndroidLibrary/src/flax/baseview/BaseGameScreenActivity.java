@@ -47,14 +47,15 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	private FlaxDao<EXEC, String> mExerciseDetailDao = null;
 	private FlaxDao<PAGE, String> mPageDao = null;
 
-	@SuppressWarnings("rawtypes")
-	protected GamePagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the page contents.
 	 */
 	protected ViewPager mViewPager;
-
+	@SuppressWarnings("rawtypes")
+	protected GamePagerAdapter mPagerAdapter;
+	protected CirclePageIndicator mPageIndicator;
+	
 	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 	/**
 	 * This is the item which be used to show exercise list, it contains
@@ -107,8 +108,8 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	}
 
 	public void setUpPageIndicator() {
-		CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
-		indicator.setViewPager(mViewPager);
+		mPageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+		mPageIndicator.setViewPager(mViewPager);
 	}
 
 	/** Methods that sub class have to implement */
@@ -206,7 +207,6 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 
 		// Reset page information
 		getPageDao().callBatchTasks(new Callable<Void>() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public Void call() throws Exception {
 				Collection<PAGE> pages = getPageItemList();
@@ -215,9 +215,8 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 					getPageDao().update(page);
 				}
 
-				// Update dataSet if necessary, and call
 				// notifyDataSetChanged.
-				mPagerAdapter.updateDataSet(pages);
+				mPagerAdapter.notifyDataSetChanged();
 				return null;
 			}
 		});
@@ -248,6 +247,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			if (mExerciseDetail.isComplete()) {
 				mExercise.setStatus(EXERCISE_COMPLETE);
 			}
+			
+			// Redraw indicator to show win status.
+			mPageIndicator.invalidate();
 		}
 	}
 
