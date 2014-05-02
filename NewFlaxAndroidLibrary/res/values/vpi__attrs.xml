@@ -15,6 +15,7 @@
      limitations under the License.
 -->
 
+<!-- This xml file is defining attributs for CirclePageIndicator -->
 <resources>
     <declare-styleable name="ViewPagerIndicator">
         <!-- Style of the circle indicator. -->

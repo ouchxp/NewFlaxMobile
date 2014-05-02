@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 
+<!-- This xml file is defining attributs for CirclePageIndicator -->
 <resources>
     <bool name="default_circle_indicator_centered">true</bool>
     <color name="default_circle_indicator_fill_color">#FFFFFFFF</color>
