@@ -45,8 +45,10 @@ public class CirclePageIndicator extends View implements PageIndicator {
     private static final int INVALID_POINTER = -1;
 
     private float mRadius;
+    private float mCurrentRadius;
     private final Paint mPaintPageFill = new Paint(ANTI_ALIAS_FLAG);
     private final Paint mPaintStroke = new Paint(ANTI_ALIAS_FLAG);
+    private final Paint mPaintCurrentStroke = new Paint(ANTI_ALIAS_FLAG);
     private final Paint mPaintFill = new Paint(ANTI_ALIAS_FLAG);
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mListener;
@@ -83,7 +85,10 @@ public class CirclePageIndicator extends View implements PageIndicator {
         final int defaultOrientation = res.getInteger(R.integer.default_circle_indicator_orientation);
         final int defaultStrokeColor = res.getColor(R.color.default_circle_indicator_stroke_color);
         final float defaultStrokeWidth = res.getDimension(R.dimen.default_circle_indicator_stroke_width);
+        final int defaultCurrentStrokeColor = res.getColor(R.color.default_circle_indicator_current_stroke_color);
+        final float defaultCurrentStrokeWidth = res.getDimension(R.dimen.default_circle_indicator_current_stroke_width);
         final float defaultRadius = res.getDimension(R.dimen.default_circle_indicator_radius);
+        final float defaultCurrentRadius = res.getDimension(R.dimen.default_circle_indicator_current_radius);
         final boolean defaultCentered = res.getBoolean(R.bool.default_circle_indicator_centered);
         final boolean defaultSnap = res.getBoolean(R.bool.default_circle_indicator_snap);
 
@@ -97,9 +102,13 @@ public class CirclePageIndicator extends View implements PageIndicator {
         mPaintStroke.setStyle(Style.STROKE);
         mPaintStroke.setColor(a.getColor(R.styleable.CirclePageIndicator_strokeColor, defaultStrokeColor));
         mPaintStroke.setStrokeWidth(a.getDimension(R.styleable.CirclePageIndicator_strokeWidth, defaultStrokeWidth));
+        mPaintCurrentStroke.setStyle(Style.STROKE);
+        mPaintCurrentStroke.setColor(a.getColor(R.styleable.CirclePageIndicator_currentStrokeColor, defaultCurrentStrokeColor));
+        mPaintCurrentStroke.setStrokeWidth(a.getDimension(R.styleable.CirclePageIndicator_currentStrokeWidth, defaultCurrentStrokeWidth));
         mPaintFill.setStyle(Style.FILL);
         mPaintFill.setColor(a.getColor(R.styleable.CirclePageIndicator_fillColor, defaultFillColor));
         mRadius = a.getDimension(R.styleable.CirclePageIndicator_radius, defaultRadius);
+        mCurrentRadius = a.getDimension(R.styleable.CirclePageIndicator_currentRadius, defaultCurrentRadius);
         mSnap = a.getBoolean(R.styleable.CirclePageIndicator_snap, defaultSnap);
 
         Drawable background = a.getDrawable(R.styleable.CirclePageIndicator_android_background);
@@ -175,6 +184,24 @@ public class CirclePageIndicator extends View implements PageIndicator {
     public float getStrokeWidth() {
         return mPaintStroke.getStrokeWidth();
     }
+    
+    public void setCurrentStrokeColor(int strokeColor) {
+        mPaintCurrentStroke.setColor(strokeColor);
+        invalidate();
+    }
+
+    public int getCurrentStrokeColor() {
+        return mPaintCurrentStroke.getColor();
+    }
+
+    public void setCurrentStrokeWidth(float strokeWidth) {
+        mPaintCurrentStroke.setStrokeWidth(strokeWidth);
+        invalidate();
+    }
+
+    public float getCurrentStrokeWidth() {
+        return mPaintCurrentStroke.getStrokeWidth();
+    }
 
     public void setRadius(float radius) {
         mRadius = radius;
@@ -192,6 +219,15 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
     public boolean isSnap() {
         return mSnap;
+    }
+    
+    public void setCurrentRadius(float radius) {
+        mCurrentRadius = radius;
+        invalidate();
+    }
+
+    public float getCurrentRadius() {
+        return mCurrentRadius;
     }
 
     @Override
@@ -275,7 +311,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
             dX = shortOffset;
             dY = longOffset + cx;
         }
-        canvas.drawCircle(dX, dY, mRadius, mPaintFill);
+        canvas.drawCircle(dX, dY, mCurrentRadius, mPaintCurrentStroke);
     }
 
     public boolean onTouchEvent(android.view.MotionEvent ev) {

@@ -16,7 +16,11 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dip"
         android:paddingTop="3dip"
+        app:currentRadius="4dp"
+        app:currentStrokeColor="@color/green_dark"
+        app:currentStrokeWidth="2dp"
         app:fillColor="@color/green_dark"
+        app:radius="3dp"
         app:strokeColor="@color/green_dark" />
 
 </LinearLayout>
