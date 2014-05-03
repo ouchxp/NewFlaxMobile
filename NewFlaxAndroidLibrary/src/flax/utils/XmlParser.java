@@ -74,14 +74,14 @@ public class XmlParser {
 			return result;
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage());
-					throw new RuntimeException();
+					throw new RuntimeException(e);
 				}
 			}
 		}
@@ -119,14 +119,14 @@ public class XmlParser {
 			return result;
 		} catch (Exception e) {
 			Log.e(TAG, "Error loading " + fileName + " Message: " +e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage());
-					throw new RuntimeException();
+					throw new RuntimeException(e);
 				}
 			}
 		}
