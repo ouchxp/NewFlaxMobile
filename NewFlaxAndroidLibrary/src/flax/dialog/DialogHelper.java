@@ -35,7 +35,6 @@ public class DialogHelper {
 
 	/**
 	 * DialogHelp class constructor
-	 * 
 	 * @param context. The context for the activity where the dialog will be
 	 * displayed.
 	 */
@@ -44,62 +43,46 @@ public class DialogHelper {
 	}
 
 	/**
-	 * displayGameHelpDialog method
-	 * 
 	 * Displays the dialog for the game help icon
 	 */
 	public void displayHelpDialog(String helpString) {
-
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
 
 		// set dialog title
-				.setTitle("Help")
+				.setTitle(R.string.help_dialog_title)
 
 				// set dialog content
 				.setMessage(helpString)
 
 				// set dialog Done button
-				.setNegativeButton("Done", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				})
-
-				// create alert dialog and display it
-				.create().show();
-	}
-
-	/*
-	 * displayHowToPlayDialog method
-	 * 
-	 * Displays the dialog that describes how to play the game
-	 */
-	public void displayHowToPlayDialog(String howToPlay) {
-
-		// Instantiate alert dialog builder
-		new AlertDialog.Builder(context)
-
-		// set dialog title
-				.setTitle("How to play")
-
-				// set dialog content
-				.setMessage(howToPlay)
-
-				// set dialog Done button
-				.setNegativeButton("Done", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				})
+				.setNegativeButton(R.string.dialog_btn_done, null)
 
 				// create alert dialog and display it
 				.create().show();
 	}
 
 	/**
-	 * displayRestartGameDialog method
-	 * 
+	 * Displays the dialog that describes how to play the game
+	 */
+	public void displayHowToPlayDialog(String howToPlay) {
+		// Instantiate alert dialog builder
+		new AlertDialog.Builder(context)
+
+		// set dialog title
+				.setTitle(R.string.how_to_play_dialog_title)
+
+				// set dialog content
+				.setMessage(howToPlay)
+
+				// set dialog Done button
+				.setNegativeButton(R.string.dialog_btn_done, null)
+
+				// create alert dialog and display it
+				.create().show();
+	}
+
+	/**
 	 * Displays the restart game dialog
 	 */
 	public void displayRestartGameDialog(final DialogInterface.OnClickListener yesCallback) {
@@ -108,28 +91,22 @@ public class DialogHelper {
 		new AlertDialog.Builder(context)
 
 		// set dialog title
-				.setTitle("Restart Game")
+				.setTitle(R.string.restart_dialog_title)
 
 				// set dialog content
-				.setMessage("Would you like to restart this game?")
+				.setMessage(R.string.restart_dialog_message)
 
 				// set dialog save button
-				.setPositiveButton("Yes", yesCallback)
+				.setPositiveButton(R.string.dialog_btn_yes, yesCallback)
 
 				// set dialog Done button
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				})
+				.setNegativeButton(R.string.dialog_btn_no, null)
 
 				// create alert dialog and display it
 				.create().show();
 	}
 
 	/**
-	 * displaySummaryReportDialog method
-	 * 
 	 * Displays the dialog for the summary report
 	 */
 	public void displaySummaryReportDialog(int score, int possibleScore, String startTime, String endTime, int attempts) {
@@ -142,39 +119,26 @@ public class DialogHelper {
 			startTime = "";
 		if (endTime == null)
 			endTime = "";
-		String message = MessageFormat.format(context.getString(R.string.default_summary_message), startTime, endTime,
+		String message = MessageFormat.format(context.getString(R.string.summary_dialog_message), startTime, endTime,
 				attempts, score, possibleScore, percentage);
 
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
 
 		// set dialog title
-				.setTitle("Summary report")
+				.setTitle(R.string.summary_dialog_title)
 
 				// set message
-				// .setMessage(
-				// "Start time:   " + startTime + "\n" +
-				// "End time:     " + endTime + "\n \n" +
-				// "Attempts:     " + attempts + "\n" +
-				// "Total Score:  " + score + " out of " + possibleScore + " ("
-				// + percentage + "%)"
-				// )
 				.setMessage(message)
 
 				// set dialog Done button
-				.setNegativeButton("Done", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				})
+				.setNegativeButton(R.string.dialog_btn_done, null)
 
 				// create alert dialog and display it
 				.create().show();
 	}
 
 	/**
-	 * showDownloadDialog method
-	 * 
 	 * Creates the download dialog box. If "Yes" is pressed, calls
 	 * startingDownload()
 	 */
@@ -185,23 +149,16 @@ public class DialogHelper {
 		new AlertDialog.Builder(context)
 
 		// set title
-				.setTitle("Check for new exercises?")
+				.setTitle(R.string.download_dialog_title)
 
 				// set dialog content
-				.setMessage("Would you like to connect to the server and download new exercises?").setCancelable(false)
+				.setMessage(R.string.download_dialog_message).setCancelable(false)
 
 				// set "Yes" button
-				.setPositiveButton("Yes", yesCallback)
+				.setPositiveButton(R.string.dialog_btn_yes, yesCallback)
 
 				// set "No" button
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						// if "no" is clicked, close dialog
-						dialog.cancel();
-					}
-				})
-
-				.create().show();
+				.setNegativeButton(R.string.dialog_btn_no, null).create().show();
 	}
 
 	/**
@@ -212,10 +169,6 @@ public class DialogHelper {
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context).setTitle(msgTitle).setMessage(msgBody)
 		// set dialog Done button
-				.setNegativeButton("Done", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				}).create().show();
+				.setNegativeButton(R.string.dialog_btn_done, null).create().show();
 	}
 } // end of class
