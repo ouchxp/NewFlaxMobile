@@ -91,8 +91,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		/** Setup page indicator */
 		setUpPageIndicator();
 
+		/** Set total score text in the right bottom corner */
 		mTotalScore = (TextView) findViewById(R.id.total_score);
-		updateTotalScore();
+		setTotalScoreText();
 		
 	}
 
@@ -100,7 +101,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		setTitle(mExercise.getName());
 	}
 	
-	public void updateTotalScore() {
+	public void setTotalScoreText() {
 		mTotalScore.setText(mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
 	}
 	
@@ -232,6 +233,9 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 
 		// Set up exercise again.
 		setUpExercise();
+		
+		// Reset score test
+		setTotalScoreText();
 	}
 
 	/**
@@ -261,7 +265,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			mPageIndicator.notifyDataSetChanged();
 			
 			//update score text
-			updateTotalScore();
+			setTotalScoreText();
 		}
 	}
 
