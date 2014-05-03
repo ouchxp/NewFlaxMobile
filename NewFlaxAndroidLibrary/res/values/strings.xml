@@ -70,6 +70,9 @@
     <string name="network_setting_saved_message">Network Settings Saved.</string>
     <string name="download_process_dialog_message">Looking for new activities …</string>
     
+    <string name="exercise_complete_dialog_title">Well Done!</string>
+    <string name="exercise_complete_dialog_message">Your answer is correct</string>
+    
     <!-- Error messages -->
     <string name="not_connected_message">There was a problem connecting to the server. Please ensure that you are connected to the internet and that your Network Settings are set correctly.</string>
     <string name="downloading_error_message">There has been an error in your connection, if you have used a custom server path, please check that it is correct.</string>

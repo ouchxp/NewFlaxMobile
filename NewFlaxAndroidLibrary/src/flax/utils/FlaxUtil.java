@@ -28,14 +28,14 @@ public class FlaxUtil {
 	 * getServerPath method Get server path from shared pref
 	 */
 	public static String getNetworkSetting() {
-		return SpHelper.getString(SERVER_PATH_KEY, DEFAULT_NETWORK_SETTING);
+		return SpHelper.getString(NETWORK_SETTING_KEY, DEFAULT_NETWORK_SETTING);
 	}
 
 	/**
 	 * setServerPath method set server path to shared pref
 	 */
 	public static void setNetworkSetting(String networkSetting) {
-		SpHelper.putSingleString(SERVER_PATH_KEY, networkSetting);
+		SpHelper.putSingleString(NETWORK_SETTING_KEY, networkSetting);
 	}
 
 	/**

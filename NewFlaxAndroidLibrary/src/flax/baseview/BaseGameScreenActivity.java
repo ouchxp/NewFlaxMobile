@@ -56,7 +56,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 	@SuppressWarnings("rawtypes")
 	protected GamePagerAdapter mPagerAdapter;
 	protected CirclePageIndicator mPageIndicator;
-	
+
 	protected final ExerciseType EXERCISE_TYPE = getExerciseType();
 	/**
 	 * This is the item which be used to show exercise list, it contains
@@ -94,17 +94,16 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 		/** Set total score text in the right bottom corner */
 		mTotalScore = (TextView) findViewById(R.id.total_score);
 		setTotalScoreText();
-		
+
 	}
 
 	public void updateTitle() {
 		setTitle(mExercise.getName());
 	}
-	
+
 	public void setTotalScoreText() {
 		mTotalScore.setText(mExerciseDetail.getScore() + "/" + mExerciseDetail.getPossibleScore());
 	}
-	
 
 	public void setUpExercise() {
 		// Set possible score for exercise.
@@ -233,7 +232,7 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 
 		// Set up exercise again.
 		setUpExercise();
-		
+
 		// Reset score test
 		setTotalScoreText();
 	}
@@ -259,12 +258,15 @@ public abstract class BaseGameScreenActivity<EXEC extends BaseExerciseDetail, PA
 			// Update exercise status to complete if exercise is done.
 			if (mExerciseDetail.isComplete()) {
 				mExercise.setStatus(EXERCISE_COMPLETE);
+				DialogHelper complete = new DialogHelper(this);
+				complete.displayCheckAnswerDialog(getString(R.string.exercise_complete_dialog_title),
+						getString(R.string.exercise_complete_dialog_message));
 			}
-			
+
 			// Redraw indicator to show win status.
 			mPageIndicator.notifyDataSetChanged();
-			
-			//update score text
+
+			// update score text
 			setTotalScoreText();
 		}
 	}
