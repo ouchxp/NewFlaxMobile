@@ -85,17 +85,15 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		// On first time, load and save default exercises from
 		// assets folder
 		loadDefaultExercises();
-		
-		
 
 		// Show download Dialog
 		showDownloadDialog();
 
 		// Make sure there is no text in the action bar on the home screen
 		setTitle("");
-		
+
 		// Represent the exercise name on home screen, which in large font.
-		TextView execiseName = (TextView)findViewById(R.id.text_view_home_game_title);
+		TextView execiseName = (TextView) findViewById(R.id.text_view_home_game_title);
 		execiseName.setText(EXERCISE_TYPE.getName());
 
 		// TODO: Mocking to be removed
@@ -119,6 +117,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	/**
 	 * Display server, network or download dialog depending on which menu item
 	 * has been selected
+	 * 
 	 * @see http://tools.android.com/tips/non-constant-fields
 	 */
 	@Override
@@ -148,7 +147,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	/**
 	 * showDownloadDialog method
 	 * 
@@ -188,11 +187,12 @@ public abstract class BaseHomeScreenActivity extends Activity {
 
 	/**
 	 * This method load default exercises into the database when the app is
-	 * opened for the first time. 
+	 * opened for the first time.
 	 */
-	public void loadDefaultExercises(){
+	public void loadDefaultExercises() {
 		DefaultExercisesLoader loader = new DefaultExercisesLoader(this, EXERCISE_TYPE);
-		// Run on SINGLE_THREAD_EXECUTOR then won't conflict with downloading process
+		// Run on SINGLE_THREAD_EXECUTOR then won't conflict with downloading
+		// process
 		loader.executeOnExecutor(SINGLE_THREAD_EXECUTOR, DEFAULT_EXERCISE_LIST_FILE);
 	}
 
@@ -201,7 +201,6 @@ public abstract class BaseHomeScreenActivity extends Activity {
 	 */
 	public abstract String[] getUrls();
 
-	
 	/**
 	 * Download all exercises in given URLs.
 	 */
@@ -210,15 +209,12 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		if (FlaxUtil.isConnected()) {
 			Log.d(TAG, "connected. Start downloading");
 			BackgroundDowloadExercises backgoundDownload = new BackgroundDowloadExercises(this, EXERCISE_TYPE);
-			// Run on SINGLE_THREAD_EXECUTOR then won't conflict with loading default exercise process
+			// Run on SINGLE_THREAD_EXECUTOR then won't conflict with loading
+			// default exercise process
 			backgoundDownload.executeOnExecutor(SINGLE_THREAD_EXECUTOR, getUrls());
 		} else {
 			Log.d(TAG, "Internet not Connected");
-			Toast.makeText(
-					this,
-					"There was a problem connecting to the server. "
-							+ "Please ensure that you are connected to the internet "
-							+ "and that your Network Settings are set correctly", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.not_connected_message, Toast.LENGTH_LONG).show();
 		}
 	}
 }

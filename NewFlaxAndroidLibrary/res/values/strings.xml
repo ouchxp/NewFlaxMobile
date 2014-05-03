@@ -71,6 +71,7 @@
     <string name="download_process_dialog_message">Looking for new activities …</string>
     
     <!-- Error messages -->
+    <string name="not_connected_message">There was a problem connecting to the server. Please ensure that you are connected to the internet and that your Network Settings are set correctly.</string>
     <string name="downloading_error_message">There has been an error in your connection, if you have used a custom server path, please check that it is correct.</string>
     <string name="downloading_timeout_message">Please try again to download the new activities.</string>
     <string name="downloading_nonew_message">No new exercises. Press \'Play\' to see existing exercises.</string>
