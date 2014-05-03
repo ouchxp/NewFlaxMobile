@@ -1,7 +1,5 @@
 package flax.asynctask;
 
-import static flax.utils.GlobalConstants.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +30,7 @@ import flax.utils.XmlParser;
  */
 public class DefaultExercisesLoader extends AsyncTask<String, Void, Void> {
 	public static final String TAG = "DefaultExerciseLoader";
+	public static final String CHECK_FIRST_KEY = "checkFirst";
 	private Context mContext;
 	private ExerciseType mExerciseType;
 	private AssetManager mAssetManager;
