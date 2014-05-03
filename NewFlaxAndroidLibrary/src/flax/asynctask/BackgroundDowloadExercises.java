@@ -24,6 +24,7 @@ import flax.entity.base.BaseExerciseDetail;
 import flax.entity.exerciselist.Category;
 import flax.entity.exerciselist.Exercise;
 import flax.entity.exerciselist.ExerciseListResponse;
+import flax.library.R;
 import flax.utils.GlobalConstants;
 import flax.utils.IUrlConverter;
 import flax.utils.SpHelper;
@@ -53,7 +54,7 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	@Override
 	protected void onPreExecute() {
 		mProgress = new ProgressDialog(mContext);
-		mProgress.setMessage("Looking for new activities ...");
+		mProgress.setMessage(mContext.getString(R.string.download_process_dialog_message));
 		mProgress.show();
 	}
 
@@ -64,51 +65,59 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	@Override
 	protected Collection<Exercise> doInBackground(String... urls) {
 		final long startTime = System.currentTimeMillis();
+		Collection<Exercise> newExecs;
+		try {
 
-		// Begin parsing the xml from url
-		final ExerciseListResponse response = XmlParser.fromUrl(urls[0], ExerciseListResponse.class);
+			// Begin parsing the xml from url
+			final ExerciseListResponse response = XmlParser.fromUrl(urls[0], ExerciseListResponse.class);
 
-		// If something wrong then return null.
-		if (response == null) {
-			sleepForAWhile(startTime);
+			// If something wrong then return null.
+			if (response == null) {
+				sleepForAWhile(startTime);
+				return null;
+			}
+
+			// Get database helper
+			final DatabaseDaoHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
+
+			// Define batch task for all database operation
+			final Callable<Collection<Exercise>> batchTask = new Callable<Collection<Exercise>>() {
+				@Override
+				public Collection<Exercise> call() throws Exception {
+
+					// "new" exercises, which doesn't exist in database.
+					final Collection<Exercise> newExecs = downloadAndSaveExerciseList(response, helper);
+
+					// Delete old exercises
+					final List<String> deletedIds = deleteOldExercises(response, helper);
+
+					// Check whether there are deleted exercises in new exercise
+					// list (only
+					// happen if more than 10 exercises in a category in XML)
+					checkNewExercise(newExecs, deletedIds);
+
+					// If new exercise exist, download and save exercise detail
+					// to
+					// database.
+					if (!newExecs.isEmpty()) {
+						downloadAndSaveContent(newExecs, helper);
+					}
+
+					return newExecs;
+				}
+			};
+
+			// Get new exercises by execute batch task
+			newExecs = helper.callBatchTasks(batchTask);
+
+			// have to release helper after use
+			OpenHelperManager.releaseHelper();
+			
+		} catch (Exception e) {
+			Log.w(TAG, e);
 			return null;
 		}
-
-		// Get database helper
-		final DatabaseDaoHelper helper = OpenHelperManager.getHelper(mContext, DatabaseDaoHelper.class);
-
-		// Define batch task for all database operation
-		final Callable<Collection<Exercise>> batchTask = new Callable<Collection<Exercise>>() {
-			@Override
-			public Collection<Exercise> call() throws Exception {
-
-				// "new" exercises, which doesn't exist in database.
-				final Collection<Exercise> newExecs = downloadAndSaveExerciseList(response, helper);
-
-				// Delete old exercises
-				final List<String> deletedIds = deleteOldExercises(response, helper);
-
-				// Check whether there are deleted exercises in new exercise
-				// list (only
-				// happen if more than 10 exercises in a category in XML)
-				checkNewExercise(newExecs, deletedIds);
-
-				// If new exercise exist, download and save exercise detail to
-				// database.
-				if (!newExecs.isEmpty()) {
-					downloadAndSaveContent(newExecs, helper);
-				}
-
-				return newExecs;
-			}
-		};
-
-		// Get new exercises by execute batch task
-		final Collection<Exercise> newExecs = helper.callBatchTasks(batchTask);
-
-		// have to release helper after use
-		OpenHelperManager.releaseHelper();
-
+		
 		// If time spent less than 1 sec, then sleep until 1 sec.
 		sleepForAWhile(startTime);
 		return newExecs;
@@ -255,20 +264,14 @@ public class BackgroundDowloadExercises extends AsyncTask<String, Void, Collecti
 	protected void onPostExecute(Collection<Exercise> result) {
 		// If there is trouble with the server connection
 		if (getDownloadStatus() == false) {
-			Toast.makeText(
-					mContext,
-					"There has been an error in your connection, if you have used a custom server path, please check that it is correct.",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, R.string.downloading_error_message, Toast.LENGTH_LONG).show();
 		} else if (result == null) {
-			Toast.makeText(mContext, "Please try again to download the new activities.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, R.string.downloading_timeout_message, Toast.LENGTH_SHORT).show();
 		} else if (result.isEmpty()) {
-			Toast.makeText(mContext, "No new exercises. " + "Press 'Play' to see existing exercises",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, R.string.downloading_nonew_message, Toast.LENGTH_SHORT).show();
 		} else {
-			Toast.makeText(mContext, "New exercises saved. " + "Press 'Play' to see all exercises", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(mContext, R.string.downloading_success_message, Toast.LENGTH_SHORT).show();
 		}
-
 		mProgress.dismiss();
 	}
 

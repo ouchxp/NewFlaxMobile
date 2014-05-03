@@ -68,5 +68,11 @@
     </string-array>
     <string name="network_setting_dialog_title">Network settings</string>
     <string name="network_setting_saved_message">Network Settings Saved.</string>
+    <string name="download_process_dialog_message">Looking for new activities …</string>
     
+    <!-- Error messages -->
+    <string name="downloading_error_message">There has been an error in your connection, if you have used a custom server path, please check that it is correct.</string>
+    <string name="downloading_timeout_message">Please try again to download the new activities.</string>
+    <string name="downloading_nonew_message">No new exercises. Press \'Play\' to see existing exercises.</string>
+    <string name="downloading_success_message">New exercises saved. Press \'Play\' to see all exercises</string>
 </resources>
