@@ -39,6 +39,8 @@
     <string name="dialog_btn_done">Done</string>
     <string name="dialog_btn_yes">Yes</string>
     <string name="dialog_btn_no">No</string>
+    <string name="dialog_btn_save">Save</string>
+    <string name="dialog_btn_cancel">Cancel</string>
     
     <!-- Dialog Title & Messages (&#160; means space) -->
     <string name="help_dialog_title">Help</string>
@@ -49,4 +51,16 @@
     <string name="restart_dialog_message">Would you like to restart this game?</string>
     <string name="download_dialog_title">Check for new exercises?</string>
     <string name="download_dialog_message">Would you like to connect to the server and download new exercises?</string>
+    
+    <string-array name="change_server_dialog_options">
+        <item>Default</item>
+        <item>Custom</item>
+    </string-array>
+    <string name="change_server_dialog_title">Change server path</string>
+    <string name="enter_server_dialog_title">Enter server path</string>
+    <string name="server_error_dialog_title">Server path error</string>
+    <string name="server_error_dialog_message">The path you have entered is not a flax server. Would you like to use the default server or re-enter your custom server?</string>
+    <string name="dialog_btn_reenter_server">Re-Enter Server</string>
+    <string name="dialog_btn_use_default_server">Use Default Server</string>
+    <string name="server_saved_message">Server path saved.</string>
 </resources>

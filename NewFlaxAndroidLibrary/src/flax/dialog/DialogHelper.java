@@ -13,12 +13,19 @@
  */
 package flax.dialog;
 
+import static flax.utils.GlobalConstants.*;
+
 import java.text.MessageFormat;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.InputType;
+import android.view.Gravity;
+import android.widget.EditText;
+import android.widget.Toast;
 import flax.library.R;
+import flax.utils.FlaxUtil;
 
 /**
  * DialogHelp Class
@@ -170,5 +177,129 @@ public class DialogHelper {
 		new AlertDialog.Builder(context).setTitle(msgTitle).setMessage(msgBody)
 		// set dialog Done button
 				.setNegativeButton(R.string.dialog_btn_done, null).create().show();
+	}
+	
+	/**
+	 * displays the dialog box that allows the user to change the server path.
+	 */
+	public void displayChangeServerDialog() {
+		// get server path
+		final String serverPath = FlaxUtil.getServerPath();
+		final boolean isDefServerWhenOpen = serverPath.equals(DEFAULT_SERVER_PATH);
+
+		// listener for dialog
+		final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			// Store the options status.
+			private boolean isDef = isDefServerWhenOpen;
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				// Save
+				case DialogInterface.BUTTON_POSITIVE:
+					if (isDef) {
+						FlaxUtil.setServerPath(DEFAULT_SERVER_PATH);
+					}
+					Toast.makeText(context, R.string.server_saved_message, Toast.LENGTH_SHORT).show();
+					break;
+				// Default server option selected.
+				case 0:
+					isDef = true;
+					break;
+				// Custom server option selected.
+				case 1:
+					isDef = false;
+					displayEnterServerDialog();
+					dialog.cancel();
+					break;
+				}
+			}
+		};
+
+		// Instantiate alert dialog builder
+		new AlertDialog.Builder(context)
+		// set dialog title
+				.setTitle(R.string.change_server_dialog_title)
+				// set dialog content -- radio buttons to choose 'custom' or
+				// 'default' server
+				.setSingleChoiceItems(R.array.change_server_dialog_options, (isDefServerWhenOpen ? 0 : 1), listener)
+				// set dialog save button
+				.setPositiveButton(R.string.dialog_btn_save, listener)
+				// set dialog cancel button
+				.setNegativeButton(R.string.dialog_btn_cancel, null).create().show();
+	}
+
+	/**
+	 * displays the dialog box with input for the user to enter a custom server
+	 * path. This dialog is opened when the user clicks on the 'custom' radio
+	 * button in the initial server dialog box.
+	 */
+	private void displayEnterServerDialog() {
+
+		// Set up the input
+		// Specify the type of input expected
+		final EditText input = new EditText(context);
+		input.setInputType(InputType.TYPE_CLASS_TEXT);
+		input.setGravity(Gravity.CENTER);
+		input.setText(FlaxUtil.getServerPath());
+
+		// Instantiate alert dialog builder
+		new AlertDialog.Builder(context)
+
+		// set dialog title
+				.setTitle(R.string.enter_server_dialog_title)
+
+				// set dialog text input
+				.setView(input)
+
+				// set dialog save button
+				.setPositiveButton(R.string.dialog_btn_save, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Get the server path from the user input and check
+						// that it is formatted correctly
+						String newServerPath = input.getText().toString();
+						if (!newServerPath.startsWith(VALID_SERVER_PREFIX)
+								|| !newServerPath.endsWith(VALID_SERVER_SUFFIX)) {
+							displayServerErrorDialog();
+						} else {
+							FlaxUtil.setServerPath(newServerPath);
+							Toast.makeText(context, R.string.server_saved_message, Toast.LENGTH_SHORT).show();
+						}
+					}
+				})
+
+				// set dialog cancel button
+				.setNegativeButton(R.string.dialog_btn_cancel, null).create().show();
+	}
+
+	/**
+	 * displays the error dialog for when the user has entered an incorrect path
+	 */
+	private void displayServerErrorDialog() {
+
+		// Instantiate alert dialog builder
+		new AlertDialog.Builder(context)
+
+		// set dialog title
+				.setTitle(R.string.server_error_dialog_title)
+
+				// set dialog text input
+				.setMessage(R.string.server_error_dialog_message)
+
+				// set dialog save button
+				.setPositiveButton(R.string.dialog_btn_reenter_server, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						displayEnterServerDialog();
+					}
+				})
+
+				// set dialog cancel button
+				.setNegativeButton(R.string.dialog_btn_use_default_server, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						FlaxUtil.setServerPath(DEFAULT_SERVER_PATH);
+						Toast.makeText(context, R.string.server_saved_message, Toast.LENGTH_SHORT).show();
+					}
+				}).create().show();
+
 	}
 } // end of class

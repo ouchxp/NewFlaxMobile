@@ -32,7 +32,6 @@ import android.widget.Toast;
 import flax.asynctask.BackgroundDowloadExercises;
 import flax.asynctask.DefaultExercisesLoader;
 import flax.core.ExerciseType;
-import flax.dialog.DialogChangeServer;
 import flax.dialog.DialogHelper;
 import flax.dialog.DialogNetworkSettings;
 import flax.library.R;
@@ -134,8 +133,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 			return true;
 		} else if (itemId == R.id.change_server) {
 			// Set server settings
-			DialogChangeServer serverDialog = new DialogChangeServer(this);
-			serverDialog.loadServerPath();
+			DialogHelper serverDialog = new DialogHelper(this);
 			serverDialog.displayChangeServerDialog();
 			return true;
 		} else if (itemId == R.id.network_settings) {

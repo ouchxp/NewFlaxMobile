@@ -9,10 +9,17 @@ import flax.network.NetworkConnection;
 
 public class FlaxUtil {
 	/**
-	 * getServerPath method Get sercer path from shared pref
+	 * getServerPath method Get server path from shared pref
 	 */
 	public static String getServerPath() {
 		return SpHelper.getString(SERVER_PATH_KEY, DEFAULT_SERVER_PATH);
+	}
+	
+	/**
+	 * setServerPath method set server path to shared pref
+	 */
+	public static void setServerPath(String serverPath) {
+		SpHelper.putSingleString(SERVER_PATH_KEY, serverPath);
 	}
 
 	/**

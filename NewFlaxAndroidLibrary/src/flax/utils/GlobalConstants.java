@@ -6,11 +6,16 @@ import java.util.Locale;
 import flax.library.R;
 
 public class GlobalConstants {
+	public static final String SERVER_PATH_KEY = "server";
 	public static final String DEFAULT_SERVER_PATH = "http://flax.nzdl.org/greenstone3/flax";
-	public static final String DEFAULT_EXERCISE_LIST_FILE = "default_exercise_list.xml";
+	public static final String VALID_SERVER_PREFIX = "http://";
+	public static final String VALID_SERVER_SUFFIX = "/greenstone3/flax";
+	
 	public static final String CHECK_FIRST_KEY = "checkFirst";
 	public static final String DOWNLOAD_STATUS_KEY = "downloadStatus";
-	public static final String SERVER_PATH_KEY = "server";
+	
+	public static final String DEFAULT_EXERCISE_LIST_FILE = "default_exercise_list.xml";
+
 	public static final int DATABASE_VERSION = 1;
 
 	// Database
