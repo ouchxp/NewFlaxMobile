@@ -11,6 +11,11 @@ public class GlobalConstants {
 	public static final String VALID_SERVER_PREFIX = "http://";
 	public static final String VALID_SERVER_SUFFIX = "/greenstone3/flax";
 	
+	public static final String NETWORK_SETTING_KEY = "network";
+	public static final String NETWORK_SETTING_WIFI = "Wi-Fi";
+	public static final String NETWORK_SETTING_ANY = "Any";
+	public static final String DEFAULT_NETWORK_SETTING = NETWORK_SETTING_WIFI;
+	
 	public static final String CHECK_FIRST_KEY = "checkFirst";
 	public static final String DOWNLOAD_STATUS_KEY = "downloadStatus";
 	

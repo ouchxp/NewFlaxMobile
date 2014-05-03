@@ -51,7 +51,6 @@
     <string name="restart_dialog_message">Would you like to restart this game?</string>
     <string name="download_dialog_title">Check for new exercises?</string>
     <string name="download_dialog_message">Would you like to connect to the server and download new exercises?</string>
-    
     <string-array name="change_server_dialog_options">
         <item>Default</item>
         <item>Custom</item>
@@ -63,4 +62,11 @@
     <string name="dialog_btn_reenter_server">Re-Enter Server</string>
     <string name="dialog_btn_use_default_server">Use Default Server</string>
     <string name="server_saved_message">Server path saved.</string>
+    <string-array name="network_setting_dialog_options">
+        <item>Wi-Fi</item>
+        <item>Any</item>
+    </string-array>
+    <string name="network_setting_dialog_title">Network settings</string>
+    <string name="network_setting_saved_message">Network Settings Saved.</string>
+    
 </resources>

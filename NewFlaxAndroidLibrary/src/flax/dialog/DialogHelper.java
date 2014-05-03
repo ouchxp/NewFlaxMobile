@@ -180,6 +180,49 @@ public class DialogHelper {
 	}
 	
 	/**
+	 * Displays the dialog for the network settings
+	 */
+	public void displayNetworkDialog() {
+		// get network setting when open dialog
+		final String networkSettingWhenOpen = FlaxUtil.getNetworkSetting();
+		final boolean isWifiWhenOpen = networkSettingWhenOpen.equals(NETWORK_SETTING_WIFI);
+
+		// listener
+		final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			private boolean isWifi = isWifiWhenOpen;
+
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				// save
+				case DialogInterface.BUTTON_POSITIVE:
+					FlaxUtil.setNetworkSetting(isWifi ? NETWORK_SETTING_WIFI : NETWORK_SETTING_ANY);
+					Toast.makeText(context, R.string.network_setting_saved_message, Toast.LENGTH_SHORT).show();
+					break;
+				// wifi
+				case 0:
+					isWifi = true;
+					break;
+				// any
+				case 1:
+					isWifi = false;
+					break;
+				}
+			}
+		};
+
+		// Instantiate alert dialog builder
+		new AlertDialog.Builder(context)
+		// set dialog title
+				.setTitle(R.string.network_setting_dialog_title)
+				// set dialog content
+				.setSingleChoiceItems(R.array.network_setting_dialog_options, (isWifiWhenOpen ? 0 : 1), listener)
+				// set dialog save button
+				.setPositiveButton(R.string.dialog_btn_save, listener)
+				// set dialog cancel button
+				.setNegativeButton(R.string.dialog_btn_cancel, null).create().show();
+	}
+	
+	/**
 	 * displays the dialog box that allows the user to change the server path.
 	 */
 	public void displayChangeServerDialog() {

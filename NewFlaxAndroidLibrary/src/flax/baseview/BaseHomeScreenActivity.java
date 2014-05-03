@@ -33,7 +33,6 @@ import flax.asynctask.BackgroundDowloadExercises;
 import flax.asynctask.DefaultExercisesLoader;
 import flax.core.ExerciseType;
 import flax.dialog.DialogHelper;
-import flax.dialog.DialogNetworkSettings;
 import flax.library.R;
 import flax.utils.FlaxUtil;
 import flax.utils.Mock;
@@ -138,8 +137,7 @@ public abstract class BaseHomeScreenActivity extends Activity {
 			return true;
 		} else if (itemId == R.id.network_settings) {
 			// Set network settings
-			DialogNetworkSettings networkSettings = new DialogNetworkSettings(this);
-			networkSettings.loadNetworkSettings();
+			DialogHelper networkSettings = new DialogHelper(this);
 			networkSettings.displayNetworkDialog();
 			return true;
 		} else if (itemId == R.id.download_exercises) {
