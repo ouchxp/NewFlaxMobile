@@ -55,16 +55,12 @@ public class DialogHelper {
 	public void displayHelpDialog(String helpString) {
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
-
 		// set dialog title
 				.setTitle(R.string.help_dialog_title)
-
 				// set dialog content
 				.setMessage(helpString)
-
 				// set dialog Done button
 				.setNegativeButton(R.string.dialog_btn_done, null)
-
 				// create alert dialog and display it
 				.create().show();
 	}
@@ -75,16 +71,12 @@ public class DialogHelper {
 	public void displayHowToPlayDialog(String howToPlay) {
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
-
 		// set dialog title
 				.setTitle(R.string.how_to_play_dialog_title)
-
 				// set dialog content
 				.setMessage(howToPlay)
-
 				// set dialog Done button
 				.setNegativeButton(R.string.dialog_btn_done, null)
-
 				// create alert dialog and display it
 				.create().show();
 	}
@@ -93,22 +85,16 @@ public class DialogHelper {
 	 * Displays the restart game dialog
 	 */
 	public void displayRestartGameDialog(final DialogInterface.OnClickListener yesCallback) {
-
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
-
 		// set dialog title
 				.setTitle(R.string.restart_dialog_title)
-
 				// set dialog content
 				.setMessage(R.string.restart_dialog_message)
-
 				// set dialog save button
 				.setPositiveButton(R.string.dialog_btn_yes, yesCallback)
-
 				// set dialog Done button
 				.setNegativeButton(R.string.dialog_btn_no, null)
-
 				// create alert dialog and display it
 				.create().show();
 	}
@@ -117,7 +103,6 @@ public class DialogHelper {
 	 * Displays the dialog for the summary report
 	 */
 	public void displaySummaryReportDialog(int score, int possibleScore, String startTime, String endTime, int attempts) {
-
 		// Determine score percentage
 		double percent = (((double) score / (double) possibleScore) * 100);
 		double percentage = Math.ceil(percent);
@@ -131,16 +116,12 @@ public class DialogHelper {
 
 		// Instantiate alert dialog builder
 		new AlertDialog.Builder(context)
-
 		// set dialog title
 				.setTitle(R.string.summary_dialog_title)
-
 				// set message
 				.setMessage(message)
-
 				// set dialog Done button
 				.setNegativeButton(R.string.dialog_btn_done, null)
-
 				// create alert dialog and display it
 				.create().show();
 	}
@@ -150,20 +131,14 @@ public class DialogHelper {
 	 * startingDownload()
 	 */
 	public void displayDownloadDialog(final DialogInterface.OnClickListener yesCallback) {
-		// Log.d(TAG, "download dialog being created ...");
-
 		// Create dialog
 		new AlertDialog.Builder(context)
-
 		// set title
 				.setTitle(R.string.download_dialog_title)
-
 				// set dialog content
 				.setMessage(R.string.download_dialog_message).setCancelable(false)
-
 				// set "Yes" button
 				.setPositiveButton(R.string.dialog_btn_yes, yesCallback)
-
 				// set "No" button
 				.setNegativeButton(R.string.dialog_btn_no, null).create().show();
 	}
@@ -229,7 +204,6 @@ public class DialogHelper {
 		// get server path
 		final String serverPath = FlaxUtil.getServerPath();
 		final boolean isDefServerWhenOpen = serverPath.equals(DEFAULT_SERVER_PATH);
-
 		// listener for dialog
 		final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
 			// Store the options status.
@@ -291,10 +265,8 @@ public class DialogHelper {
 
 		// set dialog title
 				.setTitle(R.string.enter_server_dialog_title)
-
 				// set dialog text input
 				.setView(input)
-
 				// set dialog save button
 				.setPositiveButton(R.string.dialog_btn_save, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
@@ -310,7 +282,6 @@ public class DialogHelper {
 						}
 					}
 				})
-
 				// set dialog cancel button
 				.setNegativeButton(R.string.dialog_btn_cancel, null).create().show();
 	}
@@ -325,17 +296,14 @@ public class DialogHelper {
 
 		// set dialog title
 				.setTitle(R.string.server_error_dialog_title)
-
 				// set dialog text input
 				.setMessage(R.string.server_error_dialog_message)
-
 				// set dialog save button
 				.setPositiveButton(R.string.dialog_btn_reenter_server, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						displayEnterServerDialog();
 					}
 				})
-
 				// set dialog cancel button
 				.setNegativeButton(R.string.dialog_btn_use_default_server, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
