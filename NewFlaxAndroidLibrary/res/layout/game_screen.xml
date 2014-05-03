@@ -19,13 +19,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:paddingTop="6dp"
             android:paddingBottom="2dp"
+            android:paddingTop="6dp"
             app:currentRadius="4dp"
             app:currentStrokeColor="@color/green_dark"
             app:currentStrokeWidth="2dp"
             app:fillColor="@color/green_dark"
             app:radius="3dp"
+            app:snap="true"
             app:strokeColor="@color/green_dark" />
 
         <TextView
