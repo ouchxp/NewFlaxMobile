@@ -18,7 +18,7 @@ import flax.entity.base.BaseEntity;
 /**
  * Represent "category" Tag in XML.
  * 
- * @author ouchxp
+ * @author Nan Wu
  * 
  */
 @DatabaseTable(tableName = "exerciselist_category")

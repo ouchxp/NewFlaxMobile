@@ -17,7 +17,7 @@ import flax.entity.base.BaseEntity;
 /**
  * Represent "response" Tag in XML(root tag).
  * 
- * @author ouchxp
+ * @author Nan Wu
  * 
  */
 @Root(name = "response")

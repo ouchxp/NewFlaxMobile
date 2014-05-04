@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 
 /**
  * SharedPreferences Helper class. Simplify the get/put operations.
- * @author ouchxp
+ * @author Nan Wu
  *
  */
 public class SpHelper {
