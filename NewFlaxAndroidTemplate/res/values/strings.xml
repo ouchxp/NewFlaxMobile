@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- define message string here -->
     <!-- General Android App Strings -->
-    <string name="app_name">FlaxAndroidHangman</string>
-    <string name="app_name_launcher">Hangman</string>
+    <string name="app_name">FlaxAndroidTemplate</string>
+    <string name="app_name_launcher">Template</string>
 
     <!-- Messages -->
     <string name="how_to_play_message">Players guess a hidden word by guessing individual letters. A correct guess reveals the letter\'s position in the word, while an incorrect guess brings you one step closer to being \"hanged\". The game is over when you guess all the letters in the word correctly, or you make 10 incorrect guesses.\nYou can guess the letters by clicking on them at the top of the exercise, or by typing the chosen letter on your keyboard.\nSometimes the word may already have correct letters guessed for you. You may also be given a hint that describes the hidden word. There will be a lightbulb below the word which you can click if this is the case.</string>

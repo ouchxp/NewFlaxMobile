@@ -63,7 +63,7 @@ public class XmlParser {
 			
 			// Parsing
 			Serializer serializer = new Persister();
-			T result = serializer.read(resultType, is);
+			T result = serializer.read(resultType, is, false);
 			
 			// Setting unique url
 			setUniqueUrl(result,url);
@@ -108,7 +108,7 @@ public class XmlParser {
 			
 			// Parsing
 			Serializer serializer = new Persister();
-			T result = serializer.read(resultType, is);
+			T result = serializer.read(resultType, is, false);
 			
 			// Setting unique url
 			setUniqueUrl(result,fileName);
