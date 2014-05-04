@@ -21,7 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import flax.utils.GlobalConstants;
-import flax.utils.Mock;
 import flax.utils.SpHelper;
 
 /**
@@ -54,8 +53,7 @@ public class Downloader {
 		//Save to sharedPreference
 		SpHelper.putSingleBoolean(GlobalConstants.DOWNLOAD_STATUS_KEY, downloadStatus);
 		
-    	//TODO:Mocking to be removed
-    	InputStream is 				= urlString.equals("http://flax.nzdl.org/greenstone3/flax?a=pr&o=xml&ro=1&rt=r&s=Hangman&c=password&s1.service=11")?Mock.getExercises():Mock.getWords();//getHttpResponse(urlString);
+    	InputStream is 				= getHttpResponse(urlString);
     	
     	downloadStatus				= true;
     	//Save to sharedPreference

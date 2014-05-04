@@ -35,7 +35,6 @@ import flax.core.ExerciseType;
 import flax.dialog.DialogHelper;
 import flax.library.R;
 import flax.utils.FlaxUtil;
-import flax.utils.Mock;
 
 /**
  * HomeScreen Class
@@ -95,9 +94,6 @@ public abstract class BaseHomeScreenActivity extends Activity {
 		// Represent the exercise name on home screen, which in large font.
 		TextView execiseName = (TextView) findViewById(R.id.text_view_home_game_title);
 		execiseName.setText(EXERCISE_TYPE.getName());
-
-		// TODO: Mocking to be removed
-		Mock.r = this.getResources();
 	}
 
 	/**
