@@ -27,7 +27,7 @@ import flax.core.ExerciseType;
 public class ListScreen extends BaseListScreenActivity {
 
 	public ExerciseType getExerciseType() {
-		return HANGMAN;
+		return TEMPLATE;
 	}
 
 	/**

@@ -13,11 +13,11 @@ import flax.utils.FlaxUtil;
 public class HomeScreen extends BaseHomeScreenActivity{
 
 	public ExerciseType getExerciseType() {
-		return HANGMAN;
+		return TEMPLATE;
 	}
 
 	public String[] getUrls() {
-		String url = FlaxUtil.getServerPath() + HANGMAN_URL;
+		String url = FlaxUtil.getServerPath() + TEMPLATE_URL;
 		return new String[]{url};
 	}
 

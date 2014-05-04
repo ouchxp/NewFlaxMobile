@@ -60,7 +60,7 @@ public class GameScreen extends BaseGameScreenActivity<TempleteExerciseDetail, T
 	@Override
 	public ExerciseType getExerciseType() {
 		//TODO: return the exercise type constant.
-		return HANGMAN;
+		return TEMPLATE;
 	}
 
 	@Override

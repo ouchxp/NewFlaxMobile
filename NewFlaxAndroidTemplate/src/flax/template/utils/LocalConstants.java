@@ -10,13 +10,13 @@ public class LocalConstants {
 	@SuppressWarnings("unchecked")
 	//TODO: define exercise type
 	/** define exercise type */
-	public static final ExerciseType HANGMAN = ExerciseType
-			.newInstance("HANGMAN", "HANGMAN", TemplateUrlConverter.class, TempleteExerciseDetail.class, TemplatePage.class,
+	public static final ExerciseType TEMPLATE = ExerciseType
+			.newInstance("TEMPLATE", "Template", TemplateUrlConverter.class, TempleteExerciseDetail.class, TemplatePage.class,
 					TempleteExerciseDetail.class, TemplatePage.class);
 
 	//TODO: declare constants for download
 	/** constants for download */
-	public static final String HANGMAN_URL = "?a=pr&o=xml&ro=1&rt=r&s=Hangman&c=password&s1.service=11";
+	public static final String TEMPLATE_URL = "?a=pr&o=xml&ro=1&rt=r&s=Hangman&c=password&s1.service=11";
 
 	
 	//TODO: declare constants
