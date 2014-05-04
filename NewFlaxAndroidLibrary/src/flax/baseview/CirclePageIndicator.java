@@ -34,6 +34,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -41,15 +42,17 @@ import flax.entity.base.BasePage;
 import flax.library.R;
 
 /**
- * Draws circles (one for each view). The current view position is thicker stroked 
- * page wins with filled circle, others only stroked.
+ * Draws circles (one for each view). The current view position is thicker
+ * stroked page wins with filled circle, others only stroked.
  * 
  * This indicator is customized from an open source indicator.
+ * 
  * @see http://viewpagerindicator.com/
  * 
  * @author Nan Wu
  */
-public class CirclePageIndicator extends View implements ViewPager.OnPageChangeListener  {
+public class CirclePageIndicator extends View implements ViewPager.OnPageChangeListener {
+	public static final String TAG = "CirclePageIndicator";
 	private static final int INVALID_POINTER = -1;
 
 	private float mRadius;
@@ -83,6 +86,7 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 		this(context, attrs, R.attr.vpiCirclePageIndicatorStyle);
 	}
 
+	@SuppressWarnings("deprecation")
 	public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		if (isInEditMode())
@@ -113,8 +117,10 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 		mPaintStroke.setColor(a.getColor(R.styleable.CirclePageIndicator_strokeColor, defaultStrokeColor));
 		mPaintStroke.setStrokeWidth(a.getDimension(R.styleable.CirclePageIndicator_strokeWidth, defaultStrokeWidth));
 		mPaintCurrentStroke.setStyle(Style.STROKE);
-		mPaintCurrentStroke.setColor(a.getColor(R.styleable.CirclePageIndicator_currentStrokeColor, defaultCurrentStrokeColor));
-		mPaintCurrentStroke.setStrokeWidth(a.getDimension(R.styleable.CirclePageIndicator_currentStrokeWidth, defaultCurrentStrokeWidth));
+		mPaintCurrentStroke.setColor(a.getColor(R.styleable.CirclePageIndicator_currentStrokeColor,
+				defaultCurrentStrokeColor));
+		mPaintCurrentStroke.setStrokeWidth(a.getDimension(R.styleable.CirclePageIndicator_currentStrokeWidth,
+				defaultCurrentStrokeWidth));
 		mPaintFill.setStyle(Style.FILL);
 		mPaintFill.setColor(a.getColor(R.styleable.CirclePageIndicator_fillColor, defaultFillColor));
 		mRadius = a.getDimension(R.styleable.CirclePageIndicator_radius, defaultRadius);
@@ -304,12 +310,12 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 
 			// Only paint stroke if a stroke width was non-zero
 			if (pageFillRadius != mRadius) {
-				
+
 				// If page win, draw filled circle
 				if (mItems.get(iLoop).getPageStatus() == PAGE_WIN) {
 					canvas.drawCircle(dX, dY, mRadius, mPaintFill);
 				}
-				
+
 				// Draw regular circle
 				canvas.drawCircle(dX, dY, mRadius, mPaintStroke);
 			}
@@ -414,11 +420,12 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 		return true;
 	}
 
-    /**
-     * Bind the indicator to a ViewPager.
-     *
-     * @param view
-     */
+	/**
+	 * Bind the indicator to a ViewPager.
+	 * 
+	 * @param view
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setViewPager(ViewPager view) {
 		if (mViewPager == view) {
 			return;
@@ -431,29 +438,38 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 		}
 		mViewPager = view;
 		mViewPager.setOnPageChangeListener(this);
-		mItems = ((GamePagerAdapter) mViewPager.getAdapter()).getPageItemList();
+		try {
+			mItems = ((GamePagerAdapter) mViewPager.getAdapter()).getPageItemList();
+		} catch (ClassCastException e) {
+			Log.e(TAG, "Page adapter must be GamePagerAdapter or extends GamePagerAdapter");
+			throw e;
+		}
 		invalidate();
 	}
 
-    /**
-     * Bind the indicator to a ViewPager.
-     *
-     * @param view
-     * @param initialPosition
-     */
+	/**
+	 * Bind the indicator to a ViewPager.
+	 * 
+	 * @param view
+	 * @param initialPosition
+	 */
 	public void setViewPager(ViewPager view, int initialPosition) {
 		setViewPager(view);
 		setCurrentItem(initialPosition);
 	}
 
-    /**
-     * <p>Set the current page of both the ViewPager and indicator.</p>
-     *
-     * <p>This <strong>must</strong> be used if you need to set the page before
-     * the views are drawn on screen (e.g., default start page).</p>
-     *
-     * @param item
-     */
+	/**
+	 * <p>
+	 * Set the current page of both the ViewPager and indicator.
+	 * </p>
+	 * 
+	 * <p>
+	 * This <strong>must</strong> be used if you need to set the page before the
+	 * views are drawn on screen (e.g., default start page).
+	 * </p>
+	 * 
+	 * @param item
+	 */
 	public void setCurrentItem(int item) {
 		if (mViewPager == null) {
 			throw new IllegalStateException("ViewPager has not been bound.");
@@ -463,9 +479,9 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 		invalidate();
 	}
 
-    /**
-     * Notify the indicator that the fragment list has changed.
-     */
+	/**
+	 * Notify the indicator that the fragment list has changed.
+	 */
 	public void notifyDataSetChanged() {
 		invalidate();
 	}
@@ -503,11 +519,11 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 		}
 	}
 
-    /**
-     * Set a page change listener which will receive forwarded events.
-     *
-     * @param listener
-     */
+	/**
+	 * Set a page change listener which will receive forwarded events.
+	 * 
+	 * @param listener
+	 */
 	public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 		mListener = listener;
 	}
@@ -616,7 +632,6 @@ public class CirclePageIndicator extends View implements ViewPager.OnPageChangeL
 			dest.writeInt(currentPage);
 		}
 
-		@SuppressWarnings("UnusedDeclaration")
 		public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
 			@Override
 			public SavedState createFromParcel(Parcel in) {

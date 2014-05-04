@@ -16,6 +16,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
  * @param <ID>
  */
 public class FlaxDao<T, ID> extends RuntimeExceptionDao<T, ID> {
+	@SuppressWarnings("unused")
 	private Dao<T, ID> dao;
 	public FlaxDao(Dao<T, ID> dao) {
 		super(dao);

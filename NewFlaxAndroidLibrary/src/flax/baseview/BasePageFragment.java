@@ -2,7 +2,6 @@ package flax.baseview;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
-import android.view.View.OnClickListener;
 import flax.database.FlaxDao;
 
 /**
