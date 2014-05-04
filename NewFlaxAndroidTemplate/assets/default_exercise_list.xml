@@ -1,0 +1,47 @@
+<response from="default">
+  <categoryList c="default" flax_server_domain="/asset" type="1">
+    <category id="1" name="none">
+      <categorysummary>default category</categorysummary>
+      <exercise category_id="1" id="3" name="Drop" type="Hangman">
+        <url>default_exercises/drop.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="1" name="bar" type="Hangman">
+        <url>default_exercises/bar.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="6" name="Book" type="Hangman">
+        <url>default_exercises/book.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="5" name="ManyWords" type="Hangman">
+        <url>default_exercises/manywords.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="4" name="Rain" type="Hangman">
+        <url>default_exercises/rain.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="9" name="Book of Flax example 2" type="Hangman">
+        <url>default_exercises/book2.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="11" name="Book of Flax example 1" type="Hangman">
+        <url>default_exercises/book1.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="4" name="hangman" type="Hangman">
+        <url>default_exercises/hangman.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="9" name="flax" type="Hangman">
+        <url>default_exercises/flax.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+      <exercise category_id="1" id="11" name="example" type="Hangman">
+        <url>default_exercises/example.xml</url>
+        <summary>Hangman activity</summary>
+      </exercise>
+    </category>
+  </categoryList>
+</response>
