@@ -44,7 +44,7 @@ public class Exercise extends BaseEntity {
 	@DatabaseField(defaultValue = "0")
 	private int status;
 
-	@DatabaseField(foreign = true, columnName = "category_foreign_id")
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_foreign_id")
 	private Category category;
 
 	/** Constructors */

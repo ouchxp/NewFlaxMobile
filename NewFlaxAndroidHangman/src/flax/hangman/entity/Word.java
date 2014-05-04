@@ -16,7 +16,7 @@ public class Word extends BasePage{
 	@DatabaseField
 	private String word;
 	
-	@DatabaseField(foreign = true, columnName="response_foreign_id") 
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName="response_foreign_id") 
 	private HangmanExerciseDetail exercise;
 	
 	/** Constructor */

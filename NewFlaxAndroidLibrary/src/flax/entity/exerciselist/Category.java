@@ -67,7 +67,7 @@ public class Category extends BaseEntity {
 	@ElementList(inline = true, entry = "exercise")
 	private Collection<Exercise> exercises;
 
-	@DatabaseField(foreign = true, columnName = "response_foreign_id")
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "response_foreign_id")
 	private ExerciseListResponse response;
 
 	/** Constructors */
