@@ -1,23 +1,27 @@
-package flax.hangman.utils;
+package flax.template.utils;
 
 import flax.core.ExerciseType;
-import flax.hangman.R;
-import flax.hangman.converter.HangmanUrlConverter;
-import flax.hangman.entity.HangmanExerciseDetail;
-import flax.hangman.entity.Word;
+import flax.template.R;
+import flax.template.converter.TemplateUrlConverter;
+import flax.template.entity.TempleteExerciseDetail;
+import flax.template.entity.TemplatePage;
 
 public class LocalConstants {
-	
-	/** define Hangman exercise type */
 	@SuppressWarnings("unchecked")
+	//TODO: define exercise type
+	/** define exercise type */
 	public static final ExerciseType HANGMAN = ExerciseType
-			.newInstance("HANGMAN", "HANGMAN", HangmanUrlConverter.class, HangmanExerciseDetail.class, Word.class,
-					HangmanExerciseDetail.class, Word.class);
+			.newInstance("HANGMAN", "HANGMAN", TemplateUrlConverter.class, TempleteExerciseDetail.class, TemplatePage.class,
+					TempleteExerciseDetail.class, TemplatePage.class);
 
-	/** for home screen */
+	//TODO: declare constants for download
+	/** constants for download */
 	public static final String HANGMAN_URL = "?a=pr&o=xml&ro=1&rt=r&s=Hangman&c=password&s1.service=11";
 
-	/** for game page fragment */
+	
+	//TODO: declare constants
+	/** declare constants */
+	/*
 	// Keys for extra
 	public static final String PRESSED_KEYS = "pressedKeys";
 	public static final String MOVES = "moves";
@@ -28,5 +32,5 @@ public class LocalConstants {
 	public static final int[] HANGMAN_PICS = { R.drawable.img_hang_0, R.drawable.img_hang_1, R.drawable.img_hang_2,
 			R.drawable.img_hang_3, R.drawable.img_hang_4, R.drawable.img_hang_5, R.drawable.img_hang_6,
 			R.drawable.img_hang_7, R.drawable.img_hang_8, R.drawable.img_hang_9, R.drawable.img_hang_10 };
-
+	*/
 }

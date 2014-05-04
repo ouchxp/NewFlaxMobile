@@ -1,6 +1,6 @@
-package flax.hangman.view;
+package flax.template.view;
 
-import static flax.hangman.utils.LocalConstants.*;
+import static flax.template.utils.LocalConstants.*;
 import flax.baseview.BaseHomeScreenActivity;
 import flax.core.ExerciseType;
 import flax.utils.FlaxUtil;

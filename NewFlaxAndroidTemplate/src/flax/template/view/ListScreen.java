@@ -12,9 +12,9 @@
  * existing activities. It is from this screen that the user can select which game they 
  * would like to play. 
  */
-package flax.hangman.view;
+package flax.template.view;
 
-import static flax.hangman.utils.LocalConstants.*;
+import static flax.template.utils.LocalConstants.*;
 import flax.baseview.BaseListScreenActivity;
 import flax.core.ExerciseType;
 
