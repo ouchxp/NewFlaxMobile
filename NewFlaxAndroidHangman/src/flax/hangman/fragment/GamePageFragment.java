@@ -138,7 +138,6 @@ public class GamePageFragment extends BasePageFragment<Word> implements OnClickL
 
 		// Disable pressed button
 		v.setEnabled(false);
-System.out.println(mItem.getExercise().getPossibleScore());
 		checkAnswer();
 	}
 
