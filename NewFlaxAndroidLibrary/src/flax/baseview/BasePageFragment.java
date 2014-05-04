@@ -9,7 +9,7 @@ import flax.database.FlaxDao;
  * A placeholder fragment containing a simple view.
  * Fragments of game page must extends this class
  */
-public abstract class BasePageFragment<PAGE> extends Fragment implements OnClickListener {
+public abstract class BasePageFragment<PAGE> extends Fragment {
 	public static final String TAG = "GamePageFragment";
 	protected PAGE mItem;
 	protected FlaxDao<PAGE, ?> mItemDao;
