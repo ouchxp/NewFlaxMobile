@@ -18,7 +18,7 @@ public class HomeScreen extends BaseHomeScreenActivity{
 	}
 
 	public String[] getUrls() {
-		//return url of spicific activity's exercise list.
+		//TODO: return url of spicific activity's exercise list.
 		String url = FlaxUtil.getServerPath() + TEMPLATE_URL;
 		return new String[]{url};
 	}
