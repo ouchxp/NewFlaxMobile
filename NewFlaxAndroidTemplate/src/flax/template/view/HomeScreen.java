@@ -13,10 +13,12 @@ import flax.utils.FlaxUtil;
 public class HomeScreen extends BaseHomeScreenActivity{
 
 	public ExerciseType getExerciseType() {
+		//TODO: return the exercise type constant.
 		return TEMPLATE;
 	}
 
 	public String[] getUrls() {
+		//return url of spicific activity's exercise list.
 		String url = FlaxUtil.getServerPath() + TEMPLATE_URL;
 		return new String[]{url};
 	}
@@ -25,6 +27,7 @@ public class HomeScreen extends BaseHomeScreenActivity{
 	 * Return the class of next activity for building Intent.
 	 */
 	public Class<?> getNextActivityClass() {
+		// return class of next screen
 		return ListScreen.class;
 	}
 }

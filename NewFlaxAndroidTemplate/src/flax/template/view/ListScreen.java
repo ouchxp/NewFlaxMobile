@@ -27,6 +27,7 @@ import flax.core.ExerciseType;
 public class ListScreen extends BaseListScreenActivity {
 
 	public ExerciseType getExerciseType() {
+		//TODO: return the exercise type constant.
 		return TEMPLATE;
 	}
 
@@ -34,6 +35,7 @@ public class ListScreen extends BaseListScreenActivity {
 	 * Return the class of next activity for building Intent.
 	 */
 	public Class<?> getNextActivityClass() {
+		// return class of next screen
 		return GameScreen.class;
 	}
 }
